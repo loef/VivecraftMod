@@ -19,6 +19,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -154,8 +155,6 @@ public class XplatImpl implements Xplat {
     }
 
     public static boolean isFakePlayer(ServerPlayer player) {
-        // TODO check if forge reimplemented it, it was removed with 1.20.3
-        // return player instanceof FakePlayer;
-        return false;
+        return player instanceof FakePlayer;
     }
 }
