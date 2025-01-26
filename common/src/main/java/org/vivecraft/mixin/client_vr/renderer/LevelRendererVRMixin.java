@@ -73,6 +73,7 @@ public abstract class LevelRendererVRMixin implements ResourceManagerReloadListe
     @Final
     @Shadow
     private Minecraft minecraft;
+
     @Shadow
     private ClientLevel level;
     @Shadow

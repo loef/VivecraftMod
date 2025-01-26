@@ -32,6 +32,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -1584,10 +1585,9 @@ public class MenuWorldRenderer {
             Vector3f finalColor = new Vector3f();
             for (int i = 0; i < 16; ++i) {
                 for (int j = 0; j < 16; ++j) {
-                    float skyBrightness =
-                        this.blockAccess.dimensionType().brightness(i) * effectiveSkyLight;
-                    float blockBrightnessRed = this.blockAccess.dimensionType().brightness(j) *
-                        (this.blockLightRedFlicker + 1.5f);
+                    float skyBrightness = this.blockAccess.dimensionType().brightness(i) * effectiveSkyLight;
+                    float blockBrightnessRed =
+                        this.blockAccess.dimensionType().brightness(j) * (this.blockLightRedFlicker + 1.5f);
                     float blockBrightnessGreen =
                         blockBrightnessRed * ((blockBrightnessRed * 0.6f + 0.4f) * 0.6f + 0.4f);
                     float blockBrightnessBlue =
