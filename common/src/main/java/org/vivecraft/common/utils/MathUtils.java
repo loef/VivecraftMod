@@ -47,7 +47,7 @@ public class MathUtils {
     /**
      * @return {@code m} as a Minecraft Matrix4f
      */
-    public static com.mojang.math.Matrix4f toMcMat4(Matrix4f m) {
+    public static com.mojang.math.Matrix4f toMcMat4(Matrix4fc m) {
         com.mojang.math.Matrix4f mcMat = new com.mojang.math.Matrix4f();
         mcMat.m00 = m.m00();
         mcMat.m01 = m.m10();

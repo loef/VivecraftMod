@@ -1,7 +1,7 @@
 package net.coderbot.iris.gl.uniform;
 
-import org.joml.Matrix4fc;
-import org.joml.Vector3f;
+import com.mojang.math.Matrix4f;
+import net.coderbot.iris.vendored.joml.Vector3f;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
@@ -15,5 +15,5 @@ public interface UniformHolder {
 
     UniformHolder uniform3f(UniformUpdateFrequency updateFrequency, String name, Supplier<Vector3f> value);
 
-    UniformHolder uniformMatrix(UniformUpdateFrequency updateFrequency, String name, Supplier<Matrix4fc> value);
+    UniformHolder uniformMatrix(UniformUpdateFrequency updateFrequency, String name, Supplier<Matrix4f> value);
 }

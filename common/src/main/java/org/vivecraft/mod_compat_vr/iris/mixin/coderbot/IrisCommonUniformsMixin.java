@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.vivecraft.common.utils.MathUtils;
 import org.vivecraft.mod_compat_vr.shaders.ShadersHelper;
 
 import java.util.function.Supplier;
@@ -25,9 +26,12 @@ public class IrisCommonUniformsMixin {
         for (Triple<String, ShadersHelper.UniformType, Supplier<?>> uniform : ShadersHelper.getUniforms()) {
             switch (uniform.getMiddle()) {
                 case MATRIX4F -> uniforms.uniformMatrix(UniformUpdateFrequency.PER_FRAME, uniform.getLeft(),
-                    () -> (Matrix4fc) uniform.getRight().get());
+                    () -> MathUtils.toMcMat4((Matrix4fc) uniform.getRight().get()));
                 case VECTOR3F -> uniforms.uniform3f(UniformUpdateFrequency.PER_FRAME, uniform.getLeft(),
-                    () -> (Vector3f) uniform.getRight().get());
+                    () -> {
+                        Vector3f v = (Vector3f) uniform.getRight().get();
+                        return new net.coderbot.iris.vendored.joml.Vector3f(v.x, v.y, v.z);
+                    });
                 case INTEGER -> uniforms.uniform1i(UniformUpdateFrequency.PER_FRAME, uniform.getLeft(),
                     () -> (int) uniform.getRight().get());
                 case BOOLEAN -> uniforms.uniform1b(UniformUpdateFrequency.PER_FRAME, uniform.getLeft(),

@@ -5,7 +5,6 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.ClientBrandRetriever;
@@ -153,6 +152,6 @@ public class XplatImpl implements Xplat {
     }
 
     public static boolean isFakePlayer(ServerPlayer player) {
-        return isModLoaded("fabric-events-interaction-v0") && player instanceof FakePlayer;
+        return false;
     }
 }
