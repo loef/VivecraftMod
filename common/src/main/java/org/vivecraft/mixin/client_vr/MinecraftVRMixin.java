@@ -13,7 +13,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
-import net.minecraft.ReportedException;
 import net.minecraft.client.*;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.ConnectScreen;
@@ -25,15 +24,11 @@ import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.server.packs.PackResources;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -81,10 +76,8 @@ import org.vivecraft.client_vr.settings.VRHotkeys;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.client_xr.render_pass.RenderPassManager;
 import org.vivecraft.common.network.packet.c2s.VRActivePayloadC2S;
-import org.vivecraft.mod_compat_vr.optifine.OptifineHelper;
 
 import java.io.File;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Mixin(Minecraft.class)
@@ -93,10 +86,6 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
     // keeps track if an attack was initiated by pressing the attack key
     @Unique
     private boolean vivecraft$attackKeyDown;
-
-    // stores the list of resourcepacks that were loaded before a reload, to know if the menuworld should be rebuilt
-    @Unique
-    private List<String> vivecraft$resourcepacks;
 
     @Unique
     private CameraType vivecraft$lastCameraType;
@@ -135,21 +124,10 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
 
     @Shadow
     @Final
-    private TextureManager textureManager;
-
-    @Shadow
-    @Final
-    private ReloadableResourceManager resourceManager;
-
-    @Shadow
-    @Final
     public MouseHandler mouseHandler;
 
     @Shadow
     public abstract Entity getCameraEntity();
-
-    @Shadow
-    public abstract CompletableFuture<Void> reloadResourcePacks();
 
     @Shadow
     public abstract boolean isLocalServer();
@@ -170,45 +148,13 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
     @Final
     private DeltaTracker.Timer deltaTracker;
 
-    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/ResourceLoadStateTracker;startReload(Lnet/minecraft/client/ResourceLoadStateTracker$ReloadReason;Ljava/util/List;)V"), index = 0)
-    private ResourceLoadStateTracker.ReloadReason vivecraft$initVivecraft(
-        ResourceLoadStateTracker.ReloadReason reloadReason)
-    {
+    @WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;clear()V"))
+    private void vivecraft$initVivecraft(RenderTarget instance, Operation<Void> original) {
         RenderPassManager.INSTANCE = new RenderPassManager((MainTarget) this.mainRenderTarget);
         VRSettings.initSettings();
         new Thread(UpdateChecker::checkForUpdates, "VivecraftUpdateThread").start();
 
-        // register a resource reload listener, to reload the menu world
-        this.resourceManager.registerReloadListener((ResourceManagerReloadListener) resourceManager -> {
-            List<String> newPacks = resourceManager.listPacks().map(PackResources::packId).toList();
-
-            if (this.vivecraft$resourcepacks == null) {
-                // first load
-                this.vivecraft$resourcepacks = this.resourceManager.listPacks().map(PackResources::packId).toList();
-
-                if (OptifineHelper.isOptifineLoaded()) {
-                    // with optifine this texture somehow fails to load, so manually reload it
-                    try {
-                        this.textureManager.getTexture(Gui.CROSSHAIR_SPRITE);
-                    } catch (ReportedException e) {
-                        // if there was an error, just reload everything
-                        reloadResourcePacks();
-                    }
-                }
-            } else if (!this.vivecraft$resourcepacks.equals(newPacks) &&
-                ClientDataHolderVR.getInstance().menuWorldRenderer != null &&
-                ClientDataHolderVR.getInstance().menuWorldRenderer.isReady())
-            {
-                this.vivecraft$resourcepacks = newPacks;
-                try {
-                    ClientDataHolderVR.getInstance().menuWorldRenderer.destroy();
-                    ClientDataHolderVR.getInstance().menuWorldRenderer.prepare();
-                } catch (Exception e) {
-                    VRSettings.LOGGER.error("Vivecraft: error reloading Menuworld:", e);
-                }
-            }
-        });
-        return reloadReason;
+        original.call(instance);
     }
 
     @Inject(method = "onGameLoadFinished", at = @At("TAIL"))
