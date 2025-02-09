@@ -265,7 +265,10 @@ public class InteractTracker extends Tracker {
                 net.minecraft.world.entity.player.Player.class,
                 BlockHitResult.class);
             this.rightClickable.add(oclass);
-        } catch (NoSuchMethodException ignored) {
+        } catch (Throwable ignored) {
+            // catching Throwable here, instead of just NoSuchMethodException,
+            // because some mods implement interfaces for mod compat, that don't need to be present and
+            // those throw a NoClassDefFoundError
         }
     }
 
