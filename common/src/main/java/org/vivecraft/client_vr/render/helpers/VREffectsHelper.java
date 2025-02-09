@@ -107,13 +107,23 @@ public class VREffectsHelper {
     }
 
     /**
+     * checks if the given entity is the active VR player and the camera entity
+     *
+     * @param entity Entity to check if it is the first person Player
+     * @return if the given entity is the active VR player and the camera entity
+     */
+    public static boolean isFirstPersonPlayer(Entity entity) {
+        return VRState.VR_RUNNING && entity == MC.player && entity == MC.getCameraEntity();
+    }
+
+    /**
      * checks if the given {@code entity} is the main player entity and if it should be rendered
      *
      * @param entity Entity to check
      * @return if the {@code entity} is the main player and is rendering in first person
      */
-    public static boolean isRenderingFirstPersonEntity(Entity entity) {
-        return VRState.VR_RUNNING && entity == MC.player && isFirstPersonEntityPass();
+    public static boolean isRenderingFirstPersonPlayer(Entity entity) {
+        return isFirstPersonPlayer(entity) && isFirstPersonEntityPass();
     }
 
     /**
@@ -122,8 +132,8 @@ public class VREffectsHelper {
      * @param renderState EntityRenderState to check
      * @return if the {@code renderState} belongs to the main player and is rendering in first person
      */
-    public static boolean isRenderingFirstPersonEntity(EntityRenderState renderState) {
-        return ((EntityRenderStateExtension) renderState).vivecraft$isMainPlayer() && isFirstPersonEntityPass();
+    public static boolean isRenderingFirstPersonPlayer(EntityRenderState renderState) {
+        return ((EntityRenderStateExtension) renderState).vivecraft$isFirstPersonPlayer() && isFirstPersonEntityPass();
     }
 
     /**

@@ -92,7 +92,9 @@ public class ClientNetworking {
     }
 
     public static void sendVRPlayerPositions(VRPlayer vrPlayer) {
-        if (!SERVER_WANTS_DATA || Minecraft.getInstance().getConnection() == null) {
+        if (!SERVER_WANTS_DATA || Minecraft.getInstance().getConnection() == null ||
+            Minecraft.getInstance().getCameraEntity() != Minecraft.getInstance().player)
+        {
             return;
         }
 

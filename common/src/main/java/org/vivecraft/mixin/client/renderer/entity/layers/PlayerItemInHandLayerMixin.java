@@ -14,6 +14,6 @@ public class PlayerItemInHandLayerMixin {
     private boolean vivecraft$noSpyglassInFirstPerson(
         boolean heldOnHead, @Local(argsOnly = true) PlayerRenderState renderState)
     {
-        return heldOnHead && !VREffectsHelper.isRenderingFirstPersonEntity(renderState);
+        return heldOnHead && !VREffectsHelper.isRenderingFirstPersonPlayer(renderState);
     }
 }

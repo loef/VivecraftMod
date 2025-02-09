@@ -26,7 +26,7 @@ public abstract class AccessoriesRenderLayerVRMixin<T extends LivingEntity, S ex
         boolean original, @Local(argsOnly = true) LivingEntityRenderState livingEntityRenderState,
         @Local AccessoriesContainer container)
     {
-        return original && (!VREffectsHelper.isRenderingFirstPersonEntity(livingEntityRenderState) ||
+        return original && (!VREffectsHelper.isRenderingFirstPersonPlayer(livingEntityRenderState) ||
             !(container.getSlotName().contains("head") || container.getSlotName().contains("face") ||
                 container.getSlotName().contains("hat")
             )

@@ -25,7 +25,7 @@ public abstract class ItemInHandLayerMixin extends RenderLayer {
         CallbackInfo ci, @Local(argsOnly = true) ArmedEntityRenderState renderState,
         @Local(argsOnly = true) PoseStack poseStack)
     {
-        if (VREffectsHelper.isRenderingFirstPersonEntity(renderState)) {
+        if (VREffectsHelper.isRenderingFirstPersonPlayer(renderState)) {
             // make the item scale equal in all directions
             poseStack.translate(0.0F, 0.65F, 0.0F);
             poseStack.scale(1F, ClientDataHolderVR.getInstance().vrSettings.playerModelArmsScale, 1f);

@@ -53,7 +53,7 @@ public class ArmedEntityRenderStateMixin {
         @Local(argsOnly = true) ArmedEntityRenderState renderState)
     {
         ItemStack itemStack = original.call(instance, arm);
-        if (VREffectsHelper.isRenderingFirstPersonEntity(renderState) &&
+        if (VREffectsHelper.isRenderingFirstPersonPlayer(renderState) &&
             // don't cancel climbing claws, unless menu hand
             (ClientDataHolderVR.getInstance().vrSettings.modelArmsMode != VRSettings.ModelArmsMode.COMPLETE ||
                 ClientDataHolderVR.getInstance().isMenuHand(arm) ||

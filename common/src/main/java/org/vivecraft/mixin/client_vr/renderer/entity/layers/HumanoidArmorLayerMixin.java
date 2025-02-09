@@ -33,7 +33,7 @@ public class HumanoidArmorLayerMixin {
     @Inject(method = {"renderArmorPiece*", "method_4169"}, at = @At("HEAD"), cancellable = true, remap = false)
     private void vivecraft$noHelmetInFirstPerson(CallbackInfo ci, @Local(argsOnly = true) EquipmentSlot slot) {
         if (slot == EquipmentSlot.HEAD &&
-            VREffectsHelper.isRenderingFirstPersonEntity(this.vivecraft$currentRenderState))
+            VREffectsHelper.isRenderingFirstPersonPlayer(this.vivecraft$currentRenderState))
         {
             ci.cancel();
         }
@@ -45,7 +45,7 @@ public class HumanoidArmorLayerMixin {
         @Local(argsOnly = true, ordinal = 0) HumanoidModel model)
     {
         if (slot == EquipmentSlot.CHEST &&
-            VREffectsHelper.isRenderingFirstPersonEntity(this.vivecraft$currentRenderState))
+            VREffectsHelper.isRenderingFirstPersonPlayer(this.vivecraft$currentRenderState))
         {
             VRSettings.ModelArmsMode mode = ClientDataHolderVR.getInstance().vrSettings.modelArmsMode;
 

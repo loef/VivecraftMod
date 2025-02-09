@@ -83,7 +83,7 @@ public class VRPlayerModel extends PlayerModel {
             return;
         }
 
-        boolean isMainPlayer = ((EntityRenderStateExtension) renderState).vivecraft$isMainPlayer();
+        boolean isMainPlayer = ((EntityRenderStateExtension) renderState).vivecraft$isFirstPersonPlayer();
 
         if (isMainPlayer) {
             if (ClientDataHolderVR.getInstance().currentPass == RenderPass.CAMERA &&
