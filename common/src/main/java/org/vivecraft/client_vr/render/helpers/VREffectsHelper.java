@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.FogParameters;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LevelTargetBundle;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -22,6 +23,7 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.Profiler;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -32,6 +34,7 @@ import org.joml.*;
 import org.lwjgl.opengl.GL11C;
 import org.vivecraft.client.VivecraftVRMod;
 import org.vivecraft.client.Xevents;
+import org.vivecraft.client.extensions.EntityRenderStateExtension;
 import org.vivecraft.client.gui.VivecraftClickEvent;
 import org.vivecraft.client.gui.settings.GuiOtherHUDSettings;
 import org.vivecraft.client.gui.settings.GuiRenderOpticsSettings;
@@ -39,6 +42,7 @@ import org.vivecraft.client.utils.ClientUtils;
 import org.vivecraft.client.utils.StencilHelper;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.MethodHolder;
+import org.vivecraft.client_vr.VRState;
 import org.vivecraft.client_vr.extensions.GameRendererExtension;
 import org.vivecraft.client_vr.extensions.LevelTargetBundleExtension;
 import org.vivecraft.client_vr.extensions.PlayerExtension;
@@ -100,6 +104,36 @@ public class VREffectsHelper {
             Optional<BlockPos> optional = stream.findFirst();
             return optional.map(blockPos -> Triple.of(1.0F, MC.level.getBlockState(blockPos), blockPos)).orElse(null);
         }
+    }
+
+    /**
+     * checks if the given {@code entity} is the main player entity and if it should be rendered
+     *
+     * @param entity Entity to check
+     * @return if the {@code entity} is the main player and is rendering in first person
+     */
+    public static boolean isRenderingFirstPersonEntity(Entity entity) {
+        return VRState.VR_RUNNING && entity == MC.player && isFirstPersonEntityPass();
+    }
+
+    /**
+     * checks if the given {@code renderState} is from the main player entity and if it should be rendered
+     *
+     * @param renderState EntityRenderState to check
+     * @return if the {@code renderState} belongs to the main player and is rendering in first person
+     */
+    public static boolean isRenderingFirstPersonEntity(EntityRenderState renderState) {
+        return ((EntityRenderStateExtension) renderState).vivecraft$isMainPlayer() && isFirstPersonEntityPass();
+    }
+
+    /**
+     * @return if the current pass is first person and should render the main player entity
+     */
+    public static boolean isFirstPersonEntityPass() {
+        return DATA_HOLDER.vrSettings.shouldRenderSelf &&
+            RenderPass.isFirstPerson(DATA_HOLDER.currentPass) &&
+            !ShadersHelper.isRenderingShadows() &&
+            !(ImmersivePortalsHelper.isLoaded() && ImmersivePortalsHelper.isRenderingPortal());
     }
 
     /**
@@ -554,7 +588,6 @@ public class VREffectsHelper {
 
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
             RenderSystem.defaultBlendFunc();
-
         } finally {
             // reset stacks
             poseStack.popMatrix();

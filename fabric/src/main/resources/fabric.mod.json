@@ -32,6 +32,7 @@
   "mixins": [
     "vivecraft.mixins.json",
     "vivecraft.fabric.mixins.json",
+    "vivecraft.accessories.mixins.json",
     "vivecraft.alexmobs.mixins.json",
     "vivecraft.bedrockify.mixins.json",
     "vivecraft.blur.mixins.json",

@@ -40,6 +40,8 @@ config = "vivecraft.mixins.json"
 config = "vivecraft.neoforge.mixins.json"
 
 [[mixins]]
+config = "vivecraft.accessories.mixins.json"
+[[mixins]]
 config = "vivecraft.alexmobs.mixins.json"
 [[mixins]]
 config = "vivecraft.bedrockify.mixins.json"

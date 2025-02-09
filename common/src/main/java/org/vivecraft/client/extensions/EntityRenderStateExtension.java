@@ -14,7 +14,7 @@ public interface EntityRenderStateExtension {
     void vivecraft$setRotInfo(ClientVRPlayers.RotInfo rotInfo);
 
     /**
-     * @return if the entity, this state is for, is the main player
+     * @return if the entity, this state is for, is the main player and in VR
      */
     boolean vivecraft$isMainPlayer();
 
