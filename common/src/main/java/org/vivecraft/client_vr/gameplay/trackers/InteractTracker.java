@@ -260,16 +260,14 @@ public class InteractTracker extends Tracker {
 
     private void addIfClassHasMethod(String name, Class<?> oclass) {
         try {
-            if (oclass.getMethod(name,
+            oclass.getDeclaredMethod(name,
                 BlockState.class,
                 net.minecraft.world.level.Level.class,
                 BlockPos.class,
                 net.minecraft.world.entity.player.Player.class,
                 InteractionHand.class,
-                BlockHitResult.class).getDeclaringClass() == oclass)
-            {
-                this.rightClickable.add(oclass);
-            }
+                BlockHitResult.class);
+            this.rightClickable.add(oclass);
         } catch (NoSuchMethodException ignored) {
         }
     }
