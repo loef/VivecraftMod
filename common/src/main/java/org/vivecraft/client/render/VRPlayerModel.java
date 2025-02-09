@@ -218,7 +218,8 @@ public class VRPlayerModel extends PlayerModel {
         } else if (noLowerBodyAnimation) {
             // with only arms simply rotate the body in place
             model.body.setRotation(
-                Mth.PI * Math.max(0F, model.body.y / 22F) * (model instanceof VRPlayerModel_WithArmsLegs ? 0.5F : 1F), 0F, 0F);
+                Mth.PI * Math.max(0F, model.body.y / 22F) * (model instanceof VRPlayerModel_WithArmsLegs ? 0.5F : 1F),
+                0F, 0F);
             if (laying) {
                 float bodyXRot;
                 if (swimming) {

@@ -32,7 +32,9 @@ public class HumanoidArmorLayerMixin {
     // no remapping, because of a loom quirk and forge/neoforge override
     @Inject(method = {"renderArmorPiece*", "method_4169"}, at = @At("HEAD"), cancellable = true, remap = false)
     private void vivecraft$noHelmetInFirstPerson(CallbackInfo ci, @Local(argsOnly = true) EquipmentSlot slot) {
-        if (slot == EquipmentSlot.HEAD && VREffectsHelper.isRenderingFirstPersonEntity(this.vivecraft$currentRenderState)) {
+        if (slot == EquipmentSlot.HEAD &&
+            VREffectsHelper.isRenderingFirstPersonEntity(this.vivecraft$currentRenderState))
+        {
             ci.cancel();
         }
     }
@@ -42,7 +44,9 @@ public class HumanoidArmorLayerMixin {
         CallbackInfo ci, @Local(argsOnly = true) EquipmentSlot slot,
         @Local(argsOnly = true, ordinal = 0) HumanoidModel model)
     {
-        if (slot == EquipmentSlot.CHEST && VREffectsHelper.isRenderingFirstPersonEntity(this.vivecraft$currentRenderState)) {
+        if (slot == EquipmentSlot.CHEST &&
+            VREffectsHelper.isRenderingFirstPersonEntity(this.vivecraft$currentRenderState))
+        {
             VRSettings.ModelArmsMode mode = ClientDataHolderVR.getInstance().vrSettings.modelArmsMode;
 
             // hide the arm armor, when not showing the arms in first person

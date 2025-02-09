@@ -29,8 +29,8 @@ import org.vivecraft.client_vr.Vector3fHistory;
 import org.vivecraft.client_vr.provider.ControllerType;
 import org.vivecraft.client_vr.provider.MCVR;
 import org.vivecraft.client_vr.settings.VRSettings;
-import org.vivecraft.common.network.FBTMode;
 import org.vivecraft.common.network.BodyPart;
+import org.vivecraft.common.network.FBTMode;
 import org.vivecraft.common.utils.MathUtils;
 import org.vivecraft.data.BlockTags;
 import org.vivecraft.data.ItemTags;
@@ -461,13 +461,12 @@ public class SwingTracker extends Tracker {
                 ))
             {
                 return true;
-            } else if (direction.x < -t &&
-                ((d == Direction.WEST && !open) ||
-                    (d == Direction.SOUTH && open && hinge == DoorHingeSide.LEFT) ||
-                    (d == Direction.NORTH && open && hinge == DoorHingeSide.RIGHT)
-                ))
-            {
-                return true;
+            } else {
+                return direction.x < -t &&
+                    ((d == Direction.WEST && !open) ||
+                        (d == Direction.SOUTH && open && hinge == DoorHingeSide.LEFT) ||
+                        (d == Direction.NORTH && open && hinge == DoorHingeSide.RIGHT)
+                    );
             }
         } else if (state.is(net.minecraft.tags.BlockTags.TRAPDOORS) || state.getBlock() instanceof TrapDoorBlock) {
             Direction d = state.getValue(TrapDoorBlock.FACING);

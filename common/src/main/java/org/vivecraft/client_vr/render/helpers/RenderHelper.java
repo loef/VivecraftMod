@@ -35,7 +35,6 @@ import org.vivecraft.client_vr.render.VRShaders;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.common.utils.MathUtils;
 import org.vivecraft.mixin.client.blaze3d.RenderSystemAccessor;
-import org.vivecraft.mod_compat_vr.shaders.ShadersHelper;
 
 public class RenderHelper {
 

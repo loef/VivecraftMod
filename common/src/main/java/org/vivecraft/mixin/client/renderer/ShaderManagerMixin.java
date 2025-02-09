@@ -24,7 +24,7 @@ public class ShaderManagerMixin {
             // let vrtransparency fail, some gpus don't support the 18 samplers we need
             VRSettings.LOGGER.error(
                 "Vivecraft: Failed to compile '{}' fabulous graphics will not be available in VR.",
-                VRShaders.VR_TRANSPARENCY_SHADER_ID, (ShaderManager.CompilationException) exception);
+                VRShaders.VR_TRANSPARENCY_SHADER_ID, exception);
             compilationCache.programs.put((ShaderProgram) program, Optional.empty());
             return null;
         }
