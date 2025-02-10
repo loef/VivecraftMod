@@ -423,7 +423,7 @@
   "vivecraft.messages.menuworldexportclientwarning": "WARNUNG: Speichern der Menüwelt mithilfe einer Clientwelt. Daten können unvollständig sein. Es wird empfohlen, Menüwelten im Einzelspielermodus zu speichern.",
   "vivecraft.messages.teleportdisabled": "Bewegungseinschränkung aktiviert (Teleportation nicht erlaubt)",
   "vivecraft.messages.teleportenabled": "Bewegungseinschränkung deaktiviert (Teleportation erlaubt)",
-  "vivecraft.messages.walkupblocks": "Blöcke hochlaufen (RCTRL+B): %s",
+  "vivecraft.messages.walkupblocks": "Blöcke hochlaufen: %s",
   "vivecraft.messages.showaim": "Ziel zeigen (RCTRL+RSHIFT): aktiviert",
   "vivecraft.messages.playerinertia": "Spieler Bewegungsträgheit (RCTRL+I): %s",
   "vivecraft.messages.movementmodeswitch": "Bewegungsmodus gewechselt zu: %s",

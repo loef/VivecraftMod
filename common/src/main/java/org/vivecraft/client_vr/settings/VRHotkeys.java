@@ -59,14 +59,6 @@ public class VRHotkeys {
                         gotKey = true;
                     }
 
-                    // Walk up blocks
-                    if (key == GLFW.GLFW_KEY_B) {
-                        dataHolder.vrSettings.walkUpBlocks = !dataHolder.vrSettings.walkUpBlocks;
-                        minecraft.gui.getChat().addMessage(Component.translatable("vivecraft.messages.walkupblocks",
-                            dataHolder.vrSettings.walkUpBlocks ? LangHelper.getYes() : LangHelper.getNo()));
-                        gotKey = true;
-                    }
-
                     // Player inertia
                     if (key == GLFW.GLFW_KEY_I) {
                         dataHolder.vrSettings.inertiaFactor = dataHolder.vrSettings.inertiaFactor.getNext();

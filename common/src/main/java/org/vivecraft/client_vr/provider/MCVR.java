@@ -17,6 +17,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.joml.*;
 import org.lwjgl.glfw.GLFW;
 import org.vivecraft.client.VivecraftVRMod;
+import org.vivecraft.client.utils.LangHelper;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.QuaternionfHistory;
 import org.vivecraft.client_vr.VRData;
@@ -1094,6 +1095,13 @@ public abstract class MCVR {
         {
             this.dh.cameraTracker.stopMoving();
             this.dh.grabScreenShot = true;
+        }
+
+        // Walk up blocks
+        if (MOD.keyToggleWalkUpBlocks.consumeClick()) {
+            this.dh.vrSettings.walkUpBlocks = !this.dh.vrSettings.walkUpBlocks;
+            this.mc.gui.getChat().addMessage(Component.translatable("vivecraft.messages.walkupblocks",
+                Component.translatable(this.dh.vrSettings.walkUpBlocks ? LangHelper.ON_KEY : LangHelper.OFF_KEY)));
         }
 
         GuiHandler.processBindingsGui();
