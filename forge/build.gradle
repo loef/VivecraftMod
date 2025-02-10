@@ -32,6 +32,7 @@ loom {
         mixinConfig "vivecraft.resolutioncontrol.mixins.json"
         mixinConfig "vivecraft.sereneseasons.mixins.json"
         mixinConfig "vivecraft.sodium.mixins.json"
+        mixinConfig "vivecraft.trinkets.mixins.json"
     }
 }
 

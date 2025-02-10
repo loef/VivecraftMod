@@ -52,6 +52,8 @@ config = "vivecraft.blur.mixins.json"
 [[mixins]]
 config = "vivecraft.cataclysm.mixins.json"
 [[mixins]]
+config = "vivecraft.curios.mixins.json"
+[[mixins]]
 config = "vivecraft.dynamicfps.mixins.json"
 [[mixins]]
 config = "vivecraft.emf.mixins.json"
@@ -71,3 +73,5 @@ config = "vivecraft.resolutioncontrol.mixins.json"
 config = "vivecraft.sereneseasons.mixins.json"
 [[mixins]]
 config = "vivecraft.sodium.mixins.json"
+[[mixins]]
+config = "vivecraft.trinkets.mixins.json"
