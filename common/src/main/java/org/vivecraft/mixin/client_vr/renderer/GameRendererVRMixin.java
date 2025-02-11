@@ -263,11 +263,6 @@ public abstract class GameRendererVRMixin
         }
     }
 
-    @ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;isWindowActive()Z"))
-    private boolean vivecraft$noPauseOnFocusLoss(boolean windowActive) {
-        return windowActive || VRState.VR_RUNNING;
-    }
-
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;renderLevel(Lnet/minecraft/client/DeltaTracker;)V"))
     private void vivecraft$renderFaceOverlay(
         GameRenderer instance, DeltaTracker deltaTracker, Operation<Void> original)

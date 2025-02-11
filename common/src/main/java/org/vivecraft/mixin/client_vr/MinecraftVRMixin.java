@@ -1,6 +1,7 @@
 package org.vivecraft.mixin.client_vr;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -721,6 +722,11 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
                 this.screen.resize(Minecraft.getInstance(), GuiHandler.SCALED_WIDTH, GuiHandler.SCALED_HEIGHT);
             }
         }
+    }
+
+    @ModifyReturnValue(method = "isWindowActive", at = @At(value = "RETURN"))
+    private boolean vivecraft$windowAlwaysActive(boolean windowActive) {
+        return windowActive || VRState.VR_RUNNING;
     }
 
     /**

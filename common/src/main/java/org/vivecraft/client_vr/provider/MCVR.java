@@ -679,67 +679,63 @@ public abstract class MCVR {
                 this.mc.mouseHandler.isMouseGrabbed())
             {
                 Matrix4f temp = new Matrix4f();
-                if (this.mc.isWindowActive()) {
-                    final float hRange = 110.0F;
-                    final float vRange = 180.0F;
+                final float hRange = 110.0F;
+                final float vRange = 180.0F;
 
-                    int screenWidth = this.mc.getWindow().getScreenWidth();
-                    int screenHeight = this.mc.getWindow().getScreenHeight();
+                int screenWidth = this.mc.getWindow().getScreenWidth();
+                int screenHeight = this.mc.getWindow().getScreenHeight();
 
-                    if (screenHeight % 2 != 0) {
-                        // fix drifting vertical mouse.
-                        screenHeight--;
-                    }
-
-                    float hPos = (float) this.mc.mouseHandler.xpos() / (float) screenWidth * hRange - (hRange * 0.5F);
-                    float vPos = (float) -this.mc.mouseHandler.ypos() / (float) screenHeight * vRange + (vRange * 0.5F);
-
-                    float rotStart = this.dh.vrSettings.keyholeX;
-                    float rotSpeed = 20.0F * this.dh.vrSettings.xSensitivity;
-                    int leftEdge = (int) ((-rotStart + hRange * 0.5F) * (float) screenWidth / hRange) + 1;
-                    int rightEdge = (int) ((rotStart + hRange * 0.5F) * (float) screenWidth / hRange) - 1;
-
-                    // Scaled 0...1 from rotStart to FOV edge
-                    float rotMul = (Math.abs(hPos) - rotStart) / (hRange * 0.5F - rotStart);
-                    double xPos = this.mc.mouseHandler.xpos();
-
-                    Vector3f hmdDir = this.getHmdVector();
-
-                    if (hPos < -rotStart) {
-                        this.seatedRot += rotSpeed * rotMul;
-                        this.seatedRot %= 360.0F;
-                        this.hmdForwardYaw = (float) Math.toDegrees(Math.atan2(-hmdDir.x, hmdDir.z));
-                        xPos = leftEdge;
-                        hPos = -rotStart;
-                    } else if (hPos > rotStart) {
-                        this.seatedRot -= rotSpeed * rotMul;
-                        this.seatedRot %= 360.0F;
-                        this.hmdForwardYaw = (float) Math.toDegrees(Math.atan2(-hmdDir.x, hmdDir.z));
-                        xPos = rightEdge;
-                        hPos = rotStart;
-                    }
-
-                    float ySpeed = 0.5F * this.dh.vrSettings.ySensitivity;
-
-                    this.aimPitch = Mth.clamp(this.aimPitch + vPos * ySpeed, -89.9F, 89.9F);
-
-                    double screenX = xPos *
-                        (((WindowExtension) (Object) this.mc.getWindow()).vivecraft$getActualScreenWidth() /
-                            (double) screenWidth
-                        );
-                    double screenY = (screenHeight * 0.5F) *
-                        (((WindowExtension) (Object) this.mc.getWindow()).vivecraft$getActualScreenHeight() /
-                            (double) this.mc.getWindow().getScreenHeight()
-                        );
-
-                    InputSimulator.setMousePos(screenX, screenY);
-                    GLFW.glfwSetCursorPos(this.mc.getWindow().getWindow(), screenX, screenY);
-
-                    temp.rotationY(Mth.DEG_TO_RAD * (-180.0F - hPos - this.hmdForwardYaw));
-                    temp.rotateX(Mth.DEG_TO_RAD * this.aimPitch);
-                } else {
-                    this.aimPitch = 0.0F;
+                if (screenHeight % 2 != 0) {
+                    // fix drifting vertical mouse.
+                    screenHeight--;
                 }
+
+                float hPos = (float) this.mc.mouseHandler.xpos() / (float) screenWidth * hRange - (hRange * 0.5F);
+                float vPos = (float) -this.mc.mouseHandler.ypos() / (float) screenHeight * vRange + (vRange * 0.5F);
+
+                float rotStart = this.dh.vrSettings.keyholeX;
+                float rotSpeed = 20.0F * this.dh.vrSettings.xSensitivity;
+                int leftEdge = (int) ((-rotStart + hRange * 0.5F) * (float) screenWidth / hRange) + 1;
+                int rightEdge = (int) ((rotStart + hRange * 0.5F) * (float) screenWidth / hRange) - 1;
+
+                // Scaled 0...1 from rotStart to FOV edge
+                float rotMul = (Math.abs(hPos) - rotStart) / (hRange * 0.5F - rotStart);
+                double xPos = this.mc.mouseHandler.xpos();
+
+                Vector3f hmdDir = this.getHmdVector();
+
+                if (hPos < -rotStart) {
+                    this.seatedRot += rotSpeed * rotMul;
+                    this.seatedRot %= 360.0F;
+                    this.hmdForwardYaw = (float) Math.toDegrees(Math.atan2(-hmdDir.x, hmdDir.z));
+                    xPos = leftEdge;
+                    hPos = -rotStart;
+                } else if (hPos > rotStart) {
+                    this.seatedRot -= rotSpeed * rotMul;
+                    this.seatedRot %= 360.0F;
+                    this.hmdForwardYaw = (float) Math.toDegrees(Math.atan2(-hmdDir.x, hmdDir.z));
+                    xPos = rightEdge;
+                    hPos = rotStart;
+                }
+
+                float ySpeed = 0.5F * this.dh.vrSettings.ySensitivity;
+
+                this.aimPitch = Mth.clamp(this.aimPitch + vPos * ySpeed, -89.9F, 89.9F);
+
+                double screenX = xPos *
+                    (((WindowExtension) (Object) this.mc.getWindow()).vivecraft$getActualScreenWidth() /
+                        (double) screenWidth
+                    );
+                double screenY = (screenHeight * 0.5F) *
+                    (((WindowExtension) (Object) this.mc.getWindow()).vivecraft$getActualScreenHeight() /
+                        (double) this.mc.getWindow().getScreenHeight()
+                    );
+
+                InputSimulator.setMousePos(screenX, screenY);
+                GLFW.glfwSetCursorPos(this.mc.getWindow().getWindow(), screenX, screenY);
+
+                temp.rotationY(Mth.DEG_TO_RAD * (-180.0F - hPos - this.hmdForwardYaw));
+                temp.rotateX(Mth.DEG_TO_RAD * this.aimPitch);
 
                 this.handRotation[c].set(this.controllerRotation[c].set3x3(temp));
             } else if (c == MAIN_CONTROLLER) {
