@@ -37,6 +37,7 @@ import org.vivecraft.data.ItemTags;
 import org.vivecraft.mod_compat_vr.bettercombat.BetterCombatHelper;
 import org.vivecraft.mod_compat_vr.epicfight.EpicFightHelper;
 
+import java.util.Collections;
 import java.util.List;
 
 public class SwingTracker extends Tracker {
@@ -45,6 +46,9 @@ public class SwingTracker extends Tracker {
 
     private final Vec3[] lastWeaponEndAir = new Vec3[]{Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, Vec3.ZERO};
     private final boolean[] lastWeaponSolid = new boolean[4];
+
+    private final List<Entity>[] lastHitEntities = new List[]{Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList()};
+
     public final Vec3[] miningPoint = new Vec3[4];
     public final Vec3[] attackingPoint = new Vec3[4];
     public final Vector3fHistory[] tipHistory = new Vector3fHistory[]{new Vector3fHistory(), new Vector3fHistory(), new Vector3fHistory(), new Vector3fHistory()};
@@ -231,7 +235,10 @@ public class SwingTracker extends Tracker {
                 }
 
                 for (Entity entity : mobs) {
-                    if (entity.isPickable() && entity != this.mc.getCameraEntity().getVehicle()) {
+                    if (entity.isPickable() &&
+                        entity != this.mc.getCameraEntity().getVehicle() && // don't hit ridden entity
+                        !this.lastHitEntities[i].contains(entity)) // don't hit entities multiple times per swing
+                    {
                         if (entityAct) {
                             // Minecraft.getInstance().physicalGuiManager.preClickAction();
 
@@ -249,6 +256,14 @@ public class SwingTracker extends Tracker {
                         inAnEntity = true;
                     }
                 }
+
+                if (speed > speedTreshhold) {
+                    this.lastHitEntities[i] = mobs;
+                } else {
+                    // since we couldn't act, we also didn't hit anything
+                    this.lastHitEntities[i] = Collections.emptyList();
+                }
+
                 // no hitting while climbey climbing
                 if (isHand && this.dh.climbTracker.isClimbeyClimb() && (!isTool ||
                     (c == 0 && VivecraftVRMod.INSTANCE.keyClimbeyGrab.isDown(ControllerType.RIGHT)) ||
