@@ -146,7 +146,7 @@ public abstract class GameRendererVRMixin
 
             // set the entity position and view to the controller
             this.vivecraft$cacheRVEPos(this.minecraft.getCameraEntity());
-            this.vivecraft$setupRVEAtDevice(vivecraft$DATA_HOLDER.vrPlayer.vrdata_world_render.getController(0));
+            this.vivecraft$setupRVEAtDevice(vivecraft$DATA_HOLDER.vrPlayer.vrdata_world_render.getAim());
         }
 
         // call the vanilla method
@@ -163,7 +163,7 @@ public abstract class GameRendererVRMixin
         if (VRState.VR_RUNNING) {
             // get the end of the reach point here, to have the correct reach distance
             this.vivecraft$crossVec = vivecraft$DATA_HOLDER.vrPlayer.AimedPointAtDistance(
-                vivecraft$DATA_HOLDER.vrPlayer.vrdata_world_render, 0, hitDistance);
+                vivecraft$DATA_HOLDER.vrPlayer.vrdata_world_render.getAim(), hitDistance);
         }
         return hitDistance;
     }

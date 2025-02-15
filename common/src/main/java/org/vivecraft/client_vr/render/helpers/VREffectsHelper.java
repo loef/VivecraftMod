@@ -1264,7 +1264,7 @@ public class VREffectsHelper {
 
         Vec3 crosshairRenderPos = ((GameRendererExtension) MC.gameRenderer).vivecraft$getCrossVec();
         Vec3 crossDistance = crosshairRenderPos.subtract(
-            DATA_HOLDER.vrPlayer.vrdata_world_render.getController(0).getPosition());
+            DATA_HOLDER.vrPlayer.vrdata_world_render.getAim().getPosition());
 
         // scooch closer a bit for light calc.
         crosshairRenderPos = crosshairRenderPos.add(crossDistance.normalize().scale(-0.01D));
@@ -1281,12 +1281,12 @@ public class VREffectsHelper {
             switch (blockhitresult.getDirection()) {
                 case DOWN -> {
                     modelView.rotate(
-                        Axis.YP.rotationDegrees(DATA_HOLDER.vrPlayer.vrdata_world_render.getController(0).getYaw()));
+                        Axis.YP.rotationDegrees(DATA_HOLDER.vrPlayer.vrdata_world_render.getAim().getYaw()));
                     modelView.rotate(Axis.XP.rotationDegrees(-90.0F));
                 }
                 case UP -> {
                     modelView.rotate(
-                        Axis.YP.rotationDegrees(-DATA_HOLDER.vrPlayer.vrdata_world_render.getController(0).getYaw()));
+                        Axis.YP.rotationDegrees(-DATA_HOLDER.vrPlayer.vrdata_world_render.getAim().getYaw()));
                     modelView.rotate(Axis.XP.rotationDegrees(90.0F));
                 }
                 case WEST -> modelView.rotate(Axis.YP.rotationDegrees(90.0F));
@@ -1296,9 +1296,9 @@ public class VREffectsHelper {
         } else {
             // if there is no block hit, make it face the controller
             modelView.rotate(
-                Axis.YP.rotationDegrees(-DATA_HOLDER.vrPlayer.vrdata_world_render.getController(0).getYaw()));
+                Axis.YP.rotationDegrees(-DATA_HOLDER.vrPlayer.vrdata_world_render.getAim().getYaw()));
             modelView.rotate(
-                Axis.XP.rotationDegrees(-DATA_HOLDER.vrPlayer.vrdata_world_render.getController(0).getPitch()));
+                Axis.XP.rotationDegrees(-DATA_HOLDER.vrPlayer.vrdata_world_render.getAim().getPitch()));
         }
 
         float scale = (float) (0.125F * DATA_HOLDER.vrSettings.crosshairScale *

@@ -734,10 +734,12 @@ public abstract class MCVR {
                 InputSimulator.setMousePos(screenX, screenY);
                 GLFW.glfwSetCursorPos(this.mc.getWindow().getWindow(), screenX, screenY);
 
-                temp.rotationY(Mth.DEG_TO_RAD * (-180.0F - hPos - this.hmdForwardYaw));
-                temp.rotateX(Mth.DEG_TO_RAD * this.aimPitch);
+                if (this.dh.vrSettings.aimDevice == VRSettings.AimDevice.CONTROLLER) {
+                    temp.rotationY(Mth.DEG_TO_RAD * (-180.0F - hPos - this.hmdForwardYaw));
+                    temp.rotateX(Mth.DEG_TO_RAD * this.aimPitch);
 
-                this.handRotation[c].set(this.controllerRotation[c].set3x3(temp));
+                    this.handRotation[c].set(this.controllerRotation[c].set3x3(temp));
+                }
             } else if (c == MAIN_CONTROLLER) {
                 this.aimPitch = 0.0F;
             }
