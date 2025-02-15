@@ -30,6 +30,7 @@ import org.vivecraft.client_vr.settings.VRSettings;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.*;
@@ -615,7 +616,7 @@ public class MCOpenXR extends MCVR {
             // get needed extensions
             String graphicsExtension = this.device.getGraphicsExtension();
             boolean missingGraphics = true;
-            PointerBuffer extensions = stack.callocPointer(4);
+            PointerBuffer extensions = stack.callocPointer(5);
             while (properties.hasRemaining()) {
                 XrExtensionProperties prop = properties.get();
                 String extensionName = prop.extensionNameString();
@@ -640,6 +641,12 @@ public class MCOpenXR extends MCVR {
                 {
                     extensions.put(memAddress(stackUTF8(
                         BDControllerInteraction.XR_BD_CONTROLLER_INTERACTION_EXTENSION_NAME)));
+                }
+                if (extensionName.equals(
+                    FBDisplayRefreshRate.XR_FB_DISPLAY_REFRESH_RATE_EXTENSION_NAME))
+                {
+                    extensions.put(memAddress(stackUTF8(
+                        FBDisplayRefreshRate.XR_FB_DISPLAY_REFRESH_RATE_EXTENSION_NAME)));
                 }
             }
 
@@ -864,6 +871,19 @@ public class MCOpenXR extends MCVR {
         }
     }
 
+    private void initDisplayRefreshRate() {
+        if (this.session.getCapabilities().XR_FB_display_refresh_rate) {
+            try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer refreshRateCount = stack.callocInt(1);
+            FBDisplayRefreshRate.xrEnumerateDisplayRefreshRatesFB(this.session, refreshRateCount, null);
+            FloatBuffer refreshRateBuffer = stack.callocFloat(refreshRateCount.get(0));
+            FBDisplayRefreshRate.xrEnumerateDisplayRefreshRatesFB(this.session, refreshRateCount, refreshRateBuffer);
+            refreshRateBuffer.rewind();
+            FBDisplayRefreshRate.xrRequestDisplayRefreshRateFB(this.session, refreshRateBuffer.get(refreshRateCount.get(0) -1));
+            }
+        }
+    }
+
     /**
      * Creates an array of XrStructs with their types preset to {@code type}
      */
@@ -887,6 +907,7 @@ public class MCOpenXR extends MCVR {
         this.loadDefaultBindings();
         //this.installApplicationManifest(false);
         this.inputInitialized = true;
+        this.initDisplayRefreshRate();
     }
 
     @Override
