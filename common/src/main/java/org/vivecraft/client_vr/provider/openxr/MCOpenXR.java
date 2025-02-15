@@ -872,13 +872,15 @@ public class MCOpenXR extends MCVR {
     }
 
     private void initDisplayRefreshRate() {
-        try (MemoryStack stack = MemoryStack.stackPush()) {
+        if (this.session.getCapabilities().XR_FB_display_refresh_rate) {
+            try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer refreshRateCount = stack.callocInt(1);
-            FBDisplayRefreshRate.xrEnumerateDisplayRefreshRatesFB(session, refreshRateCount, null);
+            FBDisplayRefreshRate.xrEnumerateDisplayRefreshRatesFB(this.session, refreshRateCount, null);
             FloatBuffer refreshRateBuffer = stack.callocFloat(refreshRateCount.get(0));
-            FBDisplayRefreshRate.xrEnumerateDisplayRefreshRatesFB(session, refreshRateCount, refreshRateBuffer);
+            FBDisplayRefreshRate.xrEnumerateDisplayRefreshRatesFB(this.session, refreshRateCount, refreshRateBuffer);
             refreshRateBuffer.rewind();
-            FBDisplayRefreshRate.xrRequestDisplayRefreshRateFB(session, refreshRateBuffer.get(refreshRateCount.get(0) -1));
+            FBDisplayRefreshRate.xrRequestDisplayRefreshRateFB(this.session, refreshRateBuffer.get(refreshRateCount.get(0) -1));
+            }
         }
     }
 
