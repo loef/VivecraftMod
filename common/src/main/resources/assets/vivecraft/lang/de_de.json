@@ -615,6 +615,8 @@
   "vivecraft.messages.fbtcalibration.unlabeledTrackersConfirm": "§6Unmarkierte Tracker benutzt!\nKontrolliere dass die Tracker richtig zugewiesen wurden, bevor du akzeptierst!",
   "vivecraft.messages.fbtcalibrationsuccess": "FBT erfolgreich kalibriert.",
   "vivecraft.messages.calibratefbtchat": "FBT Tracker erkannt, aber nicht kalibriert. Um sie zu benutzen, kalibriere sie im Pause Menü.",
+  "vivecraft.messages.steamvrnotfound": "SteamVR konnte nicht gefunden werden, vergewissere dich, dass es installiert ist.",
+  "vivecraft.messages.steamvrrunningflatpak": "Du scheinst Minecraft mit einem Launcher zu verwenden der mittels Flatpak installiert ist. Wegen der Flatpak Isolierung können diese nicht mit SteamVR kommunizieren, also versuche auf einen Launcher zu wechseln der ohne Flatpak installiert ist.",
 
   "vivecraft.messages.tracker.waist": "Taille",
   "vivecraft.messages.tracker.rightFoot": "Rechter Fuß",
