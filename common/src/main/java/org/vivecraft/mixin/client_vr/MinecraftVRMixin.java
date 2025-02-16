@@ -51,8 +51,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.vivecraft.client.ClientVRPlayers;
 import org.vivecraft.client.VivecraftVRMod;
 import org.vivecraft.client.gui.VivecraftClickEvent;
+import org.vivecraft.client.gui.screens.ChangeableParentScreen;
 import org.vivecraft.client.gui.screens.ErrorScreen;
-import org.vivecraft.client.gui.screens.GarbageCollectorScreen;
 import org.vivecraft.client.gui.screens.UpdateScreen;
 import org.vivecraft.client.network.ClientNetworking;
 import org.vivecraft.client.utils.TextUtils;
@@ -161,15 +161,19 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
     @Inject(method = "onGameLoadFinished", at = @At("TAIL"))
     private void vivecraft$showGarbageCollectorScreen(CallbackInfo ci) {
         // set the Garbage collector screen here, when it got reset after loading, but don't set it when using quickplay, because it would be removed after loading has finished
-        if (VRState.VR_INITIALIZED && !ClientDataHolderVR.getInstance().incorrectGarbageCollector.isEmpty() &&
+        if (ClientDataHolderVR.getInstance().cachedScreen != null &&
             !(this.screen instanceof LevelLoadingScreen ||
                 this.screen instanceof ReceivingLevelScreen ||
-                this.screen instanceof ConnectScreen ||
-                this.screen instanceof GarbageCollectorScreen
+                this.screen instanceof ConnectScreen
             ))
         {
-            setScreen(new GarbageCollectorScreen(ClientDataHolderVR.getInstance().incorrectGarbageCollector));
-            ClientDataHolderVR.getInstance().incorrectGarbageCollector = "";
+            if (this.screen.getClass() != ClientDataHolderVR.getInstance().cachedScreen.getClass()) {
+                if (ClientDataHolderVR.getInstance().cachedScreen instanceof ChangeableParentScreen child) {
+                    child.setParent(this.screen);
+                }
+                setScreen(ClientDataHolderVR.getInstance().cachedScreen);
+            }
+            ClientDataHolderVR.getInstance().cachedScreen = null;
         }
     }
 
@@ -442,19 +446,22 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
                         .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                             Component.translatable("vivecraft.messages.click")))));
             }
+
+            // cached screen screen
+            if (ClientDataHolderVR.getInstance().cachedScreen != null) {
+                if (this.screen.getClass() != ClientDataHolderVR.getInstance().cachedScreen.getClass()) {
+                    // set cached screens here, in case Quickplay is used, this shouldn't be triggered in other cases, since the cached screen gets cleared if it's the same screen
+                    if (ClientDataHolderVR.getInstance().cachedScreen instanceof ChangeableParentScreen child) {
+                        child.setParent(this.screen);
+                    }
+                    setScreen(ClientDataHolderVR.getInstance().cachedScreen);
+                }
+                ClientDataHolderVR.getInstance().cachedScreen = null;
+            }
         }
 
         // VR enabled only chat notifications
         if (VRState.VR_INITIALIZED && this.level != null && ClientDataHolderVR.getInstance().vrPlayer != null) {
-            // garbage collector screen
-            if (!ClientDataHolderVR.getInstance().incorrectGarbageCollector.isEmpty()) {
-                if (!(this.screen instanceof GarbageCollectorScreen)) {
-                    // set the Garbage collector screen here, quickplay is used, this shouldn't be triggered in other cases, since the GarbageCollectorScreen resets the string on closing
-                    Minecraft.getInstance().setScreen(
-                        new GarbageCollectorScreen(ClientDataHolderVR.getInstance().incorrectGarbageCollector));
-                }
-                ClientDataHolderVR.getInstance().incorrectGarbageCollector = "";
-            }
             // server warnings
             if (ClientDataHolderVR.getInstance().vrPlayer.chatWarningTimer >= 0 &&
                 --ClientDataHolderVR.getInstance().vrPlayer.chatWarningTimer == 0)
