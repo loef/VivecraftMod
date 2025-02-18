@@ -587,7 +587,8 @@ public class MCOpenVR extends MCVR {
         // binding
         // Sort the bindings, so they're easy to look through in SteamVR
         List<VRInputAction> sortedActions = new ArrayList<>(this.inputActions.values());
-        sortedActions.sort(Comparator.comparing((action) -> action.keyBinding));
+        sortedActions.sort(
+            Comparator.comparing((VRInputAction a) -> a.keyBinding).thenComparing(a -> a.keyBinding.getName()));
 
         List<Map<String, Object>> actions = new ArrayList<>();
 
