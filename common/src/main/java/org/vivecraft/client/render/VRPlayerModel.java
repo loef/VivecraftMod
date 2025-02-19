@@ -26,6 +26,7 @@ import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRState;
 import org.vivecraft.client_vr.gameplay.screenhandlers.GuiHandler;
 import org.vivecraft.client_vr.render.RenderPass;
+import org.vivecraft.client_vr.render.helpers.VREffectsHelper;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.common.network.FBTMode;
 import org.vivecraft.common.utils.MathUtils;
@@ -100,7 +101,7 @@ public class VRPlayerModel<T extends LivingEntity> extends PlayerModel<T> {
         }
 
         float partialTick = ClientUtils.getCurrentPartialTick();
-        boolean isMainPlayer = VRState.VR_RUNNING && player == Minecraft.getInstance().player;
+        boolean isMainPlayer = ((EntityRenderStateExtension) renderState).vivecraft$isFirstPersonPlayer();
 
         HumanoidArm mainArm = rotInfo.leftHanded ? HumanoidArm.LEFT : HumanoidArm.RIGHT;
         HumanoidArm attackArm = null;
@@ -132,6 +133,8 @@ public class VRPlayerModel<T extends LivingEntity> extends PlayerModel<T> {
         float armScale = 1F;
         float legScale = 1F;
 
+        // this check is similar to VREffectsHelper#isFirstPersonEntityPass,
+        // but does different stuff for shaders shadow pass
         if (isMainPlayer && ClientDataHolderVR.getInstance().vrSettings.shouldRenderSelf &&
             !(ImmersivePortalsHelper.isLoaded() && ImmersivePortalsHelper.isRenderingPortal()) &&
             (!ShadersHelper.isRenderingShadows() &&
@@ -198,7 +201,8 @@ public class VRPlayerModel<T extends LivingEntity> extends PlayerModel<T> {
         } else if (noLowerBodyAnimation) {
             // with only arms simply rotate the body in place
             model.body.setRotation(
-                Mth.PI * Math.max(0F, model.body.y / 22F) * (model instanceof VRPlayerModel_WithArmsLegs ? 0.5F : 1F), 0F, 0F);
+                Mth.PI * Math.max(0F, model.body.y / 22F) * (model instanceof VRPlayerModel_WithArmsLegs ? 0.5F : 1F),
+                0F, 0F);
             if (laying) {
                 float bodyXRot;
                 if (swimming) {

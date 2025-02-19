@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.vivecraft.client_vr.render.helpers.VREffectsHelper;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRState;
 import org.vivecraft.client_vr.gameplay.trackers.ClimbTracker;
@@ -46,11 +47,6 @@ public class PlayerItemInHandLayerMixin {
     private boolean vivecraft$noSpyglassInFirstPerson(
         boolean isSpyglass, @Local(argsOnly = true) LivingEntity livingEntity)
     {
-        return isSpyglass && !(livingEntity == Minecraft.getInstance().player && VRState.VR_RUNNING &&
-            ClientDataHolderVR.getInstance().vrSettings.shouldRenderSelf &&
-            RenderPass.isFirstPerson(ClientDataHolderVR.getInstance().currentPass) &&
-            !ShadersHelper.isRenderingShadows() &&
-            !(ImmersivePortalsHelper.isLoaded() && ImmersivePortalsHelper.isRenderingPortal())
-        );
+        return isSpyglass && !VREffectsHelper.isRenderingFirstPersonPlayer(renderState);
     }
 }

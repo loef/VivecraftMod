@@ -37,13 +37,18 @@ side = "BOTH"
 [[mixins]]
 config = "vivecraft.mixins.json"
 [[mixins]]
+config = "vivecraft.neoforge.mixins.json"
+
+[[mixins]]
+config = "vivecraft.accessories.mixins.json"
+[[mixins]]
 config = "vivecraft.alexmobs.mixins.json"
 [[mixins]]
 config = "vivecraft.armourers_workshop.mixins.json"
 [[mixins]]
-config = "vivecraft.blur.mixins.json"
-[[mixins]]
 config = "vivecraft.bedrockify.mixins.json"
+[[mixins]]
+config = "vivecraft.blur.mixins.json"
 [[mixins]]
 config = "vivecraft.cataclysm.mixins.json"
 [[mixins]]
@@ -51,11 +56,11 @@ config = "vivecraft.dynamicfps.mixins.json"
 [[mixins]]
 config = "vivecraft.emf.mixins.json"
 [[mixins]]
-config = "vivecraft.sodium.mixins.json"
-[[mixins]]
 config = "vivecraft.iris.mixins.json"
 [[mixins]]
 config = "vivecraft.mca.mixins.json"
+[[mixins]]
+config = "vivecraft.optifine.mixins.json"
 [[mixins]]
 config = "vivecraft.physicsmod.mixins.json"
 [[mixins]]
@@ -65,6 +70,4 @@ config = "vivecraft.resolutioncontrol.mixins.json"
 [[mixins]]
 config = "vivecraft.sereneseasons.mixins.json"
 [[mixins]]
-config = "vivecraft.optifine.mixins.json"
-[[mixins]]
-config = "vivecraft.neoforge.mixins.json"
+config = "vivecraft.sodium.mixins.json"

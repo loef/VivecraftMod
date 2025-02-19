@@ -24,6 +24,7 @@ import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRState;
 import org.vivecraft.client_vr.gameplay.trackers.ClimbTracker;
 import org.vivecraft.client_vr.render.RenderPass;
+import org.vivecraft.client_vr.render.helpers.VREffectsHelper;
 import org.vivecraft.mod_compat_vr.immersiveportals.ImmersivePortalsHelper;
 import org.vivecraft.mod_compat_vr.shaders.ShadersHelper;
 
@@ -77,12 +78,7 @@ public abstract class ItemInHandLayerMixin extends RenderLayer {
     private void vivecraft$firstPersonItemScale(
         CallbackInfo ci, @Local(argsOnly = true) LivingEntity entity, @Local(argsOnly = true) PoseStack poseStack)
     {
-        if (entity == Minecraft.getInstance().player && VRState.VR_RUNNING &&
-            ClientDataHolderVR.getInstance().vrSettings.shouldRenderSelf &&
-            RenderPass.isFirstPerson(ClientDataHolderVR.getInstance().currentPass) &&
-            !ShadersHelper.isRenderingShadows() &&
-            !(ImmersivePortalsHelper.isLoaded() && ImmersivePortalsHelper.isRenderingPortal()))
-        {
+        if (VREffectsHelper.isRenderingFirstPersonPlayer(renderState)) {
             // make the item scale equal in all directions
             poseStack.translate(0.0F, 0.65F, 0.0F);
             poseStack.scale(1F, ClientDataHolderVR.getInstance().vrSettings.playerModelArmsScale, 1f);

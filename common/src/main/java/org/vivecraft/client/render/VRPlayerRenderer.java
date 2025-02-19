@@ -147,7 +147,7 @@ public class VRPlayerRenderer extends PlayerRenderer {
     public Vec3 getRenderOffset(AbstractClientPlayer player, float partialTick) {
         // idk why we do this anymore
         // this changes the offset to only apply when swimming, instead of crouching
-        if (VRState.VR_RUNNING && player == Minecraft.getInstance().player) {
+        if (((EntityRenderStateExtension) renderState).vivecraft$isFirstPersonPlayer()) {
             return player.isVisuallySwimming() ?
                 new Vec3(0.0F, -0.125F * ClientDataHolderVR.getInstance().vrPlayer.worldScale, 0.0F) : Vec3.ZERO;
         } else {

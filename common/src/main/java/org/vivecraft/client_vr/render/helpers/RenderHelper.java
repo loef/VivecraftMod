@@ -33,7 +33,6 @@ import org.vivecraft.client_vr.render.RenderPass;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.common.utils.MathUtils;
 import org.vivecraft.mixin.client.blaze3d.RenderSystemAccessor;
-import org.vivecraft.mod_compat_vr.shaders.ShadersHelper;
 
 import java.util.function.Supplier;
 
@@ -468,12 +467,7 @@ public class RenderHelper {
         Vector3f light0Old = RenderSystemAccessor.getShaderLightDirections()[0];
         Vector3f light1Old = RenderSystemAccessor.getShaderLightDirections()[1];
 
-        Vector3f normal = new Vector3f(0, 0, 1);
-
-        // weird iris behaviour
-        if (ShadersHelper.isShaderActive()) {
-            normal = new Matrix3f(matrix).transform(normal);
-        }
+        Vector3f normal = new Matrix3f(matrix).transform(new Vector3f(0, 0, 1)).normalize();
 
         // set lights to front
         RenderSystem.setShaderLights(normal, normal);
@@ -483,22 +477,22 @@ public class RenderHelper {
             .setColor(color[0], color[1], color[2], color[3])
             .setUv(0.0F, flipY ? 1.0F : 0.0F)
             .setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight)
-            .setNormal(0, 0, 1);
+            .setNormal(normal.x, normal.y, normal.z);
         bufferbuilder.addVertex(matrix, sizeX, -sizeY, 0)
             .setColor(color[0], color[1], color[2], color[3])
             .setUv(1.0F, flipY ? 1.0F : 0.0F)
             .setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight)
-            .setNormal(0, 0, 1);
+            .setNormal(normal.x, normal.y, normal.z);
         bufferbuilder.addVertex(matrix, sizeX, sizeY, 0)
             .setColor(color[0], color[1], color[2], color[3])
             .setUv(1.0F, flipY ? 0.0F : 1.0F)
             .setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight)
-            .setNormal(0, 0, 1);
+            .setNormal(normal.x, normal.y, normal.z);
         bufferbuilder.addVertex(matrix, -sizeX, sizeY, 0)
             .setColor(color[0], color[1], color[2], color[3])
             .setUv(0.0F, flipY ? 0.0F : 1.0F)
             .setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight)
-            .setNormal(0, 0, 1);
+            .setNormal(normal.x, normal.y, normal.z);
         BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
 
         MC.gameRenderer.lightTexture().turnOffLightLayer();
