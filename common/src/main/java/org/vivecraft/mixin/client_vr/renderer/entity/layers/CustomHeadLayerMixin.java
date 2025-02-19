@@ -1,7 +1,6 @@
 package org.vivecraft.mixin.client_vr.renderer.entity.layers;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,7 +15,7 @@ public class CustomHeadLayerMixin {
     private void vivecraft$noHelmetInFirstPerson(
         CallbackInfo ci, @Local(argsOnly = true) LivingEntity entity)
     {
-        if (VREffectsHelper.isRenderingFirstPersonPlayer(renderState)) {
+        if (VREffectsHelper.isRenderingFirstPersonPlayer(entity)) {
             ci.cancel();
         }
     }

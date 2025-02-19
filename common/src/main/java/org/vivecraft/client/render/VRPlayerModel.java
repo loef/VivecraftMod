@@ -3,7 +3,6 @@ package org.vivecraft.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -23,7 +22,6 @@ import org.vivecraft.client.ClientVRPlayers;
 import org.vivecraft.client.utils.ClientUtils;
 import org.vivecraft.client.utils.ModelUtils;
 import org.vivecraft.client_vr.ClientDataHolderVR;
-import org.vivecraft.client_vr.VRState;
 import org.vivecraft.client_vr.gameplay.screenhandlers.GuiHandler;
 import org.vivecraft.client_vr.render.RenderPass;
 import org.vivecraft.client_vr.render.helpers.VREffectsHelper;
@@ -101,7 +99,7 @@ public class VRPlayerModel<T extends LivingEntity> extends PlayerModel<T> {
         }
 
         float partialTick = ClientUtils.getCurrentPartialTick();
-        boolean isMainPlayer = ((EntityRenderStateExtension) renderState).vivecraft$isFirstPersonPlayer();
+        boolean isMainPlayer = VREffectsHelper.isFirstPersonPlayer(player);
 
         HumanoidArm mainArm = rotInfo.leftHanded ? HumanoidArm.LEFT : HumanoidArm.RIGHT;
         HumanoidArm attackArm = null;

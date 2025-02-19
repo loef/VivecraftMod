@@ -11,7 +11,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -31,7 +30,6 @@ import org.joml.*;
 import org.lwjgl.opengl.GL11C;
 import org.vivecraft.client.VivecraftVRMod;
 import org.vivecraft.client.Xevents;
-import org.vivecraft.client.extensions.EntityRenderStateExtension;
 import org.vivecraft.client.gui.VivecraftClickEvent;
 import org.vivecraft.client.gui.settings.GuiOtherHUDSettings;
 import org.vivecraft.client.gui.settings.GuiRenderOpticsSettings;
@@ -121,16 +119,6 @@ public class VREffectsHelper {
      */
     public static boolean isRenderingFirstPersonPlayer(Entity entity) {
         return isFirstPersonPlayer(entity) && isFirstPersonEntityPass();
-    }
-
-    /**
-     * checks if the given {@code renderState} is from the main player entity and if it should be rendered
-     *
-     * @param renderState EntityRenderState to check
-     * @return if the {@code renderState} belongs to the main player and is rendering in first person
-     */
-    public static boolean isRenderingFirstPersonPlayer(EntityRenderState renderState) {
-        return ((EntityRenderStateExtension) renderState).vivecraft$isFirstPersonPlayer() && isFirstPersonEntityPass();
     }
 
     /**

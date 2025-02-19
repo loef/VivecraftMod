@@ -142,6 +142,7 @@ public abstract class GameRendererVRMixin
             RenderPassManager.setVanillaRenderPass();
         }
     }
+
     @WrapMethod(method = "pick(F)V")
     private void vivecraft$vrPick(float partialTick, Operation<Void> original) {
         if (VRState.VR_RUNNING) {

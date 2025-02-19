@@ -17,7 +17,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.*;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.*;
+import net.minecraft.client.gui.screens.ConnectScreen;
+import net.minecraft.client.gui.screens.LevelLoadingScreen;
+import net.minecraft.client.gui.screens.ReceivingLevelScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
@@ -161,13 +164,14 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
     @Shadow
     @Final
     private RenderBuffers renderBuffers;
-    @WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;clear()V"))
-    private void vivecraft$initVivecraft(RenderTarget instance, Operation<Void> original) {
+
+    @WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;clear(Z)V"))
+    private void vivecraft$initVivecraft(RenderTarget instance, boolean onOSX, Operation<Void> original) {
         RenderPassManager.INSTANCE = new RenderPassManager((MainTarget) this.mainRenderTarget);
         VRSettings.initSettings();
         new Thread(UpdateChecker::checkForUpdates, "VivecraftUpdateThread").start();
 
-        original.call(instance);
+        original.call(instance, onOSX);
     }
 
     @Inject(method = "onGameLoadFinished", at = @At("TAIL"))

@@ -121,7 +121,8 @@ public abstract class ServerPlayerMixin extends PlayerMixin {
             {
                 float addedDamage = 0F;
                 ItemStack boots = this.getItemBySlot(EquipmentSlot.FEET);
-                ItemAttributeModifiers modifiers = boots.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+                ItemAttributeModifiers modifiers = boots.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS,
+                    ItemAttributeModifiers.EMPTY);
                 if (modifiers.modifiers().isEmpty()) {
                     modifiers = boots.getItem().getDefaultAttributeModifiers();
                 }

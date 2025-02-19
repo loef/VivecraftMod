@@ -1,7 +1,6 @@
 package org.vivecraft.mixin.client_vr.renderer.entity.layers;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -23,7 +22,7 @@ public class HumanoidArmorLayerMixin {
         CallbackInfo ci, @Local(argsOnly = true) LivingEntity entity, @Local(argsOnly = true) EquipmentSlot slot)
     {
         if (slot == EquipmentSlot.HEAD &&
-            VREffectsHelper.isRenderingFirstPersonPlayer(this.vivecraft$currentRenderState))
+            VREffectsHelper.isRenderingFirstPersonPlayer(entity))
         {
             ci.cancel();
         }
@@ -35,7 +34,7 @@ public class HumanoidArmorLayerMixin {
         @Local(argsOnly = true, ordinal = 0) HumanoidModel model)
     {
         if (slot == EquipmentSlot.CHEST &&
-            VREffectsHelper.isRenderingFirstPersonPlayer(this.vivecraft$currentRenderState))
+            VREffectsHelper.isRenderingFirstPersonPlayer(entity))
         {
             VRSettings.ModelArmsMode mode = ClientDataHolderVR.getInstance().vrSettings.modelArmsMode;
 

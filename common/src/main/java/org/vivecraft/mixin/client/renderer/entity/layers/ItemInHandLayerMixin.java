@@ -2,7 +2,6 @@ package org.vivecraft.mixin.client.renderer.entity.layers;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -23,10 +22,7 @@ import org.vivecraft.client.render.VRPlayerModel;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRState;
 import org.vivecraft.client_vr.gameplay.trackers.ClimbTracker;
-import org.vivecraft.client_vr.render.RenderPass;
 import org.vivecraft.client_vr.render.helpers.VREffectsHelper;
-import org.vivecraft.mod_compat_vr.immersiveportals.ImmersivePortalsHelper;
-import org.vivecraft.mod_compat_vr.shaders.ShadersHelper;
 
 @Mixin(ItemInHandLayer.class)
 public abstract class ItemInHandLayerMixin extends RenderLayer {
@@ -78,7 +74,7 @@ public abstract class ItemInHandLayerMixin extends RenderLayer {
     private void vivecraft$firstPersonItemScale(
         CallbackInfo ci, @Local(argsOnly = true) LivingEntity entity, @Local(argsOnly = true) PoseStack poseStack)
     {
-        if (VREffectsHelper.isRenderingFirstPersonPlayer(renderState)) {
+        if (VREffectsHelper.isRenderingFirstPersonPlayer(entity)) {
             // make the item scale equal in all directions
             poseStack.translate(0.0F, 0.65F, 0.0F);
             poseStack.scale(1F, ClientDataHolderVR.getInstance().vrSettings.playerModelArmsScale, 1f);
