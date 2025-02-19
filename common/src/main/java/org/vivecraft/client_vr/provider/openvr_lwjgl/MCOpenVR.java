@@ -412,7 +412,17 @@ public class MCOpenVR extends MCVR {
             this.isError())
         {
             if (this.isError()) {
-                throw new RuntimeException(VR_GetVRInitErrorAsEnglishDescription(this.getError()));
+                int error = this.getError();
+                String errorString = VR_GetVRInitErrorAsEnglishDescription(error);
+                if (error == EVRInitError_VRInitError_Init_InstallationNotFound ||
+                    error == EVRInitError_VRInitError_Init_PathRegistryNotFound)
+                {
+                    errorString += "\n\n" + I18n.get("vivecraft.messages.steamvrnotfound");
+                    if (this.mc.gameDirectory.getPath().contains("/.var/app/")) {
+                        errorString += "\n\n" + I18n.get("vivecraft.messages.steamvrrunningflatpak");
+                    }
+                }
+                throw new RuntimeException(errorString);
             } else {
                 throw new RuntimeException(I18n.get("vivecraft.messages.outdatedsteamvr"));
             }
@@ -576,7 +586,8 @@ public class MCOpenVR extends MCVR {
         // binding
         // Sort the bindings, so they're easy to look through in SteamVR
         List<VRInputAction> sortedActions = new ArrayList<>(this.inputActions.values());
-        sortedActions.sort(Comparator.comparing((action) -> action.keyBinding));
+        sortedActions.sort(
+            Comparator.comparing((VRInputAction a) -> a.keyBinding).thenComparing(a -> a.keyBinding.getName()));
 
         List<Map<String, Object>> actions = new ArrayList<>();
 

@@ -160,7 +160,12 @@ public class VRPassHelper {
         ((MinecraftExtension) MC).vivecraft$drawProfiler();
 
         // pop pose that we pushed before the gui
-        RenderSystem.getModelViewStack().popMatrix();
+        // when using quickplay, the inject that does the push somehow gets skipped so need to catch if the stack is empty
+        try {
+            RenderSystem.getModelViewStack().popMatrix();
+        } catch (IllegalStateException ignore) {
+            VRSettings.LOGGER.error("Vivecraft: ModelViewStack was empty!");
+        }
         RenderSystem.applyModelViewMatrix();
 
         if (DATA_HOLDER.vrSettings.guiMipmaps) {

@@ -2,6 +2,7 @@ package org.vivecraft.mod_compat_vr.iris.mixin.irisshaders;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.irisshaders.iris.gl.uniform.UniformHolder;
+import net.irisshaders.iris.gl.uniform.UniformUpdateFrequency;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joml.Matrix4fc;
 import org.joml.Vector3f;
@@ -13,8 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.vivecraft.mod_compat_vr.shaders.ShadersHelper;
 
 import java.util.function.Supplier;
-
-import net.irisshaders.iris.gl.uniform.UniformUpdateFrequency;
 
 @Pseudo
 @Mixin(targets = "net.irisshaders.iris.uniforms.CommonUniforms", remap = false)

@@ -139,6 +139,7 @@ public abstract class GameRendererVRMixin
             RenderPassManager.setVanillaRenderPass();
         }
     }
+
     @WrapMethod(method = "pick(F)V")
     private void vivecraft$vrPick(float partialTick, Operation<Void> original) {
         if (VRState.VR_RUNNING) {
@@ -151,7 +152,7 @@ public abstract class GameRendererVRMixin
 
             // set the entity position and view to the controller
             this.vivecraft$cacheRVEPos(this.minecraft.getCameraEntity());
-            this.vivecraft$setupRVEAtDevice(vivecraft$DATA_HOLDER.vrPlayer.vrdata_world_render.getController(0));
+            this.vivecraft$setupRVEAtDevice(vivecraft$DATA_HOLDER.vrPlayer.vrdata_world_render.getAim());
         }
 
         // call the vanilla method
@@ -168,7 +169,7 @@ public abstract class GameRendererVRMixin
         if (VRState.VR_RUNNING) {
             // get the end of the reach point here, to have the correct reach distance
             this.vivecraft$crossVec = vivecraft$DATA_HOLDER.vrPlayer.AimedPointAtDistance(
-                vivecraft$DATA_HOLDER.vrPlayer.vrdata_world_render, 0, hitDistance);
+                vivecraft$DATA_HOLDER.vrPlayer.vrdata_world_render.getAim(), hitDistance);
         }
         return hitDistance;
     }
@@ -266,11 +267,6 @@ public abstract class GameRendererVRMixin
             }
             // VRSettings.RenderPointerElement.WITH_HUD uses the vanilla behaviour
         }
-    }
-
-    @ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;isWindowActive()Z"))
-    private boolean vivecraft$noPauseOnFocusLoss(boolean windowActive) {
-        return windowActive || VRState.VR_RUNNING;
     }
 
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;renderLevel(FJ)V"))
