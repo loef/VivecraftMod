@@ -19,12 +19,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
 import org.vivecraft.client.VivecraftVRMod;
 import org.vivecraft.client.Xplat;
 import org.vivecraft.client.network.ClientNetworking;
 import org.vivecraft.client_vr.ClientDataHolderVR;
-import org.vivecraft.client_vr.MethodHolder;
 import org.vivecraft.client_vr.VRData;
 import org.vivecraft.client_vr.provider.ControllerType;
 import org.vivecraft.client_vr.render.RenderPass;
@@ -260,17 +258,18 @@ public class InteractTracker extends Tracker {
 
     private void addIfClassHasMethod(String name, Class<?> oclass) {
         try {
-            if (oclass.getMethod(name,
+            oclass.getDeclaredMethod(name,
                 BlockState.class,
                 net.minecraft.world.level.Level.class,
                 BlockPos.class,
                 net.minecraft.world.entity.player.Player.class,
                 InteractionHand.class,
-                BlockHitResult.class).getDeclaringClass() == oclass)
-            {
-                this.rightClickable.add(oclass);
-            }
-        } catch (NoSuchMethodException ignored) {
+                BlockHitResult.class);
+            this.rightClickable.add(oclass);
+        } catch (Throwable ignored) {
+            // catching Throwable here, instead of just NoSuchMethodException,
+            // because some mods implement interfaces for mod compat, that don't need to be present and
+            // those throw a NoClassDefFoundError
         }
     }
 
@@ -288,9 +287,7 @@ public class InteractTracker extends Tracker {
 
     public void processBindings() {
         for (int c = 0; c < 2; c++) {
-            if (MethodHolder.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL) ||
-                VivecraftVRMod.INSTANCE.keyVRInteract.consumeClick(ControllerType.values()[c]) && this.active[c])
-            {
+            if (VivecraftVRMod.INSTANCE.keyVRInteract.consumeClick(ControllerType.values()[c]) && this.active[c]) {
                 InteractionHand hand = InteractionHand.values()[c];
                 boolean success = false;
 

@@ -1,7 +1,6 @@
 package org.vivecraft.mixin.client_vr.renderer.entity.layers;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -12,11 +11,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.vivecraft.client.render.armor.VRArmorModel_WithArms;
 import org.vivecraft.client_vr.ClientDataHolderVR;
-import org.vivecraft.client_vr.VRState;
-import org.vivecraft.client_vr.render.RenderPass;
+import org.vivecraft.client_vr.render.helpers.VREffectsHelper;
 import org.vivecraft.client_vr.settings.VRSettings;
-import org.vivecraft.mod_compat_vr.immersiveportals.ImmersivePortalsHelper;
-import org.vivecraft.mod_compat_vr.shaders.ShadersHelper;
 
 @Mixin(HumanoidArmorLayer.class)
 public class HumanoidArmorLayerMixin {
@@ -24,11 +20,8 @@ public class HumanoidArmorLayerMixin {
     private void vivecraft$noHelmetInFirstPerson(
         CallbackInfo ci, @Local(argsOnly = true) LivingEntity entity, @Local(argsOnly = true) EquipmentSlot slot)
     {
-        if (VRState.VR_RUNNING && entity == Minecraft.getInstance().player && slot == EquipmentSlot.HEAD &&
-            ClientDataHolderVR.getInstance().vrSettings.shouldRenderSelf &&
-            RenderPass.isFirstPerson(ClientDataHolderVR.getInstance().currentPass) &&
-            !ShadersHelper.isRenderingShadows() &&
-            !(ImmersivePortalsHelper.isLoaded() && ImmersivePortalsHelper.isRenderingPortal()))
+        if (slot == EquipmentSlot.HEAD &&
+            VREffectsHelper.isRenderingFirstPersonPlayer(entity))
         {
             ci.cancel();
         }
@@ -39,11 +32,8 @@ public class HumanoidArmorLayerMixin {
         CallbackInfo ci, @Local(argsOnly = true) LivingEntity entity, @Local(argsOnly = true) EquipmentSlot slot,
         @Local(argsOnly = true) HumanoidModel model)
     {
-        if (VRState.VR_RUNNING && entity == Minecraft.getInstance().player && slot == EquipmentSlot.CHEST &&
-            ClientDataHolderVR.getInstance().vrSettings.shouldRenderSelf &&
-            RenderPass.isFirstPerson(ClientDataHolderVR.getInstance().currentPass) &&
-            !ShadersHelper.isRenderingShadows() &&
-            !(ImmersivePortalsHelper.isLoaded() && ImmersivePortalsHelper.isRenderingPortal()))
+        if (slot == EquipmentSlot.CHEST &&
+            VREffectsHelper.isRenderingFirstPersonPlayer(entity))
         {
             VRSettings.ModelArmsMode mode = ClientDataHolderVR.getInstance().vrSettings.modelArmsMode;
 
