@@ -404,7 +404,7 @@ public abstract class LocalPlayerVRMixin extends LocalPlayer_PlayerVRMixin imple
                 mY = direction.y;
                 mZ = direction.z;
 
-                if (this.onGround() && !this.getAbilities().flying && !this.wasTouchingWater) {
+                if (this.isOnGround() && !this.getAbilities().flying && !this.wasTouchingWater) {
                     addFactor = this.vivecraft$dataholder.vrSettings.inertiaFactor.getFactor();
                 }
 
@@ -430,7 +430,7 @@ public abstract class LocalPlayerVRMixin extends LocalPlayer_PlayerVRMixin imple
         // do drag after setting the delta movement
         if (VRState.VR_RUNNING && vivecraft$isLocalPlayer(this) &&
             ClientDataHolderVR.getInstance().vrPlayer.getFreeMove() &&
-            this.onGround() && !this.getAbilities().flying && !this.wasTouchingWater)
+            this.isOnGround() && !this.getAbilities().flying && !this.wasTouchingWater)
         {
             this.vivecraft$doDrag();
         }
@@ -444,7 +444,7 @@ public abstract class LocalPlayerVRMixin extends LocalPlayer_PlayerVRMixin imple
         double friction = 0.91;
 
         if (this.isOnGround()) {
-            friction *= this.level().getBlockState(this.getBlockPosBelowThatAffectsMyMovement())
+            friction *= this.level.getBlockState(this.getBlockPosBelowThatAffectsMyMovement())
                 .getBlock().getFriction();
         }
 
