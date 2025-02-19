@@ -2,7 +2,7 @@ package org.vivecraft.client_vr;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.vivecraft.client.Xplat;
 import org.vivecraft.client.gui.screens.ErrorScreen;
@@ -118,7 +118,7 @@ public class VRState {
             if (exception instanceof RenderConfigException renderConfigException) {
                 setScreenAndCache(new ErrorScreen(renderConfigException.title, renderConfigException.error));
             } else {
-                setScreenAndCache(new ErrorScreen(Component.translatable("vivecraft.messages.vriniterror"),
+                setScreenAndCache(new ErrorScreen(new TranslatableComponent("vivecraft.messages.vriniterror"),
                     TextUtils.throwableToComponent(exception)));
             }
         }

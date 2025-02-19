@@ -1094,8 +1094,8 @@ public abstract class MCVR {
         // Walk up blocks
         if (MOD.keyToggleWalkUpBlocks.consumeClick()) {
             this.dh.vrSettings.walkUpBlocks = !this.dh.vrSettings.walkUpBlocks;
-            this.mc.gui.getChat().addMessage(Component.translatable("vivecraft.messages.walkupblocks",
-                Component.translatable(this.dh.vrSettings.walkUpBlocks ? LangHelper.ON_KEY : LangHelper.OFF_KEY)));
+            this.mc.gui.getChat().addMessage(new TranslatableComponent("vivecraft.messages.walkupblocks",
+                new TranslatableComponent(this.dh.vrSettings.walkUpBlocks ? LangHelper.ON_KEY : LangHelper.OFF_KEY)));
         }
 
         GuiHandler.processBindingsGui();
