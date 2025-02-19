@@ -23,6 +23,7 @@ import org.vivecraft.client_xr.render_pass.WorldRenderPass;
 import org.vivecraft.mod_compat_vr.optifine.OptifineHelper;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class VRPassHelper {
 
@@ -162,8 +163,8 @@ public class VRPassHelper {
         // pop pose that we pushed before the gui
         // when using quickplay, the inject that does the push somehow gets skipped so need to catch if the stack is empty
         try {
-            RenderSystem.getModelViewStack().popMatrix();
-        } catch (IllegalStateException ignore) {
+            RenderSystem.getModelViewStack().popPose();
+        } catch (NoSuchElementException ignore) {
             VRSettings.LOGGER.error("Vivecraft: ModelViewStack was empty!");
         }
         RenderSystem.applyModelViewMatrix();
