@@ -1,12 +1,11 @@
 package org.vivecraft.neoforge.event;
 
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
-import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import org.vivecraft.client.gui.settings.VivecraftMainSettings;
 import org.vivecraft.client_vr.ReloadListener;
@@ -22,9 +21,7 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public static void registerReloadEvent(AddClientReloadListenersEvent addClientReloadListenersEvent) {
-        addClientReloadListenersEvent.addListener(
-            ResourceLocation.fromNamespaceAndPath("vivecraft", "reloadlistener"),
-            new ReloadListener());
+    public static void registerReloadEvent(RegisterClientReloadListenersEvent registerClientReloadListenersEvent) {
+        registerClientReloadListenersEvent.registerReloadListener(new ReloadListener());
     }
 }

@@ -164,10 +164,8 @@ public abstract class ItemInHandRendererVRMixin {
 
             ItemDisplayContext itemDisplayContext;
 
-            // third person transforms for custom model data items/item model overrides, but not spear, shield and crossbow
-            boolean hasItemOverride = itemStack.getComponents() instanceof PatchedDataComponentMap patched &&
-                patched.hasNonDefault(DataComponents.ITEM_MODEL);
-            boolean hasCMD = (hasItemOverride || itemStack.has(DataComponents.CUSTOM_MODEL_DATA)) &&
+            // third person transforms for custom model data items, but not spear, shield and crossbow
+            boolean hasCMD = itemStack.has(DataComponents.CUSTOM_MODEL_DATA) &&
                 transformType != VivecraftItemRendering.VivecraftItemTransformType.Crossbow &&
                 transformType != VivecraftItemRendering.VivecraftItemTransformType.Spear &&
                 transformType != VivecraftItemRendering.VivecraftItemTransformType.Shield;
