@@ -209,6 +209,7 @@ public abstract class ItemInHandRendererVRMixin {
                     poseStack.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
                     if (OptifineHelper.isOptifineLoaded() && OptifineHelper.isShaderActive()) {
                         // this messes stuff up when rendering the quads
+                        this.minecraft.renderBuffers().bufferSource().endBatch();
                         OptifineHelper.endEntities();
                     }
                     // render scope view

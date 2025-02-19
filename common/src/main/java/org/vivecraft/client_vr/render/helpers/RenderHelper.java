@@ -462,33 +462,37 @@ public class RenderHelper {
         com.mojang.math.Vector3f light0Old = RenderSystemAccessor.getShaderLightDirections()[0];
         com.mojang.math.Vector3f light1Old = RenderSystemAccessor.getShaderLightDirections()[1];
 
+        com.mojang.math.Vector3f normal = new com.mojang.math.Vector3f(0, 0, 1);
+        normal.transform(new Matrix3f(matrix));
+        normal.normalize();
+
         // set lights to front
-        RenderSystem.setShaderLights(new com.mojang.math.Vector3f(0, 0, 1), new com.mojang.math.Vector3f(0, 0, 1));
+        RenderSystem.setShaderLights(normal, normal);
         RenderSystem.setupShaderLights(RenderSystem.getShader());
 
         bufferbuilder.vertex(matrix, -sizeX, -sizeY, 0)
             .color(color[0], color[1], color[2], color[3])
             .uv(0.0F, flipY ? 1.0F : 0.0F)
             .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight)
-            .normal(0, 0, 1)
+            .normal(normal.x(), normal.y(), normal.z())
             .endVertex();
         bufferbuilder.vertex(matrix, sizeX, -sizeY, 0)
             .color(color[0], color[1], color[2], color[3])
             .uv(1.0F, flipY ? 1.0F : 0.0F)
             .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight)
-            .normal(0, 0, 1)
+            .normal(normal.x(), normal.y(), normal.z())
             .endVertex();
         bufferbuilder.vertex(matrix, sizeX, sizeY, 0)
             .color(color[0], color[1], color[2], color[3])
             .uv(1.0F, flipY ? 0.0F : 1.0F)
             .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight)
-            .normal(0, 0, 1)
+            .normal(normal.x(), normal.y(), normal.z())
             .endVertex();
         bufferbuilder.vertex(matrix, -sizeX, sizeY, 0)
             .color(color[0], color[1], color[2], color[3])
             .uv(0.0F, flipY ? 0.0F : 1.0F)
             .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight)
-            .normal(0, 0, 1)
+            .normal(normal.x(), normal.y(), normal.z())
             .endVertex();
         bufferbuilder.end();
         BufferUploader.end(bufferbuilder);

@@ -13,18 +13,23 @@ import org.vivecraft.client.gui.widgets.TextScrollWidget;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 
 
-public class GarbageCollectorScreen extends Screen {
+public class GarbageCollectorScreen extends Screen implements ChangeableParentScreen {
 
     private static final String GUIDE_URL = "https://github.com/Vivecraft/VivecraftMod/wiki/Memory-and-GC-Setup";
 
-    private final Screen lastScreen;
     private final String currentGarbageCollector;
+    private Screen lastScreen;
     private TextScrollWidget text;
 
     public GarbageCollectorScreen(String currentGarbageCollector) {
         super(new TranslatableComponent("vivecraft.messages.gctitle"));
         this.lastScreen = Minecraft.getInstance().screen;
         this.currentGarbageCollector = currentGarbageCollector;
+    }
+
+    @Override
+    public void setParent(Screen parent) {
+        this.lastScreen = parent;
     }
 
     @Override
@@ -51,7 +56,7 @@ public class GarbageCollectorScreen extends Screen {
             new TranslatableComponent("vivecraft.gui.dontshowagain"), (p) -> {
             ClientDataHolderVR.getInstance().vrSettings.disableGarbageCollectorMessage = true;
             ClientDataHolderVR.getInstance().vrSettings.saveOptions();
-            Minecraft.getInstance().setScreen(this.lastScreen);
+            onClose();
         }));
 
         this.addRenderableWidget(new Button(this.width / 2 + 5, this.height - 56, 150, 20,
@@ -84,7 +89,7 @@ public class GarbageCollectorScreen extends Screen {
 
     @Override
     public void onClose() {
-        ClientDataHolderVR.getInstance().incorrectGarbageCollector = "";
+        ClientDataHolderVR.getInstance().cachedScreen = null;
         this.minecraft.setScreen(this.lastScreen);
     }
 }

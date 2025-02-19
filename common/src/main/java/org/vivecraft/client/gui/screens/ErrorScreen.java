@@ -9,17 +9,23 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 import org.vivecraft.client.gui.widgets.TextScrollWidget;
+import org.vivecraft.client_vr.ClientDataHolderVR;
 
-public class ErrorScreen extends Screen {
+public class ErrorScreen extends Screen implements ChangeableParentScreen {
 
-    private final Screen lastScreen;
     private final Component error;
+    private Screen lastScreen;
     private TextScrollWidget text;
 
     public ErrorScreen(Component title, Component error) {
         super(title);
         this.lastScreen = Minecraft.getInstance().screen;
         this.error = error;
+    }
+
+    @Override
+    public void setParent(Screen parent) {
+        this.lastScreen = parent;
     }
 
     @Override
@@ -31,7 +37,7 @@ public class ErrorScreen extends Screen {
         this.addRenderableWidget(
             new Button(this.width / 2 + 5, this.height - 32, 150, 20,
                 new TranslatableComponent("gui.back"),
-                (p) -> Minecraft.getInstance().setScreen(this.lastScreen)));
+                (p) -> onClose()));
         this.addRenderableWidget(
             new Button(this.width / 2 - 155, this.height - 32, 150, 20,
                 new TranslatableComponent("chat.copy.click"),
@@ -49,5 +55,11 @@ public class ErrorScreen extends Screen {
         if (style != null) {
             renderComponentHoverEffect(poseStack, style, mouseX, mouseY);
         }
+    }
+
+    @Override
+    public void onClose() {
+        ClientDataHolderVR.getInstance().cachedScreen = null;
+        this.minecraft.setScreen(this.lastScreen);
     }
 }
