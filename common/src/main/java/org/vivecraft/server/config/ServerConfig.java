@@ -160,7 +160,8 @@ public class ServerConfig {
             .define(true);
         SEND_DATA_TO_OWNER = BUILDER
             .push("sendDataToOwner")
-            .comment("Sends the player position data also back to the player that sent it, usually not needed.\n Enable this to when using replay mod or something similar.")
+            .comment(
+                "Sends the player position data also back to the player that sent it, usually not needed.\n Enable this to when using replay mod or something similar.")
             .define(false);
         // end general
         BUILDER.pop();
@@ -252,7 +253,8 @@ public class ServerConfig {
             .define(true);
         BOOTS_ARMOR_DAMAGE = BUILDER
             .push("bootsArmorDamage")
-            .comment("Melee damage addition for Vivecraft users when hitting with their feet.\n This scales with the armor attribute of the boots, doing 1 additional damage per Armor level, times the set multiplier\n Set to 0.0 to disable")
+            .comment(
+                "Melee damage addition for Vivecraft users when hitting with their feet.\n This scales with the armor attribute of the boots, doing 1 additional damage per Armor level, times the set multiplier\n Set to 0.0 to disable")
             .defineInRange(0.0, 0.0, 5.0);
 
         BUILDER

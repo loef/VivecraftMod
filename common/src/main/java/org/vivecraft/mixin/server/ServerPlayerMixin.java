@@ -121,8 +121,7 @@ public abstract class ServerPlayerMixin extends PlayerMixin {
             {
                 float addedDamage = 0F;
                 for (ItemAttributeModifiers.Entry entry : this.getItemBySlot(EquipmentSlot.FEET)
-                    .getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY).modifiers())
-                {
+                    .getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY).modifiers()) {
                     if (entry.attribute().is(Attributes.ARMOR)) {
                         float amount = (float) entry.modifier().amount();
                         switch (entry.modifier().operation()) {

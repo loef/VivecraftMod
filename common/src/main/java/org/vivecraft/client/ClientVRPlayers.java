@@ -317,6 +317,7 @@ public class ClientVRPlayers {
         float partialTick = ClientUtils.getCurrentPartialTick();
 
         if (VRState.VR_RUNNING && this.mc.player != null && uuid.equals(this.mc.player.getUUID()) &&
+            this.mc.getCameraEntity() == this.mc.player &&
             ClientDataHolderVR.getInstance().vrSettings.mainPlayerDataSource == VRSettings.DataSource.REALTIME)
         {
             return getMainPlayerRotInfo(this.mc.player, partialTick);

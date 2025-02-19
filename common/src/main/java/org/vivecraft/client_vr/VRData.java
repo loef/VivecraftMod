@@ -244,6 +244,16 @@ public class VRData {
     }
 
     /**
+     * @return the device pose for the device that is used to aim
+     */
+    public VRDevicePose getAim() {
+        return switch (ClientDataHolderVR.getInstance().vrSettings.aimDevice) {
+            case CONTROLLER -> this.c0;
+            case HMD -> this.hmd;
+        };
+    }
+
+    /**
      * @return the yaw direction the player body is facing, in degrees
      */
     public float getBodyYaw() {

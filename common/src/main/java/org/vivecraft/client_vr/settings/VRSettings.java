@@ -183,6 +183,11 @@ public class VRSettings {
         SERVER
     }
 
+    public enum AimDevice implements OptionEnum<AimDevice> {
+        CONTROLLER,
+        HMD
+    }
+
     @SettingField
     public int version = UNKNOWN_VERSION;
 
@@ -214,6 +219,8 @@ public class VRSettings {
     public boolean reverseHands = false;
     @SettingField(VrOptions.REVERSE_BOW)
     public boolean reverseShootingEye = false;
+    @SettingField(VrOptions.AIM_DEVICE)
+    public AimDevice aimDevice = AimDevice.CONTROLLER;
     @SettingField(value = VrOptions.WORLD_SCALE)
     public float worldScale = 1.0f;
     @SettingField(value = VrOptions.WORLD_ROTATION)
@@ -1645,6 +1652,7 @@ public class VRSettings {
         LIMIT_TELEPORT(false, true), // Limit in Survival
         REVERSE_HANDS(false, true), // Reverse Hands
         REVERSE_BOW(false, true), // Reverses Roomscale Bow Aiming
+        AIM_DEVICE(false, true), // what device to use, to aim the crosshair with
         STENCIL_ON(false, true), // Use Eye Stencil
         STENCIL_BUFFER_DISABLE(false, true), // disables the use of the stencil buffer
         BCB_ON(false, true), // Show Body Position

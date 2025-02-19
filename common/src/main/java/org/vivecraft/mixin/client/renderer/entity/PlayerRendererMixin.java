@@ -28,7 +28,7 @@ import org.vivecraft.client.extensions.RenderLayerExtension;
 import org.vivecraft.client.render.VRPlayerRenderer;
 import org.vivecraft.client.utils.RenderLayerType;
 import org.vivecraft.client.utils.ScaleHelper;
-import org.vivecraft.client_vr.VRState;
+import org.vivecraft.client_vr.render.helpers.VREffectsHelper;
 import org.vivecraft.client_vr.settings.VRSettings;
 
 import java.lang.reflect.Constructor;
@@ -60,8 +60,8 @@ public abstract class PlayerRendererMixin extends LivingEntityRendererMixin<Abst
             ((EntityRenderStateExtension) reusedState).vivecraft$setRotInfo(null);
         }
 
-        ((EntityRenderStateExtension) reusedState).vivecraft$setMainPlayer(
-            VRState.VR_RUNNING && entity == Minecraft.getInstance().player);
+        ((EntityRenderStateExtension) reusedState).vivecraft$setFirstPersonPlayer(
+            VREffectsHelper.isFirstPersonPlayer(entity));
 
         ((EntityRenderStateExtension) reusedState).vivecraft$setTotalScale(
             ScaleHelper.getEntityEyeHeightScale(entity, partialTick));
