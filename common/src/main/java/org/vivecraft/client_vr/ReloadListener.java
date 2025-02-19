@@ -1,14 +1,10 @@
 package org.vivecraft.client_vr;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import org.vivecraft.client_vr.settings.VRSettings;
-import org.vivecraft.mod_compat_vr.optifine.OptifineHelper;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -25,16 +21,6 @@ public class ReloadListener implements ResourceManagerReloadListener {
         if (this.resourcePacks == null) {
             // first load
             this.resourcePacks = resourceManager.listPacks().map(PackResources::packId).toList();
-
-            if (OptifineHelper.isOptifineLoaded()) {
-                // with optifine this texture somehow fails to load, so manually reload it
-                try {
-                    Minecraft.getInstance().getTextureManager().getTexture(Gui.CROSSHAIR_SPRITE).load(resourceManager);
-                } catch (IOException e) {
-                    // if there was an error, just reload everything
-                    Minecraft.getInstance().reloadResourcePacks();
-                }
-            }
         } else if (!this.resourcePacks.equals(newPacks) &&
             ClientDataHolderVR.getInstance().menuWorldRenderer != null &&
             ClientDataHolderVR.getInstance().menuWorldRenderer.isReady())

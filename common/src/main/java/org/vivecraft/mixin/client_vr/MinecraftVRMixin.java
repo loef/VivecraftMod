@@ -27,6 +27,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
@@ -176,6 +177,10 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
     @Shadow
     @Final
     private RenderBuffers renderBuffers;
+
+    @Shadow
+    @Final
+    private TextureManager textureManager;
 
     @WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;clear(Z)V"))
     private void vivecraft$initVivecraft(RenderTarget instance, boolean onOSX, Operation<Void> original) {
