@@ -1298,13 +1298,13 @@ public class VREffectsHelper {
             switch (blockhitresult.getDirection()) {
                 case DOWN -> {
                     poseStack.mulPose(
-                        Axis.YP.rotationDegrees(DATA_HOLDER.vrPlayer.vrdata_world_render.getAim().getYaw()));
-                    poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+                        Vector3f.YP.rotationDegrees(DATA_HOLDER.vrPlayer.vrdata_world_render.getAim().getYaw()));
+                    poseStack.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
                 }
                 case UP -> {
                     poseStack.mulPose(
-                        Axis.YP.rotationDegrees(-DATA_HOLDER.vrPlayer.vrdata_world_render.getAim().getYaw()));
-                    poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+                        Vector3f.YP.rotationDegrees(-DATA_HOLDER.vrPlayer.vrdata_world_render.getAim().getYaw()));
+                    poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
                 }
                 case WEST -> poseStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
                 case EAST -> poseStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
@@ -1313,9 +1313,9 @@ public class VREffectsHelper {
         } else {
             // if there is no block hit, make it face the controller
             poseStack.mulPose(
-                Axis.YP.rotationDegrees(-DATA_HOLDER.vrPlayer.vrdata_world_render.getAim().getYaw()));
+                Vector3f.YP.rotationDegrees(-DATA_HOLDER.vrPlayer.vrdata_world_render.getAim().getYaw()));
             poseStack.mulPose(
-                Axis.XP.rotationDegrees(-DATA_HOLDER.vrPlayer.vrdata_world_render.getAim().getPitch()));
+                Vector3f.XP.rotationDegrees(-DATA_HOLDER.vrPlayer.vrdata_world_render.getAim().getPitch()));
         }
 
         float scale = (float) (0.125F * DATA_HOLDER.vrSettings.crosshairScale *

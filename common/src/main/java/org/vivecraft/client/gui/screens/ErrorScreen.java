@@ -36,7 +36,7 @@ public class ErrorScreen extends Screen implements ChangeableParentScreen {
         this.addRenderableWidget(
             new Button(this.width / 2 + 5, this.height - 32, 150, 20,
                 Component.translatable("gui.back"),
-                (p) -> Minecraft.getInstance().setScreen(this.lastScreen)));
+                (p) -> onClose()));
         this.addRenderableWidget(
             new Button(this.width / 2 - 155, this.height - 32, 150, 20,
                 Component.translatable("chat.copy.click"),

@@ -461,7 +461,9 @@ public class RenderHelper {
         com.mojang.math.Vector3f light0Old = RenderSystemAccessor.getShaderLightDirections()[0];
         com.mojang.math.Vector3f light1Old = RenderSystemAccessor.getShaderLightDirections()[1];
 
-        Vector3f normal = new Matrix3f(matrix).transform(new Vector3f(0, 0, 1)).normalize();
+        com.mojang.math.Vector3f normal = new com.mojang.math.Vector3f(0, 0, 1);
+        normal.transform(new Matrix3f(matrix));
+        normal.normalize();
 
         // set lights to front
         RenderSystem.setShaderLights(normal, normal);
@@ -471,25 +473,25 @@ public class RenderHelper {
             .color(color[0], color[1], color[2], color[3])
             .uv(0.0F, flipY ? 1.0F : 0.0F)
             .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight)
-            .normal(normal.x, normal.y, normal.z)
+            .normal(normal.x(), normal.y(), normal.z())
             .endVertex();
         bufferbuilder.vertex(matrix, sizeX, -sizeY, 0)
             .color(color[0], color[1], color[2], color[3])
             .uv(1.0F, flipY ? 1.0F : 0.0F)
             .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight)
-            .normal(normal.x, normal.y, normal.z)
+            .normal(normal.x(), normal.y(), normal.z())
             .endVertex();
         bufferbuilder.vertex(matrix, sizeX, sizeY, 0)
             .color(color[0], color[1], color[2], color[3])
             .uv(1.0F, flipY ? 0.0F : 1.0F)
             .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight)
-            .normal(normal.x, normal.y, normal.z)
+            .normal(normal.x(), normal.y(), normal.z())
             .endVertex();
         bufferbuilder.vertex(matrix, -sizeX, sizeY, 0)
             .color(color[0], color[1], color[2], color[3])
             .uv(0.0F, flipY ? 0.0F : 1.0F)
             .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight)
-            .normal(normal.x, normal.y, normal.z)
+            .normal(normal.x(), normal.y(), normal.z())
             .endVertex();
         BufferUploader.drawWithShader(bufferbuilder.end());
 

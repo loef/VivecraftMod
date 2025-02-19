@@ -17,10 +17,10 @@ public class ReloadListener implements ResourceManagerReloadListener {
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
-        List<String> newPacks = resourceManager.listPacks().map(PackResources::packId).toList();
+        List<String> newPacks = resourceManager.listPacks().map(PackResources::getName).toList();
         if (this.resourcePacks == null) {
             // first load
-            this.resourcePacks = resourceManager.listPacks().map(PackResources::packId).toList();
+            this.resourcePacks = resourceManager.listPacks().map(PackResources::getName).toList();
         } else if (!this.resourcePacks.equals(newPacks) &&
             ClientDataHolderVR.getInstance().menuWorldRenderer != null &&
             ClientDataHolderVR.getInstance().menuWorldRenderer.isReady())

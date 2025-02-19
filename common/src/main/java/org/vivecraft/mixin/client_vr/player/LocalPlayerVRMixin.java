@@ -574,7 +574,7 @@ public abstract class LocalPlayerVRMixin extends LocalPlayer_PlayerVRMixin imple
     @Override
     @Unique
     public String vivecraft$getLastMsg() {
-        return vivecraft$lastMsg;
+        return this.vivecraft$lastMsg;
     }
 
     @Override
