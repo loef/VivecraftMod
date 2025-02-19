@@ -1188,11 +1188,11 @@ public class VREffectsHelper {
         RenderSystem.disableCull();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
         // render a big quad 2 meters in front
-        bufferbuilder.addVertex(-100.F, -100.F, -2.0F);
-        bufferbuilder.addVertex(100.F, -100.F, -2.0F);
-        bufferbuilder.addVertex(100.F, 100.F, -2.0F);
-        bufferbuilder.addVertex(-100.F, 100.F, -2.0F);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+        bufferbuilder.vertex(-100.F, -100.F, -2.0F).endVertex();
+        bufferbuilder.vertex(100.F, -100.F, -2.0F).endVertex();
+        bufferbuilder.vertex(100.F, 100.F, -2.0F).endVertex();
+        bufferbuilder.vertex(-100.F, 100.F, -2.0F).endVertex();
+        tesselator.end();
         RenderSystem.depthFunc(GL11C.GL_LEQUAL);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }

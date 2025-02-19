@@ -2,8 +2,8 @@ package org.vivecraft.fabric.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.Timer;
 import net.minecraft.client.ResourceLoadStateTracker;
+import net.minecraft.client.Timer;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

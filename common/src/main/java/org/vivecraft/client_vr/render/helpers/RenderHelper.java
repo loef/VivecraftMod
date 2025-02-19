@@ -474,27 +474,31 @@ public class RenderHelper {
         RenderSystem.setShaderLights(normal, normal);
         RenderSystem.setupShaderLights(RenderSystem.getShader());
 
-        bufferbuilder.addVertex(matrix, -sizeX, -sizeY, 0)
-            .setColor(color[0], color[1], color[2], color[3])
-            .setUv(0.0F, flipY ? 1.0F : 0.0F)
-            .setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight)
-            .setNormal(normal.x, normal.y, normal.z);
-        bufferbuilder.addVertex(matrix, sizeX, -sizeY, 0)
-            .setColor(color[0], color[1], color[2], color[3])
-            .setUv(1.0F, flipY ? 1.0F : 0.0F)
-            .setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight)
-            .setNormal(normal.x, normal.y, normal.z);
-        bufferbuilder.addVertex(matrix, sizeX, sizeY, 0)
-            .setColor(color[0], color[1], color[2], color[3])
-            .setUv(1.0F, flipY ? 0.0F : 1.0F)
-            .setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight)
-            .setNormal(normal.x, normal.y, normal.z);
-        bufferbuilder.addVertex(matrix, -sizeX, sizeY, 0)
-            .setColor(color[0], color[1], color[2], color[3])
-            .setUv(0.0F, flipY ? 0.0F : 1.0F)
-            .setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight)
-            .setNormal(normal.x, normal.y, normal.z);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+        bufferbuilder.vertex(matrix, -sizeX, -sizeY, 0)
+            .color(color[0], color[1], color[2], color[3])
+            .uv(0.0F, flipY ? 1.0F : 0.0F)
+            .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight)
+            .normal(normal.x, normal.y, normal.z)
+            .endVertex();
+        bufferbuilder.vertex(matrix, sizeX, -sizeY, 0)
+            .color(color[0], color[1], color[2], color[3])
+            .uv(1.0F, flipY ? 1.0F : 0.0F)
+            .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight)
+            .normal(normal.x, normal.y, normal.z)
+            .endVertex();
+        bufferbuilder.vertex(matrix, sizeX, sizeY, 0)
+            .color(color[0], color[1], color[2], color[3])
+            .uv(1.0F, flipY ? 0.0F : 1.0F)
+            .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight)
+            .normal(normal.x, normal.y, normal.z)
+            .endVertex();
+        bufferbuilder.vertex(matrix, -sizeX, sizeY, 0)
+            .color(color[0], color[1], color[2], color[3])
+            .uv(0.0F, flipY ? 0.0F : 1.0F)
+            .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight)
+            .normal(normal.x, normal.y, normal.z)
+            .endVertex();
+        BufferUploader.drawWithShader(bufferbuilder.end());
 
         MC.gameRenderer.lightTexture().turnOffLightLayer();
 
