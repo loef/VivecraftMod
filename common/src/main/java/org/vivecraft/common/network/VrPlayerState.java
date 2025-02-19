@@ -188,12 +188,13 @@ public record VrPlayerState(boolean seated, Pose hmd, boolean leftHanded, Pose m
 
     /**
      * gets the Pose for the given body part
+     *
      * @param bodyPart BodyPart to get the pose for
      * @return Pose of the {@code bodyPart}, or {@code null} if the body part is not valid for the current FBT mode
      */
     @Nullable
     public Pose getBodyPartPose(BodyPart bodyPart) {
-        return switch(bodyPart) {
+        return switch (bodyPart) {
             case MAIN_HAND -> this.mainHand;
             case OFF_HAND -> this.offHand;
             case LEFT_FOOT -> this.leftFoot;

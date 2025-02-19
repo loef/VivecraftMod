@@ -54,7 +54,6 @@ public class IrisNewWorldRenderingPipelineVRMixin {
                 !((Set<?>) customImages.get(this)).isEmpty() || shaderStorageBufferHolde.get(this) != null;
         } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
             IrisHelper.SLOW_MODE = ClientDataHolderVR.getInstance().vrSettings.disableShaderOptimization;
-            throw new RuntimeException(e);
         }
 
         if (!IrisHelper.SLOW_MODE &&

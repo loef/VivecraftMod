@@ -21,9 +21,8 @@ import org.vivecraft.client.utils.ScaleHelper;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRState;
 import org.vivecraft.client_vr.render.RenderPass;
+import org.vivecraft.client_vr.render.helpers.VREffectsHelper;
 import org.vivecraft.client_vr.settings.VRSettings;
-import org.vivecraft.mod_compat_vr.immersiveportals.ImmersivePortalsHelper;
-import org.vivecraft.mod_compat_vr.shaders.ShadersHelper;
 
 public class VRPlayerRenderer extends PlayerRenderer {
     // Vanilla model
@@ -145,7 +144,7 @@ public class VRPlayerRenderer extends PlayerRenderer {
     public Vec3 getRenderOffset(AbstractClientPlayer player, float partialTick) {
         // idk why we do this anymore
         // this changes the offset to only apply when swimming, instead of crouching
-        if (VRState.VR_RUNNING && player == Minecraft.getInstance().player) {
+        if (VREffectsHelper.isFirstPersonPlayer(player)) {
             return player.isVisuallySwimming() ?
                 new Vec3(0.0F, -0.125F * ClientDataHolderVR.getInstance().vrPlayer.worldScale, 0.0F) : Vec3.ZERO;
         } else {
@@ -160,41 +159,37 @@ public class VRPlayerRenderer extends PlayerRenderer {
         // no crouch hip movement when roomscale crawling
         this.getModel().crouching &= !player.isVisuallySwimming();
 
-        if (player == Minecraft.getInstance().player &&
-            ClientDataHolderVR.getInstance().currentPass == RenderPass.CAMERA &&
-            ClientDataHolderVR.getInstance().cameraTracker.isQuickMode() &&
-            ClientDataHolderVR.getInstance().grabScreenShot)
-        {
-            // player hands block the camera, so disable them for the screenshot
-            hideHand(HumanoidArm.LEFT, true);
-            hideHand(HumanoidArm.RIGHT, true);
-        }
-        if (player == Minecraft.getInstance().player &&
-            ClientDataHolderVR.getInstance().vrSettings.shouldRenderSelf &&
-            !ShadersHelper.isRenderingShadows() &&
-            !(ImmersivePortalsHelper.isLoaded() && ImmersivePortalsHelper.isRenderingPortal()) &&
-            RenderPass.isFirstPerson(ClientDataHolderVR.getInstance().currentPass))
-        {
-            // hide the head or you won't see anything
-            this.getModel().head.visible = false;
-            this.getModel().hat.visible = false;
-
-            // hide model arms when not using them
-            if (ClientDataHolderVR.getInstance().vrSettings.modelArmsMode !=
-                VRSettings.ModelArmsMode.COMPLETE)
+        if (VREffectsHelper.isFirstPersonPlayer(player)) {
+            if (ClientDataHolderVR.getInstance().currentPass == RenderPass.CAMERA &&
+                ClientDataHolderVR.getInstance().cameraTracker.isQuickMode() &&
+                ClientDataHolderVR.getInstance().grabScreenShot)
             {
-                // keep the shoulders when in shoulder mode
-                hideHand(HumanoidArm.LEFT, ClientDataHolderVR.getInstance().vrSettings.modelArmsMode ==
-                    VRSettings.ModelArmsMode.OFF);
-                hideHand(HumanoidArm.RIGHT, ClientDataHolderVR.getInstance().vrSettings.modelArmsMode ==
-                    VRSettings.ModelArmsMode.OFF);
-            } else {
-                boolean leftHanded = ClientDataHolderVR.getInstance().vrSettings.reverseHands;
-                if (ClientDataHolderVR.getInstance().menuHandOff) {
-                    hideHand(leftHanded ? HumanoidArm.RIGHT : HumanoidArm.LEFT, false);
-                }
-                if (ClientDataHolderVR.getInstance().menuHandMain) {
-                    hideHand(leftHanded ? HumanoidArm.LEFT : HumanoidArm.RIGHT, false);
+                // player hands block the camera, so disable them for the screenshot
+                hideHand(HumanoidArm.LEFT, true);
+                hideHand(HumanoidArm.RIGHT, true);
+            }
+            if (VREffectsHelper.isFirstPersonEntityPass()) {
+                // hide the head or you won't see anything
+                this.getModel().head.visible = false;
+                this.getModel().hat.visible = false;
+
+                // hide model arms when not using them
+                if (ClientDataHolderVR.getInstance().vrSettings.modelArmsMode !=
+                    VRSettings.ModelArmsMode.COMPLETE)
+                {
+                    // keep the shoulders when in shoulder mode
+                    hideHand(HumanoidArm.LEFT, ClientDataHolderVR.getInstance().vrSettings.modelArmsMode ==
+                        VRSettings.ModelArmsMode.OFF);
+                    hideHand(HumanoidArm.RIGHT, ClientDataHolderVR.getInstance().vrSettings.modelArmsMode ==
+                        VRSettings.ModelArmsMode.OFF);
+                } else {
+                    boolean leftHanded = ClientDataHolderVR.getInstance().vrSettings.reverseHands;
+                    if (ClientDataHolderVR.getInstance().menuHandOff) {
+                        hideHand(leftHanded ? HumanoidArm.RIGHT : HumanoidArm.LEFT, false);
+                    }
+                    if (ClientDataHolderVR.getInstance().menuHandMain) {
+                        hideHand(leftHanded ? HumanoidArm.LEFT : HumanoidArm.RIGHT, false);
+                    }
                 }
             }
         }
