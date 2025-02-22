@@ -189,7 +189,7 @@ public class VRPassHelper {
         Profiler.get().pop();
 
         // render the different vr passes
-        List<RenderPass> list = DATA_HOLDER.vrRenderer.getRenderPasses();
+        List<RenderPass> list = DATA_HOLDER.vrRenderer.getRenderPasses(false);
         DATA_HOLDER.isFirstPass = true;
         for (RenderPass renderpass : list) {
             DATA_HOLDER.currentPass = renderpass;
