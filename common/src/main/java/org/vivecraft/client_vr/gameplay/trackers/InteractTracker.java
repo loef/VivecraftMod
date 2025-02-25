@@ -289,17 +289,20 @@ public class InteractTracker extends Tracker {
             if (VivecraftVRMod.INSTANCE.keyVRInteract.consumeClick(ControllerType.values()[c]) && this.active[c]) {
                 InteractionHand hand = InteractionHand.values()[c];
                 boolean success = false;
+                boolean swing = true;
 
                 if (this.hotbar >= 0 && this.hotbar < 9 && this.mc.player.getInventory().selected != this.hotbar &&
                     hand == InteractionHand.MAIN_HAND)
                 {
                     this.mc.player.getInventory().selected = this.hotbar;
                     success = true;
+                    swing = false;
                 } else if (this.hotbar == 9 && hand == InteractionHand.MAIN_HAND) {
                     this.mc.player.connection.send(
                         new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.SWAP_ITEM_WITH_OFFHAND,
                             BlockPos.ZERO, Direction.DOWN));
                     success = true;
+                    swing = false;
                 } else if (this.inCamera[c]) {
                     VRHotkeys.startMovingThirdPersonCam(c, VRHotkeys.Triggerer.INTERACTION);
                     success = true;
@@ -321,9 +324,11 @@ public class InteractTracker extends Tracker {
                 }
 
                 if (success) {
-                    // swing arm on success
-                    this.dh.swingType = VRFirstPersonArmSwing.Interact;
-                    this.mc.player.swing(hand);
+                    if (swing) {
+                        // swing arm on success
+                        this.dh.swingType = VRFirstPersonArmSwing.Interact;
+                        this.mc.player.swing(hand);
+                    }
                     this.dh.vr.triggerHapticPulse(c, 750);
                 }
             }
