@@ -228,6 +228,8 @@ public class VRSettings {
     public float worldRotationCached;
     @SettingField(value = VrOptions.WORLD_ROTATION_INCREMENT, config = "vrWorldRotationIncrement")
     public float worldRotationIncrement = 45f;
+    @SettingField(VrOptions.WORLD_ROTATION_X_SENSITIVITY)
+    public float worldRotationXSensitivity = 1f;
     @SettingField(VrOptions.X_SENSITIVITY)
     public float xSensitivity = 1f;
     @SettingField(VrOptions.Y_SENSITIVITY)
@@ -1949,8 +1951,9 @@ public class VRSettings {
         VEHICLE_ROTATION(false, true), // Vehicle Rotation
         // SEATED
         RESET_ORIGIN(false, true), // Reset Origin
-        X_SENSITIVITY(true, false, 0.1f, 5f, 0.01f, 2), // Rotation Speed
-        Y_SENSITIVITY(true, false, 0.1f, 5f, 0.01f, 2), // Y Sensitivity
+        WORLD_ROTATION_X_SENSITIVITY(true, false, 0.1f, 5f, 0.01f, 2), // Rotation Speed
+        X_SENSITIVITY(true, false, 0.1f, 5f, 0.01f, 2), // seated Rotation Speed
+        Y_SENSITIVITY(true, false, 0.1f, 5f, 0.01f, 2), // seated Y Sensitivity
         KEYHOLE(true, false, 0f, 40f, 5f, 0) { // Keyhole
 
             @Override

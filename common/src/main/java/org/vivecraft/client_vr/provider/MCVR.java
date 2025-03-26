@@ -891,7 +891,7 @@ public abstract class MCVR {
             ax += Math.abs(this.getInputAction(MOD.keyRotateRight).getAxis1DUseTracked());
 
             if (ax != 0.0F) {
-                float analogRotSpeed = 10.0F * ax;
+                float analogRotSpeed = this.dh.vrSettings.worldRotationXSensitivity * 10.0F * ax;
                 this.dh.vrSettings.worldRotation -= analogRotSpeed;
                 this.dh.vrSettings.worldRotation %= 360.0F;
             }
