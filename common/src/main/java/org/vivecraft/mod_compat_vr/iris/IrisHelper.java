@@ -1,12 +1,15 @@
 package org.vivecraft.mod_compat_vr.iris;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.irisshaders.iris.api.v0.IrisApi;
+import net.irisshaders.iris.api.v0.IrisProgram;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.vivecraft.client.Xplat;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.client_xr.render_pass.RenderPassManager;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -20,6 +23,10 @@ public class IrisHelper {
     private static Method Iris_getPipelineManager;
     private static Method PipelineManager_getPipeline;
     private static Method WorldRenderingPipeline_shouldRenderUnderwaterOverlay;
+
+    private static Field ImmediateState_skipExtension;
+    private static Method ImmediateState_skipExtension_set;
+    private static Method ImmediateState_skipExtension_get;
 
     // for iris/dh compat
     private static boolean DH_PRESENT = false;
@@ -163,6 +170,32 @@ public class IrisHelper {
         return new Matrix4f();
     }
 
+    public static void registerPipeline(RenderPipeline pipeline, String shader) {
+        IrisProgram program = IrisProgram.valueOf(shader);
+        IrisApi.getInstance().assignPipeline(pipeline, program);
+    }
+
+    public static void setSkipBufferExtension(boolean enabled) {
+        if (init()) {
+            try {
+                ImmediateState_skipExtension_set.invoke(ImmediateState_skipExtension.get(null), enabled);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                VRSettings.LOGGER.error("Vivecraft: couldn't set iris buffer extension:", e);
+            }
+        }
+    }
+
+    public static boolean getSkipBufferExtension() {
+        if (init()) {
+            try {
+                return (boolean) ImmediateState_skipExtension_get.invoke(ImmediateState_skipExtension.get(null));
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                VRSettings.LOGGER.error("Vivecraft: couldn't set iris buffer extension:", e);
+            }
+        }
+        return false;
+    }
+
     /**
      * initializes all Reflections
      *
@@ -192,6 +225,12 @@ public class IrisHelper {
             WorldRenderingPipeline_shouldRenderUnderwaterOverlay = worldRenderingPipeline.getMethod(
                 "shouldRenderUnderwaterOverlay");
 
+            Class<?> immediateState = Class.forName("net.irisshaders.iris.vertices.ImmediateState");
+            ImmediateState_skipExtension = immediateState.getField("skipExtension");
+            ImmediateState_skipExtension_set = ImmediateState_skipExtension.get(null).getClass()
+                .getMethod("set", Object.class);
+            ImmediateState_skipExtension_get = ImmediateState_skipExtension.get(null).getClass()
+                .getMethod("get");
 
             // distant horizon compat
             if (Xplat.isModLoaded("distanthorizons")) {
@@ -232,7 +271,7 @@ public class IrisHelper {
                     DH_PRESENT = false;
                 }
             }
-        } catch (ClassNotFoundException | NoSuchMethodException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | NoSuchFieldException | IllegalAccessException e) {
             INIT_FAILED = true;
         }
 

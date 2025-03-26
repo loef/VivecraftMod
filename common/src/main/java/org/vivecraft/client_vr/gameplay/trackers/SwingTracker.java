@@ -94,7 +94,7 @@ public class SwingTracker extends Tracker {
      * @return if the given {@code item} is a Tool
      */
     public static boolean isTool(Item item) {
-        return item instanceof DiggerItem ||
+        return item instanceof ShovelItem ||
             item instanceof ArrowItem ||
             item instanceof FishingRodItem ||
             item instanceof FoodOnAStickItem ||
@@ -140,13 +140,13 @@ public class SwingTracker extends Tracker {
                 boolean isSword = false;
 
                 if (this.dh.vrSettings.onlySwordCollision &&
-                    !(item instanceof SwordItem || itemstack.is(ItemTags.VIVECRAFT_SWORDS)))
+                    !(itemstack.is(ItemTags.VIVECRAFT_SWORDS)))
                 {
                     // only swords can hit
                     continue;
                 }
 
-                if (!(item instanceof SwordItem || itemstack.is(ItemTags.VIVECRAFT_SWORDS)) &&
+                if (!(itemstack.is(ItemTags.VIVECRAFT_SWORDS)) &&
                     !(item instanceof TridentItem || itemstack.is(ItemTags.VIVECRAFT_SPEARS)))
                 {
                     if (isTool(item)) {
