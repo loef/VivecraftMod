@@ -64,7 +64,7 @@ public class PostChainVRMixin {
 
     @Inject(method = "getTempTarget", at = @At("RETURN"), cancellable = true)
     private void vivecraft$getVRTempTarget(String attributeName, CallbackInfoReturnable<RenderTarget> cir) {
-        if (VRState.VR_INITIALIZED && !this.vivecraft$VRPostChains.isEmpty()) {
+        if (cir.getReturnValue() != null && VRState.VR_INITIALIZED && !this.vivecraft$VRPostChains.isEmpty()) {
             EnumMap<RenderPass, RenderTarget> vrTargets = new EnumMap<>(RenderPass.class);
             for (Map.Entry<RenderPass, PostChain> entry : this.vivecraft$VRPostChains.entrySet()) {
                 vrTargets.put(entry.getKey(), entry.getValue().getTempTarget(attributeName));
