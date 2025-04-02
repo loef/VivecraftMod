@@ -30,6 +30,7 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.server.TheGame;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.util.profiling.Profiler;
@@ -39,6 +40,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
@@ -151,6 +153,10 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
     @Shadow
     @Final
     private DeltaTracker.Timer deltaTracker;
+
+    @Shadow
+    @Nullable
+    public abstract TheGame getSingleplayerGame();
 
     @WrapOperation(method = "<init>", at = @At(value = "NEW", target = "net/minecraft/server/packs/resources/ReloadableResourceManager"))
     private ReloadableResourceManager vivecraft$initVivecraft(
@@ -554,7 +560,7 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
                 VRSettings.LOGGER.info("Vivecraft: Saving to {}", foundFile.getAbsolutePath());
 
                 if (isLocalServer()) {
-                    final Level level = getSingleplayerServer().getLevel(this.player.level().dimension());
+                    final Level level = getSingleplayerGame().getLevel(this.player.level().dimension());
                     File finalFoundFile = foundFile;
                     CompletableFuture<Throwable> completablefuture = getSingleplayerServer().submit(() -> {
                         try {

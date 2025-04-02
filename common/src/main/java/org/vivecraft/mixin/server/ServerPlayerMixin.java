@@ -6,7 +6,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.TheGame;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -49,7 +49,7 @@ public abstract class ServerPlayerMixin extends PlayerMixin {
 
     @Shadow
     @Final
-    public MinecraftServer server;
+    private TheGame theGame;
 
     protected ServerPlayerMixin(EntityType<? extends LivingEntity> entityType, Level level) {
         super(entityType, level);
@@ -137,7 +137,7 @@ public abstract class ServerPlayerMixin extends PlayerMixin {
         return damage;
     }
 
-    @ModifyReturnValue(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At(value = "RETURN")
+    @ModifyReturnValue(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At(value = "RETURN")
     )
     private ItemEntity vivecraft$dropVive(ItemEntity item, @Local(argsOnly = true, ordinal = 0) boolean dropAround) {
         ServerVivePlayer serverVivePlayer = vivecraft$getVivePlayer();
@@ -276,7 +276,7 @@ public abstract class ServerPlayerMixin extends PlayerMixin {
             // actually send the message, if there is one set
             if (!message.isEmpty()) {
                 try {
-                    this.server.getPlayerList()
+                    this.theGame.playerList()
                         .broadcastSystemMessage(Component.literal(message.formatted(getName().getString(), entity)),
                             false);
                 } catch (IllegalFormatException e) {

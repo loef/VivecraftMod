@@ -117,7 +117,7 @@ public class ServerNetworking {
 
                 vivePlayer.setVR(payload.vr());
 
-                ServerVRPlayers.getPlayersWithVivecraft(player.server).put(player.getUUID(), vivePlayer);
+                ServerVRPlayers.getPlayersWithVivecraft(player.theGame().server()).put(player.getUUID(), vivePlayer);
 
                 packetConsumer.accept(new VersionPayloadS2C(CommonDataHolder.getInstance().versionIdentifier));
                 packetConsumer.accept(new RequestDataPayloadS2C());
@@ -345,7 +345,8 @@ public class ServerNetworking {
     private static void sendPacketToTrackingPlayers(
         ServerVivePlayer vivePlayer, Function<Integer, Packet<?>> packetProvider)
     {
-        Map<UUID, ServerVivePlayer> vivePlayers = ServerVRPlayers.getPlayersWithVivecraft(vivePlayer.player.server);
+        Map<UUID, ServerVivePlayer> vivePlayers = ServerVRPlayers.getPlayersWithVivecraft(vivePlayer.player.theGame()
+            .server());
         for (var trackedPlayer : getTrackingPlayers(vivePlayer.player)) {
             if (!vivePlayers.containsKey(trackedPlayer.getPlayer().getUUID()) ||
                 trackedPlayer.getPlayer() == vivePlayer.player)

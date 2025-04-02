@@ -2,8 +2,6 @@ package org.vivecraft.client_vr.gameplay.trackers;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -77,20 +75,7 @@ public class TelescopeTracker extends Tracker {
 
     // TODO: old eye of the farseer, remove this eventually
     public static boolean isLegacyTelescope(ItemStack itemStack) {
-        if (itemStack.isEmpty()) {
-            return false;
-        } else if (!itemStack.has(DataComponents.CUSTOM_NAME)) {
-            return false;
-        } else if (itemStack.getItem() != Items.ENDER_EYE) {
-            return false;
-        } else if (!itemStack.has(DataComponents.UNBREAKABLE)) {
-            return false;
-        } else {
-            return itemStack.getHoverName().getString().equals("Eye of the Farseer") ||
-                (itemStack.getHoverName().getContents() instanceof TranslatableContents translatableContents &&
-                    translatableContents.getKey().equals("vivecraft.item.telescope")
-                );
-        }
+        return false;
     }
 
     private static Vector3f getLensOrigin(int controller) {

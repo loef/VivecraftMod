@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
+import net.minecraft.world.level.biome.ClimateSettings;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.FluidState;
 import org.vivecraft.common.network.packet.c2s.VivecraftPayloadC2S;
@@ -148,7 +149,7 @@ public interface Xplat {
      * @return ClimateSettings of the given Biome
      */
     @ExpectPlatform
-    static Biome.ClimateSettings getBiomeClimateSettings(Biome biome) {
+    static ClimateSettings getBiomeClimateSettings(Biome biome) {
         throw new AssertionError();
     }
 

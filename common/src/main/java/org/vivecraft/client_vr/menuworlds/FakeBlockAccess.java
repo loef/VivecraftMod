@@ -1,7 +1,6 @@
 package org.vivecraft.client_vr.menuworlds;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.core.*;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -17,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
+import net.minecraft.world.level.dimension.DimensionSpecialEffects;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.lighting.LevelLightEngine;
@@ -78,7 +78,7 @@ public class FakeBlockAccess implements LevelReader {
         this.thunder = thunder;
 
         this.biomeManager = new BiomeManager(this, BiomeManager.obfuscateSeed(seed));
-        this.dimensionInfo = DimensionSpecialEffects.forType(dimensionType);
+        this.dimensionInfo = dimensionType.dimensionSpecialEffects();
 
         // set the ground to the height of the center block
         BlockPos pos = new BlockPos(0, (int) this.ground, 0);

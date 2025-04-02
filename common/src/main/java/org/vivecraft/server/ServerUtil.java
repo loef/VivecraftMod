@@ -60,7 +60,7 @@ public class ServerUtil {
                     String message = "";
 
                     boolean isOpAndAllowed = ServerConfig.ALLOW_OP.get() &&
-                        serverPlayer.server.getPlayerList().isOp(serverPlayer.getGameProfile());
+                        serverPlayer.theGame().playerList().isOp(serverPlayer.getGameProfile());
 
                     // kick non VR players
                     if (!isOpAndAllowed && ServerConfig.VR_ONLY.get() && (vivePlayer == null || !vivePlayer.isVR())) {
@@ -106,7 +106,7 @@ public class ServerUtil {
                         // actually send the message, if there is one set
                         if (!message.isEmpty()) {
                             try {
-                                serverPlayer.server.getPlayerList().broadcastSystemMessage(
+                                serverPlayer.theGame().playerList().broadcastSystemMessage(
                                     Component.literal(message.formatted(serverPlayer.getName().getString())), false);
                             } catch (IllegalFormatException e) {
                                 // catch errors users might put into the messages, to not crash other stuff
@@ -128,8 +128,8 @@ public class ServerUtil {
     public static void sendUpdateNotificationIfOP(ServerPlayer serverPlayer) {
         if (ServerConfig.CHECK_FOR_UPDATES.get()) {
             // don't send update notifications on singleplayer
-            if (serverPlayer.server.isDedicatedServer() &&
-                serverPlayer.server.getPlayerList().isOp(serverPlayer.getGameProfile()))
+            if (serverPlayer.theGame().server().isDedicatedServer() &&
+                serverPlayer.theGame().playerList().isOp(serverPlayer.getGameProfile()))
             {
                 // check for update on not the main thread
                 SCHEDULER.schedule(() -> {

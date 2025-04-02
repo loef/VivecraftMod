@@ -10,15 +10,16 @@ import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
 import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
 import net.minecraft.server.RunningOnDifferentThreadException;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.phys.Vec3;
 import org.vivecraft.server.config.ServerConfig;
 
 public class AimFixHandler extends ChannelInboundHandlerAdapter {
     private final Connection netManager;
+    private final ServerPlayer player;
 
-    public AimFixHandler(Connection netManager) {
+    public AimFixHandler(Connection netManager, ServerPlayer player) {
         this.netManager = netManager;
+        this.player = player;
     }
 
     /**
@@ -29,30 +30,29 @@ public class AimFixHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        ServerPlayer serverPlayer = ((ServerGamePacketListenerImpl) this.netManager.getPacketListener()).player;
         boolean isCapturedPacket = msg instanceof ServerboundUseItemPacket ||
             msg instanceof ServerboundUseItemOnPacket ||
             msg instanceof ServerboundPlayerActionPacket;
 
-        if (!ServerVRPlayers.isVRPlayer(serverPlayer) || !isCapturedPacket || serverPlayer.getServer() == null) {
+        if (!ServerVRPlayers.isVRPlayer(this.player) || !isCapturedPacket) {
             // we don't need to handle this packet, just defer to the next handler in the pipeline
             ctx.fireChannelRead(msg);
             return;
         }
 
-        serverPlayer.getServer().submit(() -> {
+        this.player.theGame().server().submit(() -> {
             // Save all the current orientation data
-            Vec3 pos = serverPlayer.position();
-            Vec3 prevPos = new Vec3(serverPlayer.xo, serverPlayer.yo, serverPlayer.zo);
-            float xRot = serverPlayer.getXRot();
-            float yRot = serverPlayer.getYRot();
-            float yHeadRot = serverPlayer.yHeadRot;
-            float prevXRot = serverPlayer.xRotO;
-            float prevYRot = serverPlayer.yRotO;
-            float prevYHeadRot = serverPlayer.yHeadRotO;
-            float eyeHeight = serverPlayer.getEyeHeight();
+            Vec3 pos = this.player.position();
+            Vec3 prevPos = new Vec3(this.player.xo, this.player.yo, this.player.zo);
+            float xRot = this.player.getXRot();
+            float yRot = this.player.getYRot();
+            float yHeadRot = this.player.yHeadRot;
+            float prevXRot = this.player.xRotO;
+            float prevYRot = this.player.yRotO;
+            float prevYHeadRot = this.player.yHeadRotO;
+            float eyeHeight = this.player.getEyeHeight();
 
-            ServerVivePlayer vivePlayer = ServerVRPlayers.getVivePlayer(serverPlayer);
+            ServerVivePlayer vivePlayer = ServerVRPlayers.getVivePlayer(this.player);
 
             ((Packet) msg).handle(this.netManager.getPacketListener());
             if (true) {
@@ -65,16 +65,16 @@ public class AimFixHandler extends ChannelInboundHandlerAdapter {
                 Vec3 dir = vivePlayer.getBodyPartDir(vivePlayer.activeBodyPart);
 
                 // Inject our custom orientation data
-                serverPlayer.setPosRaw(aimPos.x, aimPos.y, aimPos.z);
-                serverPlayer.xo = aimPos.x;
-                serverPlayer.yo = aimPos.y;
-                serverPlayer.zo = aimPos.z;
-                serverPlayer.setXRot((float) Math.toDegrees(Math.asin(-dir.y)));
-                serverPlayer.setYRot((float) Math.toDegrees(Math.atan2(-dir.x, dir.z)));
-                serverPlayer.xRotO = serverPlayer.getXRot();
-                serverPlayer.yRotO = serverPlayer.yHeadRotO = serverPlayer.yHeadRot = serverPlayer.getYRot();
+                this.player.setPosRaw(aimPos.x, aimPos.y, aimPos.z);
+                this.player.xo = aimPos.x;
+                this.player.yo = aimPos.y;
+                this.player.zo = aimPos.z;
+                this.player.setXRot((float) Math.toDegrees(Math.asin(-dir.y)));
+                this.player.setYRot((float) Math.toDegrees(Math.atan2(-dir.x, dir.z)));
+                this.player.xRotO = this.player.getXRot();
+                this.player.yRotO = this.player.yHeadRotO = this.player.yHeadRot = this.player.getYRot();
                 // non 0 to avoid divisions by 0
-                serverPlayer.eyeHeight = 0.0001F;
+                this.player.eyeHeight = 0.0001F;
 
                 // Set up offset to fix relative positions
                 vivePlayer.offset = pos.subtract(aimPos);
@@ -100,28 +100,28 @@ public class AimFixHandler extends ChannelInboundHandlerAdapter {
                 ReferenceCountUtil.release(msg);
             }
 
-            // if the packed changed the player position, use that
-            if ((aimPos != null && !serverPlayer.position().equals(aimPos)) ||
-                (aimPos == null && !serverPlayer.position().equals(pos)))
+            // if the packed changed the this.player position, use that
+            if ((aimPos != null && !this.player.position().equals(aimPos)) ||
+                (aimPos == null && !this.player.position().equals(pos)))
             {
-                pos = serverPlayer.position();
+                pos = this.player.position();
                 if (ServerConfig.DEBUG.get()) {
                     ServerNetworking.LOGGER.info("Vivecraft: AimFix moved Player to: {} {} {}", pos.x, pos.y, pos.z);
                 }
             }
 
             // Restore the original orientation data
-            serverPlayer.setPosRaw(pos.x, pos.y, pos.z);
-            serverPlayer.xo = prevPos.x;
-            serverPlayer.yo = prevPos.y;
-            serverPlayer.zo = prevPos.z;
-            serverPlayer.setXRot(xRot);
-            serverPlayer.setYRot(yRot);
-            serverPlayer.yHeadRot = yHeadRot;
-            serverPlayer.xRotO = prevXRot;
-            serverPlayer.yRotO = prevYRot;
-            serverPlayer.yHeadRotO = prevYHeadRot;
-            serverPlayer.eyeHeight = eyeHeight;
+            this.player.setPosRaw(pos.x, pos.y, pos.z);
+            this.player.xo = prevPos.x;
+            this.player.yo = prevPos.y;
+            this.player.zo = prevPos.z;
+            this.player.setXRot(xRot);
+            this.player.setYRot(yRot);
+            this.player.yHeadRot = yHeadRot;
+            this.player.xRotO = prevXRot;
+            this.player.yRotO = prevYRot;
+            this.player.yHeadRotO = prevYHeadRot;
+            this.player.eyeHeight = eyeHeight;
 
             // Reset offset
             if (vivePlayer != null) {

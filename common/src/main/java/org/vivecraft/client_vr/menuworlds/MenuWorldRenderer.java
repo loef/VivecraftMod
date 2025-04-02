@@ -36,7 +36,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
+import net.minecraft.world.level.dimension.DimensionSpecialEffects;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -714,9 +714,12 @@ public class MenuWorldRenderer {
     // End VanillaFix support
 
     public void renderSky(Matrix4fStack poseStack, Vec3 position) {
-        if (this.dimensionInfo.skyType() == DimensionSpecialEffects.SkyType.END) {
+        if (this.dimensionInfo.sky().isEmpty()) {
+            return;
+        }
+        if (this.dimensionInfo.sky().get().type() == DimensionSpecialEffects.SkyType.END) {
             this.renderEndSky();
-        } else if (this.dimensionInfo.skyType() == DimensionSpecialEffects.SkyType.OVERWORLD) {
+        } else if (this.dimensionInfo.sky().get().type() == DimensionSpecialEffects.SkyType.OVERWORLD) {
 
             this.fogRenderer.setupFog(FogRenderer.FogMode.FOG_SKY);
 
@@ -1480,7 +1483,7 @@ public class MenuWorldRenderer {
             f = 1.0F - (float) Math.pow(f, 0.25);
             Vec3 eyePos = this.menuWorldRenderer.getEyePos();
             Vec3 skyColor = this.menuWorldRenderer.getSkyColor(eyePos);
-            if (OptifineHelper.isOptifineLoaded()) {
+            /*if (OptifineHelper.isOptifineLoaded()) {
                 if (this.menuWorldRenderer.blockAccess.dimensionType().effectsLocation()
                     .equals(BuiltinDimensionTypes.OVERWORLD_EFFECTS))
                 {
@@ -1491,12 +1494,12 @@ public class MenuWorldRenderer {
                 {
                     skyColor = OptifineHelper.getCustomSkyColorEnd(skyColor);
                 }
-            }
+            }*/
             float skyRed = (float) skyColor.x;
             float skyGreen = (float) skyColor.y;
             float skyBlue = (float) skyColor.z;
             Vec3 fogColor = this.menuWorldRenderer.getFogColor(eyePos);
-            if (OptifineHelper.isOptifineLoaded()) {
+            /*if (OptifineHelper.isOptifineLoaded()) {
                 if (this.menuWorldRenderer.blockAccess.dimensionType().effectsLocation()
                     .equals(BuiltinDimensionTypes.OVERWORLD_EFFECTS))
                 {
@@ -1511,7 +1514,7 @@ public class MenuWorldRenderer {
                 {
                     fogColor = OptifineHelper.getCustomFogColorNether(fogColor);
                 }
-            }
+            }*/
             this.fogRed = (float) fogColor.x;
             this.fogGreen = (float) fogColor.y;
             this.fogBlue = (float) fogColor.z;

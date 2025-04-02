@@ -21,6 +21,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
+import net.minecraft.world.level.biome.ClimateSettings;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.FluidState;
 import org.vivecraft.client.Xplat;
@@ -113,7 +114,7 @@ public class XplatImpl implements Xplat {
         }
     }
 
-    public static Biome.ClimateSettings getBiomeClimateSettings(Biome biome) {
+    public static ClimateSettings getBiomeClimateSettings(Biome biome) {
         return ((BiomeAccessor) (Object) biome).getClimateSettings();
     }
 

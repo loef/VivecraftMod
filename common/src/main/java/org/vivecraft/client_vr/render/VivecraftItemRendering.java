@@ -58,7 +58,7 @@ public class VivecraftItemRendering {
 
                 // TODO 1.21.5 block items detection (signs and such)
                 //if (ITEM_STACK_RENDER_STATE.isGui3d()) {
-                    itemTransformType = VivecraftItemTransformType.Block_3D;
+                itemTransformType = VivecraftItemTransformType.Block_3D;
                 /*} else {
                     itemTransformType = VivecraftItemTransformType.Block_Item;
                 }*/

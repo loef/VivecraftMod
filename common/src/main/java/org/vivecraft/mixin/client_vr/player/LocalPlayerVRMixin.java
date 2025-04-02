@@ -451,7 +451,7 @@ public abstract class LocalPlayerVRMixin extends LocalPlayer_PlayerVRMixin imple
 
         if (this.onGround()) {
             friction *= this.level().getBlockState(this.getBlockPosBelowThatAffectsMyMovement())
-                .getBlock().getFriction();
+                .getBlock().getFriction(this.level().getIsIcy());
         }
 
         // account for stock drag code we can't change in LivingEntity#travel

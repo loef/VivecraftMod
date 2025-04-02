@@ -141,7 +141,7 @@ public abstract class ClientPacketListenerVRMixin extends ClientCommonPacketList
         }
     }
 
-    @Inject(method = "handleOpenScreen", at = @At("HEAD"))
+    @Inject(method = "handleWindowScreen", at = @At("HEAD"))
     private void vivecraft$markScreenActive(CallbackInfo ci) {
         GuiHandler.GUI_APPEAR_OVER_BLOCK_ACTIVE = true;
     }

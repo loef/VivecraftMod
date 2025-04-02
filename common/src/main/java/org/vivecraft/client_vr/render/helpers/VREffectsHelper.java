@@ -1,20 +1,20 @@
 package org.vivecraft.client_vr.render.helpers;
 
+import com.mojang.blaze3d.buffers.BufferType;
+import com.mojang.blaze3d.buffers.BufferUsage;
+import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTexture;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.FogParameters;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.LevelTargetBundle;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -65,6 +65,8 @@ import org.vivecraft.mod_compat_vr.shaders.ShadersHelper;
 import java.lang.Math;
 import java.util.Calendar;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 import java.util.stream.Stream;
 
 public class VREffectsHelper {
@@ -265,6 +267,39 @@ public class VREffectsHelper {
     private static final ResourceLocation GRASS = ResourceLocation.withDefaultNamespace(
         "textures/block/grass_block_top.png");
 
+    private static GpuBuffer codeVBO;
+
+    private static GpuBuffer getCodeBuffer() {
+        if (codeVBO == null) {
+            try (ByteBufferBuilder byteBufferBuilder = new ByteBufferBuilder(
+                16 * DefaultVertexFormat.POSITION_TEX.getVertexSize()))
+            {
+                BufferBuilder bufferBuilder = new BufferBuilder(byteBufferBuilder, VertexFormat.Mode.QUADS,
+                    DefaultVertexFormat.POSITION_TEX);
+
+                for (int i = 0; i < 4; ++i) {
+                    Matrix4f matrix = new Matrix4f();
+                    switch (i) {
+                        case 1 -> matrix.rotationY(-Mth.HALF_PI);
+                        case 2 -> matrix.rotationY(Mth.HALF_PI);
+                        case 3 -> matrix.rotationY(Mth.PI);
+                    }
+                    bufferBuilder.addVertex(matrix, 100.0f, 400, -100.0f).setUv(1.0f, 1.0f);
+                    bufferBuilder.addVertex(matrix, -100.0f, 400, -100.0f).setUv(0.0f, 1.0f);
+                    bufferBuilder.addVertex(matrix, -100.0f, -400, -100.0f).setUv(0.0f, 0.0f);
+                    bufferBuilder.addVertex(matrix, 100.0f, -400.0f, -100.0f).setUv(1.0f, 0.0f);
+                }
+
+                try (MeshData meshData = bufferBuilder.buildOrThrow()) {
+                    codeVBO = RenderSystem.getDevice()
+                        .createBuffer(() -> "Code vertex buffer", BufferType.VERTICES, BufferUsage.STATIC_WRITE,
+                            meshData.vertexBuffer());
+                }
+            }
+        }
+        return codeVBO;
+    }
+
     /**
      * renders a 100^3 cubemap and a dirt/grass floor
      *
@@ -285,7 +320,8 @@ public class VREffectsHelper {
         VertexConsumer consumer;
 
         // down
-        RenderType renderType = RenderType.guiTextured(CUBE_DOWN);
+        /*
+        RenderType renderType = RenderType.guiTextured(SkyRenderer.THE_CODE);
         consumer = MC.renderBuffers().bufferSource().getBuffer(renderType);
         consumer.addVertex(poseStack, 0, 0, 0)
             .setUv(0, 0).setColor(255, 255, 255, 255);
@@ -298,7 +334,7 @@ public class VREffectsHelper {
         MC.renderBuffers().bufferSource().endBatch(renderType);
 
         // up
-        renderType = RenderType.guiTextured(CUBE_UP);
+        renderType = RenderType.guiTextured(SkyRenderer.THE_CODE);
         consumer = MC.renderBuffers().bufferSource().getBuffer(renderType);
         consumer.addVertex(poseStack, 0, 100, 100)
             .setUv(0, 0).setColor(255, 255, 255, 255);
@@ -311,7 +347,7 @@ public class VREffectsHelper {
         MC.renderBuffers().bufferSource().endBatch(renderType);
 
         // left
-        renderType = RenderType.guiTextured(CUBE_LEFT);
+        renderType = RenderType.guiTextured(SkyRenderer.THE_CODE);
         consumer = MC.renderBuffers().bufferSource().getBuffer(renderType);
         consumer.addVertex(poseStack, 0, 0, 0)
             .setUv(1, 1).setColor(255, 255, 255, 255);
@@ -324,7 +360,7 @@ public class VREffectsHelper {
         MC.renderBuffers().bufferSource().endBatch(renderType);
 
         // right
-        renderType = RenderType.guiTextured(CUBE_RIGHT);
+        renderType = RenderType.guiTextured(SkyRenderer.THE_CODE);
         consumer = MC.renderBuffers().bufferSource().getBuffer(renderType);
         consumer.addVertex(poseStack, 100, 0, 0)
             .setUv(0, 1).setColor(255, 255, 255, 255);
@@ -337,7 +373,7 @@ public class VREffectsHelper {
         MC.renderBuffers().bufferSource().endBatch(renderType);
 
         // front
-        renderType = RenderType.guiTextured(CUBE_FRONT);
+        renderType = RenderType.guiTextured(SkyRenderer.THE_CODE);
         consumer = MC.renderBuffers().bufferSource().getBuffer(renderType);
         consumer.addVertex(poseStack, 0, 0, 0)
             .setUv(0, 1).setColor(255, 255, 255, 255);
@@ -350,7 +386,7 @@ public class VREffectsHelper {
         MC.renderBuffers().bufferSource().endBatch(renderType);
 
         // back
-        renderType = RenderType.guiTextured(CUBE_BACK);
+        renderType = RenderType.guiTextured(SkyRenderer.THE_CODE);
         consumer = MC.renderBuffers().bufferSource().getBuffer(renderType);
         consumer.addVertex(poseStack, 0, 0, 100)
             .setUv(1, 1).setColor(255, 255, 255, 255);
@@ -361,6 +397,25 @@ public class VREffectsHelper {
         consumer.addVertex(poseStack, 100, 0, 100)
             .setUv(0, 1).setColor(255, 255, 255, 255);
         MC.renderBuffers().bufferSource().endBatch(renderType);
+*/
+        RenderSystem.setShaderGameTime(MC.tickCount() + 1000L, ClientUtils.getCurrentPartialTick());
+        AbstractTexture endSkyTexture = MC.getTextureManager().getTexture(SkyRenderer.THE_CODE);
+
+        RenderSystem.AutoStorageIndexBuffer autoStorageIndexBuffer = RenderSystem.getSequentialBuffer(
+            VertexFormat.Mode.QUADS);
+        GpuBuffer indexBuffer = autoStorageIndexBuffer.getBuffer(24);
+        GpuBuffer buffer = getCodeBuffer();
+
+        try (com.mojang.blaze3d.systems.RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder()
+            .createRenderPass(MC.getMainRenderTarget().getColorTexture(), OptionalInt.of(0),
+                MC.getMainRenderTarget().getDepthTexture(), OptionalDouble.empty()))
+        {
+            renderPass.setPipeline(RenderPipelines.CODE_SKY);
+            renderPass.bindSampler("Sampler0", endSkyTexture.getTexture());
+            renderPass.setVertexBuffer(0, buffer);
+            renderPass.setIndexBuffer(indexBuffer, autoStorageIndexBuffer.type());
+            renderPass.drawIndexed(0, 24);
+        }
 
         poseStack.popMatrix();
 
@@ -385,7 +440,7 @@ public class VREffectsHelper {
             } else {
                 r = g = b = 128;
             }
-            renderType = RenderType.guiTextured(i == 0 ? GRASS : DIRT);
+            RenderType renderType = RenderType.guiTextured(i == 0 ? GRASS : DIRT);
             consumer = MC.renderBuffers().bufferSource().getBuffer(renderType);
 
             // offset so the floor is centered

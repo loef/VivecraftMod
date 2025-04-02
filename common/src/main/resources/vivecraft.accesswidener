@@ -78,7 +78,6 @@ accessible field net/minecraft/client/gui/Gui CROSSHAIR_SPRITE Lnet/minecraft/re
 # for menuworlds
 accessible field net/minecraft/client/multiplayer/ClientLevel$ClientLevelData isFlat Z
 accessible field net/minecraft/world/level/biome/BiomeManager biomeZoomSeed J
-accessible class net/minecraft/world/level/biome/Biome$ClimateSettings
 accessible field net/minecraft/world/level/biome/AmbientParticleSettings probability F
 extendable class net/minecraft/world/level/material/FluidState
 accessible field net/minecraft/world/level/block/state/StateHolder propertiesCodec Lcom/mojang/serialization/MapCodec;
