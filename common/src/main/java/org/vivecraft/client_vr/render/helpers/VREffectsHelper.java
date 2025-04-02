@@ -722,13 +722,12 @@ public class VREffectsHelper {
         if (RenderPass.isThirdPerson(DATA_HOLDER.currentPass)) {
             return true;
         } else {
-            Vec3 pos = DATA_HOLDER.vrPlayer.vrdata_world_render.getEye(DATA_HOLDER.currentPass).getPosition();
             return DATA_HOLDER.vrSettings.hudOcclusion &&
                 !MethodHolder.isInMenuRoom() &&
                 MC.screen == null &&
                 !KeyboardHandler.SHOWING &&
                 !RadialHandler.isShowing() &&
-                !isInsideOpaqueBlock(pos);
+                !isInsideOpaqueBlock(MC.gameRenderer.getMainCamera().getPosition());
         }
     }
 
@@ -787,8 +786,7 @@ public class VREffectsHelper {
             // disable culling to show it from below and above
             RenderSystem.disableCull();
 
-            Vec3 cameraPos = RenderHelper.getSmoothCameraPosition(DATA_HOLDER.currentPass,
-                DATA_HOLDER.vrPlayer.vrdata_world_render);
+            Vec3 cameraPos = MC.gameRenderer.getMainCamera().getPosition();
 
             Vec3 interpolatedPlayerPos = ((GameRendererExtension) MC.gameRenderer).vivecraft$getRvePos(partialTick);
 
@@ -925,8 +923,7 @@ public class VREffectsHelper {
         removeNausea(partialTick);
 
         Profiler.get().push("applyPhysicalKeyboardModelView");
-        Vec3 eye = RenderHelper.getSmoothCameraPosition(DATA_HOLDER.currentPass,
-            DATA_HOLDER.vrPlayer.vrdata_world_render);
+        Vec3 eye = MC.gameRenderer.getMainCamera().getPosition();
 
         // convert previously calculated coords to world coords
         Vec3 keyboardPos = VRPlayer.roomToWorldPos(KeyboardHandler.POS_ROOM, DATA_HOLDER.vrPlayer.vrdata_world_render);
@@ -1077,8 +1074,7 @@ public class VREffectsHelper {
             depthAlways = true;
 
             poseStack.pushMatrix();
-            Vec3 eye = RenderHelper.getSmoothCameraPosition(DATA_HOLDER.currentPass,
-                DATA_HOLDER.vrPlayer.vrdata_world_render);
+            Vec3 eye = MC.gameRenderer.getMainCamera().getPosition();
             poseStack.translate((float) (DATA_HOLDER.vrPlayer.vrdata_world_render.origin.x - eye.x),
                 (float) (DATA_HOLDER.vrPlayer.vrdata_world_render.origin.y - eye.y),
                 (float) (DATA_HOLDER.vrPlayer.vrdata_world_render.origin.z - eye.z));
@@ -1135,8 +1131,7 @@ public class VREffectsHelper {
 
         Matrix4f modelView = new Matrix4f();
 
-        Vec3 eye = RenderHelper.getSmoothCameraPosition(DATA_HOLDER.currentPass,
-            DATA_HOLDER.vrPlayer.vrdata_world_render);
+        Vec3 eye = MC.gameRenderer.getMainCamera().getPosition();
 
         Vec3 worldPos = VRPlayer.roomToWorldPos(pos, DATA_HOLDER.vrPlayer.vrdata_world_render);
 

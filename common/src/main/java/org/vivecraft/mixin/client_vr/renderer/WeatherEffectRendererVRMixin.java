@@ -22,8 +22,7 @@ public class WeatherEffectRendererVRMixin {
             ClientDataHolderVR.getInstance().currentPass == RenderPass.RIGHT
         ))
         {
-            return ClientDataHolderVR.getInstance().vrPlayer.vrdata_world_render.getEye(RenderPass.CENTER)
-                .getPosition();
+            return ClientDataHolderVR.getInstance().vrPlayer.vrdata_world_render.hmd.getPosition();
         } else {
             return cameraPos;
         }
@@ -35,8 +34,7 @@ public class WeatherEffectRendererVRMixin {
             ClientDataHolderVR.getInstance().currentPass == RenderPass.RIGHT
         ))
         {
-            centerPos.set(
-                ClientDataHolderVR.getInstance().vrPlayer.vrdata_world_render.getEye(RenderPass.CENTER).getPosition());
+            centerPos.set(ClientDataHolderVR.getInstance().vrPlayer.vrdata_world_render.hmd.getPosition());
         }
     }
 

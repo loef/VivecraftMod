@@ -422,9 +422,8 @@ public abstract class GameRendererVRMixin
             } else if (pass == RenderPass.LEFT || pass == RenderPass.RIGHT) {
                 // apply stereo offset, but screen relative, not world
                 VRData data = vivecraft$DATA_HOLDER.vrPlayer.getVRDataWorld();
-                Vector3f offset = MathUtils.subtractToVector3f(data.getEye(pass).getPosition(),
-                    data.getEye(RenderPass.CENTER).getPosition());
-                data.getEye(RenderPass.CENTER).getMatrix().invert().transformPosition(offset);
+                Vector3f offset = MathUtils.subtractToVector3f(data.getEye(pass).getPosition(), data.hmd.getPosition());
+                data.hmd.getMatrix().invert().transformPosition(offset);
                 poseStack.translate(-offset.x, -offset.y, -offset.z);
             }
 
@@ -613,8 +612,7 @@ public abstract class GameRendererVRMixin
         this.vivecraft$inwater = false;
 
         if (!this.minecraft.player.isSpectator() && !MethodHolder.isInMenuRoom() && this.minecraft.player.isAlive()) {
-            Vec3 cameraPos = RenderHelper.getSmoothCameraPosition(vivecraft$DATA_HOLDER.currentPass,
-                vivecraft$DATA_HOLDER.vrPlayer.vrdata_world_render);
+            Vec3 cameraPos = this.mainCamera.getPosition();
             Triple<Float, BlockState, BlockPos> triple = VREffectsHelper.getNearOpaqueBlock(cameraPos,
                 vivecraft$MIN_CLIP_DISTANCE);
 

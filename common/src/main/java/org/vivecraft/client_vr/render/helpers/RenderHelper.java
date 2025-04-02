@@ -59,12 +59,7 @@ public class RenderHelper {
      * @param renderPass RenderPass to get the rotation matrix for
      */
     public static Matrix4f getVRModelView(RenderPass renderPass) {
-        if (renderPass == RenderPass.CENTER && DATA_HOLDER.vrSettings.displayMirrorCenterSmooth > 0.0F) {
-            return new Matrix4f().rotation(MCVR.get().hmdRotHistory
-                .averageRotation(DATA_HOLDER.vrSettings.displayMirrorCenterSmooth));
-        } else {
-            return DATA_HOLDER.vrPlayer.vrdata_world_render.getEye(renderPass).getMatrix().transpose();
-        }
+        return DATA_HOLDER.vrPlayer.vrdata_world_render.getEye(renderPass).getMatrix().transpose();
     }
 
     /**
@@ -91,25 +86,6 @@ public class RenderHelper {
     }
 
     /**
-     * Gets the camera position of the given RenderPass.
-     * If the RenderPass is CENTER the position is smoothed over time if that setting is on
-     *
-     * @param renderPass pass to get the camera position for
-     * @param vrData     vrData to get it from
-     * @return camera position
-     */
-    public static Vec3 getSmoothCameraPosition(RenderPass renderPass, VRData vrData) {
-        if (DATA_HOLDER.currentPass == RenderPass.CENTER && DATA_HOLDER.vrSettings.displayMirrorCenterSmooth > 0.0F) {
-            Vector3f pos = MCVR.get().hmdHistory.averagePosition(DATA_HOLDER.vrSettings.displayMirrorCenterSmooth)
-                .mul(vrData.worldScale)
-                .rotateY(vrData.rotation_radians);
-            return new Vec3(pos.x + vrData.origin.x, pos.y + vrData.origin.y, pos.z + vrData.origin.z);
-        } else {
-            return vrData.getEye(renderPass).getPosition();
-        }
-    }
-
-    /**
      * Applies the offset for the LEFT and RIGHT RenderPass from the headset position
      * Other RenderPasses do nothing
      *
@@ -119,8 +95,7 @@ public class RenderHelper {
     public static void applyStereo(RenderPass renderPass, PoseStack poseStack) {
         if (renderPass == RenderPass.LEFT || renderPass == RenderPass.RIGHT) {
             Vec3 eye = DATA_HOLDER.vrPlayer.vrdata_world_render.getEye(renderPass).getPosition()
-                .subtract(DATA_HOLDER.vrPlayer.vrdata_world_render.getEye(RenderPass.CENTER)
-                    .getPosition());
+                .subtract(DATA_HOLDER.vrPlayer.vrdata_world_render.hmd.getPosition());
             poseStack.translate(-eye.x, -eye.y, -eye.z);
         }
     }
@@ -184,8 +159,7 @@ public class RenderHelper {
      */
     public static void setupRenderingAtController(int c, Matrix4f matrix) {
         Vec3 aimSource = getControllerRenderPos(c);
-        aimSource = aimSource.subtract(
-            getSmoothCameraPosition(DATA_HOLDER.currentPass, DATA_HOLDER.vrPlayer.getVRDataWorld()));
+        aimSource = aimSource.subtract(MC.gameRenderer.getMainCamera().getPosition());
         // move from head to hand origin.
         matrix.translate((float) aimSource.x, (float) aimSource.y, (float) aimSource.z);
 

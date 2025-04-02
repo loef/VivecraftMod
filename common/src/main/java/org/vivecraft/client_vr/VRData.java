@@ -18,6 +18,9 @@ import java.lang.Math;
 public class VRData {
     // headset center
     public VRDevicePose hmd;
+    // smoothed headset center
+    public VRDevicePose center;
+
     // left eye
     public VRDevicePose eye0;
     // right eye
@@ -75,6 +78,23 @@ public class VRData {
 
         // headset
         this.hmd = new VRDevicePose(this, mcVR.hmdRotation, scaledPos, mcVR.getHmdVector());
+
+        // smoothed headset, only when needed
+        float smoothing = dataHolder.vrSettings.displayMirrorCenterSmooth;
+        if (smoothing > 0.0F && (dataHolder.vrSettings.displayMirrorMode == VRSettings.MirrorMode.FIRST_PERSON ||
+            (dataHolder.vrSettings.displayMirrorMode == VRSettings.MirrorMode.MIXED_REALITY &&
+                dataHolder.vrSettings.mixedRealityUndistorted
+            )
+        ))
+        {
+            Matrix4f smoothedRotation = new Matrix4f().rotation(mcVR.hmdRotHistory.averageRotation(smoothing)).transpose();
+            this.center = new VRDevicePose(this,
+                smoothedRotation,
+                mcVR.hmdHistory.averagePosition(dataHolder.vrSettings.displayMirrorCenterSmooth).add(scaleOffset),
+                smoothedRotation.transformDirection(MathUtils.BACK, new Vector3f()));
+        } else {
+            this.center = this.hmd;
+        }
 
         this.eye0 = new VRDevicePose(this,
             mcVR.getEyeRotation(RenderPass.LEFT),
@@ -357,7 +377,7 @@ public class VRData {
      */
     public VRDevicePose getEye(RenderPass pass) {
         return switch (pass) {
-            case CENTER -> this.hmd;
+            case CENTER -> this.center;
             case LEFT -> this.eye0;
             case RIGHT -> this.eye1;
             case THIRD -> this.c2;
