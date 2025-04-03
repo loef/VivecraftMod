@@ -178,7 +178,7 @@ public class DebugRenderHelper {
      */
     private static void renderTackerPositions(boolean showNames) {
         VRData data = DATA_HOLDER.vrPlayer.getVRDataWorld();
-        Vec3 camPos = MC.gameRenderer.getMainCamera().getPosition();
+        Vec3 camPos = data.getEye(DATA_HOLDER.currentPass).getPosition();
         Quaternionf orientation = data.getEye(DATA_HOLDER.currentPass).getMatrix()
             .getNormalizedRotation(new Quaternionf())
             .rotateY(Mth.PI);
@@ -251,7 +251,8 @@ public class DebugRenderHelper {
     private static void addAxes(
         BufferBuilder bufferBuilder, VRData data, VRData.VRDevicePose pose)
     {
-        Vector3f position = pose.getPosition().subtract(MC.gameRenderer.getMainCamera().getPosition()).toVector3f();
+        Vector3f position = pose.getPosition().subtract(data.getEye(DATA_HOLDER.currentPass).getPosition())
+            .toVector3f();
 
         float scale = 0.25F * DATA_HOLDER.vrPlayer.worldScale;
 
@@ -363,7 +364,7 @@ public class DebugRenderHelper {
      */
     public static void renderTextAtPosition(PoseStack poseStack, Vec3 position, String text) {
         VRData data = DATA_HOLDER.vrPlayer.getVRDataWorld();
-        Vec3 camPos = MC.gameRenderer.getMainCamera().getPosition();
+        Vec3 camPos = data.getEye(DATA_HOLDER.currentPass).getPosition();
         Quaternionf rot = data.getEye(DATA_HOLDER.currentPass).getMatrix()
             .getNormalizedRotation(new Quaternionf())
             .rotateY(Mth.PI);

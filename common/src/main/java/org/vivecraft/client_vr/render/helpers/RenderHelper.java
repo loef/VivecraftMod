@@ -159,7 +159,8 @@ public class RenderHelper {
      */
     public static void setupRenderingAtController(int c, Matrix4f matrix) {
         Vec3 aimSource = getControllerRenderPos(c);
-        aimSource = aimSource.subtract(MC.gameRenderer.getMainCamera().getPosition());
+        aimSource = aimSource.subtract(
+            DATA_HOLDER.vrPlayer.vrdata_world_render.getEye(DATA_HOLDER.currentPass).getPosition());
         // move from head to hand origin.
         matrix.translate((float) aimSource.x, (float) aimSource.y, (float) aimSource.z);
 

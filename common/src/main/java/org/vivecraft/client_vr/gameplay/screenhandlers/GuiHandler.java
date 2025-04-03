@@ -673,7 +673,7 @@ public class GuiHandler {
             GUI_SCALE = 1.0F;
         }
 
-        Vec3 eye = MC.gameRenderer.getMainCamera().getPosition();
+        Vec3 eye = DH.vrPlayer.vrdata_world_render.getEye(DH.currentPass).getPosition();
 
         Vec3 translation = guipos.subtract(eye);
         poseMatrix.translate((float) translation.x, (float) translation.y, (float) translation.z);
