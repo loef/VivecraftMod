@@ -26,7 +26,6 @@ loom {
         mixinConfig "vivecraft.iris.mixins.json"
         mixinConfig "vivecraft.mca.mixins.json"
         mixinConfig "vivecraft.optifine.mixins.json"
-        mixinConfig "vivecraft.physicsmod.mixins.json"
         mixinConfig "vivecraft.rei.mixins.json"
         mixinConfig "vivecraft.resolutioncontrol.mixins.json"
         mixinConfig "vivecraft.sereneseasons.mixins.json"
