@@ -661,11 +661,11 @@
   "tag.item.vivecraft.swords": "Vivecraft Schwert",
   "tag.item.vivecraft.telescope": "Vivecraft Fernrohr",
   "tag.item.vivecraft.throw_items": "Vivecraft werfbarer Gegenstand",
-  "tag.item.vivecraft.tools": "Vivecraft Tool",
+  "tag.item.vivecraft.tools": "Vivecraft Werkzeug",
   "tag.item.vivecraft.moditems.irons_spellbooks": "Vivecraft Iron Spellbook",
   "tag.item.vivecraft.moditems.mvw_weapons": "Vivecraft More Vanilla Weapon",
 
   "tag.block.vivecraft.climbable": "Vivecraft kletterbarer Block",
-  "tag.block.vivecraft.crops": "Vivecraft Pflanzen",
-  "tag.block.vivecraft.music_blocks": "Vivecraft Musik Block"
+  "tag.block.vivecraft.crops": "Vivecraft Pflanze",
+  "tag.block.vivecraft.music_blocks": "Vivecraft Musikblock"
 }
