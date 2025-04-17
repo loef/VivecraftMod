@@ -4,9 +4,11 @@ import net.irisshaders.iris.api.v0.IrisApi;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.vivecraft.client.Xplat;
+import org.vivecraft.client_vr.render.RenderPass;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.client_xr.render_pass.RenderPassManager;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -20,6 +22,11 @@ public class IrisHelper {
     private static Method Iris_getPipelineManager;
     private static Method PipelineManager_getPipeline;
     private static Method WorldRenderingPipeline_shouldRenderUnderwaterOverlay;
+
+    private static Class IrisRenderingPipeline;
+    private static Field IrisRenderingPipeline_shaderStorageBufferHolder;
+    private static Method ShaderStorageBufferHolder_setupBuffers;
+    private static RenderPass lastSSBOPass;
 
     // for iris/dh compat
     private static boolean DH_PRESENT = false;
@@ -163,6 +170,23 @@ public class IrisHelper {
         return new Matrix4f();
     }
 
+    public static void swapSSBOs(Object newPipeline, RenderPass newPass) {
+        if (init() && IrisRenderingPipeline_shaderStorageBufferHolder != null &&
+            ShaderStorageBufferHolder_setupBuffers != null && IrisRenderingPipeline != null &&
+            IrisRenderingPipeline.isInstance(newPipeline) && newPass != lastSSBOPass)
+        {
+            try {
+                Object ssbos = IrisRenderingPipeline_shaderStorageBufferHolder.get(newPipeline);
+                if (ssbos != null) {
+                    ShaderStorageBufferHolder_setupBuffers.invoke(ssbos);
+                }
+                lastSSBOPass = newPass;
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                VRSettings.LOGGER.error("Vivecraft: couldn't swap iris ssbos:", e);
+            }
+        }
+    }
+
     /**
      * initializes all Reflections
      *
@@ -192,6 +216,22 @@ public class IrisHelper {
             WorldRenderingPipeline_shouldRenderUnderwaterOverlay = worldRenderingPipeline.getMethod(
                 "shouldRenderUnderwaterOverlay");
 
+            try {
+                // not all iris versions have ssbos so try them separately
+                IrisRenderingPipeline = getClassWithAlternative(
+                    "net.coderbot.iris.pipeline.newshader.NewWorldRenderingPipeline",
+                    "net.irisshaders.iris.pipeline.IrisRenderingPipeline");
+                IrisRenderingPipeline_shaderStorageBufferHolder = IrisRenderingPipeline.getDeclaredField(
+                    "shaderStorageBufferHolder");
+                IrisRenderingPipeline_shaderStorageBufferHolder.setAccessible(true);
+
+                Class<?> shaderStorageBufferHolder = getClassWithAlternative(
+                    "net.coderbot.iris.gl.buffer.ShaderStorageBufferHolder",
+                    "net.irisshaders.iris.gl.buffer.ShaderStorageBufferHolder");
+                ShaderStorageBufferHolder_setupBuffers = shaderStorageBufferHolder.getMethod("setupBuffers");
+            } catch (ClassNotFoundException | NoSuchMethodException | NoSuchFieldException e) {
+                VRSettings.LOGGER.info("Vivecraft: iris has no SSBO support");
+            }
 
             // distant horizon compat
             if (Xplat.isModLoaded("distanthorizons")) {
