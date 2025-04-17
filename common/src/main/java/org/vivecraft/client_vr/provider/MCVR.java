@@ -642,7 +642,7 @@ public abstract class MCVR {
 
         // conjugate, because camera matrices need to be transposed
         this.hmdRotHistory.add(new Quaternionf().setFromNormalized(this.hmdRotation).conjugate()
-            .rotateY((float) -Math.toRadians(this.dh.vrSettings.worldRotation)));
+            .rotateY((float) Math.toRadians(this.dh.vrSettings.worldRotation)));
 
 
         // controllers

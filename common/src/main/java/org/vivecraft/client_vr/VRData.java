@@ -87,10 +87,11 @@ public class VRData {
             )
         ))
         {
-            Matrix4f smoothedRotation = new Matrix4f().rotation(mcVR.hmdRotHistory.averageRotation(smoothing)).transpose();
+            Matrix4f smoothedRotation = new Matrix4f().rotation(mcVR.hmdRotHistory.averageRotation(smoothing))
+                .rotateY(this.rotation_radians).transpose();
             this.center = new VRDevicePose(this,
                 smoothedRotation,
-                mcVR.hmdHistory.averagePosition(dataHolder.vrSettings.displayMirrorCenterSmooth).add(scaleOffset),
+                mcVR.hmdHistory.averagePosition(smoothing).add(scaleOffset),
                 smoothedRotation.transformDirection(MathUtils.BACK, new Vector3f()));
         } else {
             this.center = this.hmd;
