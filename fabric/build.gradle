@@ -68,7 +68,7 @@ dependencies {
     include(implementation("org.lwjgl:lwjgl-openvr:${rootProject.lwjgl_version}:natives-macos")) { transitive = false }
     include(implementation("org.lwjgl:lwjgl-openvr:${rootProject.lwjgl_version}:natives-windows")) { transitive = false }
 
-    include(implementation("org.joml:joml:1.10.5"))
+    include(implementation("org.joml:joml:1.10.8"))
 
     include(implementation("com.illposed.osc:javaosc-core:0.9"))
 

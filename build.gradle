@@ -34,7 +34,7 @@ subprojects {
         implementation("org.lwjgl:lwjgl-openvr:${rootProject.lwjgl_version}:natives-macos") { transitive = false }
         implementation("org.lwjgl:lwjgl-openvr:${rootProject.lwjgl_version}:natives-windows") { transitive = false }
 
-        implementation("org.joml:joml:1.10.5")
+        implementation("org.joml:joml:1.10.8")
 
         // for OSC tracker support
         implementation("com.illposed.osc:javaosc-core:0.9")
