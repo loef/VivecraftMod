@@ -55,7 +55,7 @@ import org.vivecraft.client_vr.gameplay.screenhandlers.RadialHandler;
 import org.vivecraft.client_vr.gameplay.trackers.TelescopeTracker;
 import org.vivecraft.client_vr.provider.ControllerType;
 import org.vivecraft.client_vr.render.RenderPass;
-import org.vivecraft.client_vr.render.VRRenderTypes;
+import org.vivecraft.client_vr.render.rendertypes.VRRenderTypes;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.common.utils.MathUtils;
 import org.vivecraft.mod_compat_vr.immersiveportals.ImmersivePortalsHelper;
@@ -184,7 +184,7 @@ public class VREffectsHelper {
             DATA_HOLDER.vrPlayer.vrdata_world_render.getController(c).getPosition()));
         // draw the overlay, and flip it vertically
         RenderHelper.drawSizedQuadWithLightmap(720.0F, 720.0F, scale, light, poseStack.last().pose(),
-            RenderType.entitySolid(SCOPE_TEXTURE), true);
+            RenderType.entityTranslucent(SCOPE_TEXTURE), true);
 
         poseStack.popPose();
     }
@@ -738,7 +738,6 @@ public class VREffectsHelper {
         MC.renderBuffers().bufferSource().endBatch();
 
         Profiler.get().popPush("VR");
-        MC.gameRenderer.lightTexture().turnOffLightLayer();
 
         if (!secondPass) {
             renderCrosshairAtDepth(!DATA_HOLDER.vrSettings.useCrosshairOcclusion);
@@ -1299,8 +1298,6 @@ public class VREffectsHelper {
             scale *= depthScale;
         }
         modelView.scale(scale, scale, scale);
-
-        MC.gameRenderer.lightTexture().turnOnLightLayer();
 
         // white crosshair, with blending
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

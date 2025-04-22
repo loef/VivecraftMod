@@ -3,10 +3,12 @@ package org.vivecraft.client_vr.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.item.ItemModelResolver;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.*;
@@ -18,6 +20,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.vivecraft.client.network.ClientNetworking;
 import org.vivecraft.client_vr.ClientDataHolderVR;
+import org.vivecraft.client_vr.extensions.BlockModelWrapperExtension;
 import org.vivecraft.client_vr.gameplay.trackers.ClimbTracker;
 import org.vivecraft.client_vr.gameplay.trackers.SwingTracker;
 import org.vivecraft.client_vr.gameplay.trackers.TelescopeTracker;
@@ -27,20 +30,14 @@ import org.vivecraft.data.ItemTags;
 public class VivecraftItemRendering {
     private static final ClientDataHolderVR DH = ClientDataHolderVR.getInstance();
 
-    private static final ItemStackRenderState ITEM_STACK_RENDER_STATE = new ItemStackRenderState();
-
-
     /**
      * determines how the given ItemStack should be rendered
      *
-     * @param itemStack         ItemStack to identify
-     * @param player            Player holding the ItemStack
-     * @param itemModelResolver ItemModelResolver to query the item model from
+     * @param itemStack ItemStack to identify
+     * @param player    Player holding the ItemStack
      * @return ItemTransformType that specifies how the item should be rendered
      */
-    public static VivecraftItemTransformType getTransformType(
-        ItemStack itemStack, AbstractClientPlayer player, ItemModelResolver itemModelResolver)
-    {
+    public static VivecraftItemTransformType getTransformType(ItemStack itemStack, AbstractClientPlayer player) {
         VivecraftItemTransformType itemTransformType = VivecraftItemTransformType.Item;
         Item item = itemStack.getItem();
 
@@ -54,14 +51,14 @@ public class VivecraftItemRendering {
             if (block instanceof TorchBlock) {
                 itemTransformType = VivecraftItemTransformType.Block_Stick;
             } else {
-                itemModelResolver.updateForLiving(ITEM_STACK_RENDER_STATE, itemStack, ItemDisplayContext.GUI, player);
-
-                // TODO 1.21.5 block items detection (signs and such)
-                //if (ITEM_STACK_RENDER_STATE.isGui3d()) {
+                ResourceLocation modelName = itemStack.get(DataComponents.ITEM_MODEL);
+                if (modelName != null) {
+                    ItemModel model = Minecraft.getInstance().getModelManager().getItemModel(modelName);
+                    if (model instanceof BlockModelWrapperExtension blockModel && blockModel.vivecraft$isGenerated()) {
+                        return VivecraftItemTransformType.Block_Item;
+                    }
+                }
                 itemTransformType = VivecraftItemTransformType.Block_3D;
-                /*} else {
-                    itemTransformType = VivecraftItemTransformType.Block_Item;
-                }*/
             }
         } else if (item instanceof MapItem || itemStack.is(ItemTags.VIVECRAFT_MAPS)) {
             itemTransformType = VivecraftItemTransformType.Map;
@@ -91,7 +88,7 @@ public class VivecraftItemRendering {
             itemTransformType = VivecraftItemTransformType.Crossbow;
         } else if (item instanceof CompassItem || item == Items.CLOCK || itemStack.is(ItemTags.VIVECRAFT_COMPASSES)) {
             itemTransformType = VivecraftItemTransformType.Compass;
-        } else if (SwingTracker.isTool(item)) {
+        } else if (SwingTracker.isTool(itemStack)) {
             itemTransformType = VivecraftItemTransformType.Tool;
 
             if (item instanceof FoodOnAStickItem || item instanceof FishingRodItem ||
