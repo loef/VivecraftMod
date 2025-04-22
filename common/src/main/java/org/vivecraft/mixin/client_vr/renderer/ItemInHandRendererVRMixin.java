@@ -160,11 +160,6 @@ public abstract class ItemInHandRendererVRMixin {
 
             boolean useLeftHandModelinLeftHand = false;
 
-            // swap hand for claws, since it's backwards else wise
-            if (ClimbTracker.isClaws(itemStack) && dh.vrSettings.reverseHands) {
-                mainHand = !mainHand;
-            }
-
             ItemDisplayContext itemDisplayContext;
 
             // third person transforms for custom model data items/item model overrides, but not spear, shield and crossbow
@@ -181,6 +176,10 @@ public abstract class ItemInHandRendererVRMixin {
                 (ClientNetworking.isThirdPersonItems() || (hasCMD && ClientNetworking.isThirdPersonItemsCustom()))
             ))
             {
+                // swap hand, since it's backwards else wise
+                if (dh.vrSettings.reverseHands) {
+                    mainHand = !mainHand;
+                }
                 useLeftHandModelinLeftHand = true; // test
                 VivecraftItemRendering.applyThirdPersonItemTransforms(poseStack, transformType, mainHand, player,
                     equippedProgress, partialTick, itemStack, hand);
@@ -251,7 +250,8 @@ public abstract class ItemInHandRendererVRMixin {
     {
         LocalPlayer player = this.minecraft.player;
         boolean rightHand = side == HumanoidArm.RIGHT;
-        boolean mainHand = side == player.getMainArm();
+        boolean mainHand =
+            side == (ClientDataHolderVR.getInstance().vrSettings.reverseHands ? HumanoidArm.LEFT : HumanoidArm.RIGHT);
         float offsetDirection = rightHand ? 1.0F : -1.0F;
 
         RenderSystem.setShaderTexture(0, player.getSkin().texture());
