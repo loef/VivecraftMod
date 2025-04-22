@@ -109,6 +109,9 @@ public abstract class ItemInHandRendererVRMixin {
 
         boolean mainHand = hand == InteractionHand.MAIN_HAND;
         HumanoidArm side = mainHand ? player.getMainArm() : player.getMainArm().getOpposite();
+        if (dh.vrSettings.reverseHands) {
+            side = side.getOpposite();
+        }
         // we need to get this here, because the supplied value is invalid when we call it
         float equippedProgress = this.vivecraft$getEquipProgress(hand, partialTick);
 
