@@ -51,6 +51,7 @@ public class ServerConfig {
     public static ConfigBuilder.BooleanValue DUAL_WIELDING;
     public static ConfigBuilder.DoubleValue BOOTS_ARMOR_DAMAGE;
     public static ConfigBuilder.DoubleValue CREEPER_SWELL_DISTANCE;
+    public static ConfigBuilder.DoubleValue PROJECTILE_INACCURACY_MULTIPLIER;
     public static ConfigBuilder.DoubleValue BOW_STANDING_MULTIPLIER;
     public static ConfigBuilder.DoubleValue BOW_SEATED_MULTIPLIER;
     public static ConfigBuilder.DoubleValue BOW_STANDING_HEADSHOT_MULTIPLIER;
@@ -256,6 +257,11 @@ public class ServerConfig {
             .comment(
                 "Melee damage addition for Vivecraft users when hitting with their feet.\n This scales with the armor attribute of the boots, doing 1 additional damage per Armor level, times the set multiplier\n Set to 0.0 to disable")
             .defineInRange(0.0, 0.0, 5.0);
+        PROJECTILE_INACCURACY_MULTIPLIER = BUILDER
+            .push("projectileInaccuracyMultiplier")
+            .comment(
+                "Projectiles by default have an inaccuracy to not shoot in the same direction all the time.\n With this, the inaccuracy can be adjusted for VR players.\n 1.0 is equal to vanilla, 0.0 is no inaccuracy at all.")
+            .defineInRange(1.0, 0.0, 1.0);
 
         BUILDER
             .push("bow")
