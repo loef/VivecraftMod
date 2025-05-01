@@ -299,7 +299,7 @@ public class NullVR extends MCVR {
                         new Vector3f());
                     this.gunAngle = (float) Math.toDegrees(Math.acos(Math.abs(tipForward.dot(handForward))));
                     this.gunStyle = this.gunAngle > 10.0F;
-                    MirrorNotification.notify("Changed to controller: " + this.currentBodyPart, false, 1000);
+                    MirrorNotification.notify("Changed to controller: " + this.controllerType, false, 1000);
                     triggered = true;
                 } else if (key == GLFW.GLFW_KEY_KP_5) {
                     // toggle body part
