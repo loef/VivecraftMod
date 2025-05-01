@@ -78,7 +78,7 @@ public class VivecraftItemRendering {
             itemTransformType = VivecraftItemTransformType.Horn;
         } else if (item instanceof MaceItem || itemStack.is(ItemTags.VIVECRAFT_MACES)) {
             itemTransformType = VivecraftItemTransformType.Mace;
-        } else if (itemStack.is(ItemTags.VIVECRAFT_SWORDS)) {
+        } else if (itemStack.is(net.minecraft.tags.ItemTags.SWORDS) || itemStack.is(ItemTags.VIVECRAFT_SWORDS)) {
             itemTransformType = VivecraftItemTransformType.Sword;
         } else if (item instanceof ShieldItem || itemStack.is(ItemTags.VIVECRAFT_SHIELDS)) {
             itemTransformType = VivecraftItemTransformType.Shield;
