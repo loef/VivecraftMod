@@ -283,7 +283,7 @@ public class VRSettings {
     public boolean simulateFalling = true;  // VIVE if HMD is over empty space, fall
     @SettingField(value = VrOptions.WEAPON_COLLISION, config = "weaponCollisionNew")
     public WeaponCollision weaponCollision = WeaponCollision.AUTO;  // VIVE weapon hand collides with blocks/enemies
-    @SettingField(value = VrOptions.FEET_COLLISION, config = "weaponCollisionNew")
+    @SettingField(value = VrOptions.FEET_COLLISION)
     public boolean feetCollision = true;  // VIVE weapon feet collides with blocks/enemies
     @SettingField(VrOptions.SWORD_BLOCK_COLLISION)
     public boolean swordBlockCollision = true;
