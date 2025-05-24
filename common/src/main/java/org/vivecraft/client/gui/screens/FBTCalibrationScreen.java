@@ -169,8 +169,6 @@ public class FBTCalibrationScreen extends Screen {
                     .setEnabled(ControllerType.RIGHT, false);
             }
         } else {
-            checkPosition();
-
             PoseStack poseStack = guiGraphics.pose();
             poseStack.pushPose();
 
@@ -289,7 +287,8 @@ public class FBTCalibrationScreen extends Screen {
         }
     }
 
-    private void checkPosition() {
+    @Override
+    public void tick() {
         if (!VRState.VR_RUNNING) {
             this.rightHand.set(MathUtils.DOWN);
             this.leftHand.set(MathUtils.DOWN);

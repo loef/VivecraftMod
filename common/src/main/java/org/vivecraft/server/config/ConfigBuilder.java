@@ -5,6 +5,7 @@ import com.electronwill.nightconfig.core.ConfigSpec;
 import com.electronwill.nightconfig.core.EnumGetMethod;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.util.Mth;
+import org.vivecraft.common.TooltipUtil;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -23,13 +24,27 @@ public class ConfigBuilder {
     }
 
     /**
-     * pushes the given subPath to the path
+     * pushes the given subPath to the path and adds a comment from the lang file, if available
      *
      * @param subPath new sub path
      * @return this builder, for chaining commands
      */
     public ConfigBuilder push(String subPath) {
         this.stack.add(subPath);
+        this.comment(false);
+        return this;
+    }
+
+    /**
+     * pushes the given subPath to the path
+     *
+     * @param subPath       new sub path
+     * @param addAllComment if the group comment should also be added
+     * @return this builder, for chaining commands
+     */
+    public ConfigBuilder push(String subPath, boolean addAllComment) {
+        this.stack.add(subPath);
+        this.comment(addAllComment);
         return this;
     }
 
@@ -41,6 +56,17 @@ public class ConfigBuilder {
     public ConfigBuilder pop() {
         this.stack.removeLast();
         return this;
+    }
+
+    /**
+     * adds a comment taken from the lang file for the current path
+     *
+     * @param addAllComment if the comment for all group elements should also be added
+     * @return this builder, for chaining commands
+     */
+    public ConfigBuilder comment(boolean addAllComment) {
+        return this.comment(
+            TooltipUtil.getServerConfigTooltip(String.join(".", this.stack.stream().toList()), addAllComment));
     }
 
     /**
@@ -410,7 +436,7 @@ public class ConfigBuilder {
         @Override
         public void fromNormalized(double value) {
             double newValue = this.getMin() + (this.getMax() - this.getMin()) * value;
-            this.set(Math.round(newValue * 100.0) / 100.0);
+            this.set(Math.round(newValue * 10.0) / 10.0);
         }
     }
 }

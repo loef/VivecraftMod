@@ -8,9 +8,12 @@ import com.google.gson.*;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joml.Quaternionf;
@@ -21,12 +24,16 @@ import org.slf4j.LoggerFactory;
 import org.vivecraft.client.Xplat;
 import org.vivecraft.client.render.VRPlayerRenderer;
 import org.vivecraft.client.render.armor.VRArmorLayer;
+import org.vivecraft.client.utils.ClientUtils;
 import org.vivecraft.client.utils.LangHelper;
+import org.vivecraft.client.utils.StencilHelper;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRState;
 import org.vivecraft.client_vr.gameplay.VRPlayer;
+import org.vivecraft.client_vr.gameplay.screenhandlers.GuiHandler;
 import org.vivecraft.client_vr.gameplay.screenhandlers.KeyboardHandler;
 import org.vivecraft.client_vr.gui.PhysicalKeyboard;
+import org.vivecraft.client_vr.provider.MCVR;
 import org.vivecraft.common.utils.math.AngleOrder;
 
 import java.awt.*;
@@ -35,8 +42,8 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -209,8 +216,6 @@ public class VRSettings {
     @SettingField(fixedSize = false)
     public String[] vrServerBlacklist = getServerBlacklistDefault();
 
-    @SettingField(VrOptions.RADIAL_NUMBER)
-    public int vrRadialButtons = 8;
     @SettingField(fixedSize = false)
     public int[] keyboardCodes = getKeyboardCodesDefault();
 
@@ -519,6 +524,8 @@ public class VRSettings {
     public int forceHardwareDetection = 0; // 0 = off, 1 = vive, 2 = oculus
     @SettingField(VrOptions.RADIAL_MODE_HOLD)
     public boolean radialModeHold = true;
+    @SettingField(VrOptions.RADIAL_NUMBER)
+    public int vrRadialButtons = 8;
     @SettingField(VrOptions.PHYSICAL_KEYBOARD)
     public boolean physicalKeyboard = true;
     @SettingField(VrOptions.PHYSICAL_KEYBOARD_SCALE)
@@ -951,9 +958,64 @@ public class VRSettings {
                     loadDefault(name, null, option, type, mapping.separate, this.defaultsMap));
                 field.set(this, obj);
             }
+            option.onOptionChange();
         } catch (Exception exception) {
             LOGGER.warn("Vivecraft: Failed to load default VR option: {}", option, exception);
         }
+    }
+
+    /**
+     * checks if the given setting has its default value
+     *
+     * @return if the setting is on the default value
+     */
+    public boolean isDefault(VrOptions option) {
+        try {
+            var mapping = this.fieldEnumMap.get(option);
+            if (mapping == null) {
+                return true;
+            }
+            Field field = mapping.field;
+            Class<?> type = field.getType();
+            String name = mapping.configName;
+
+            if (type.isArray()) {
+                Object arr = field.get(this);
+                int len = Array.getLength(arr);
+                boolean equal = true;
+                if (mapping.separate) {
+                    for (int i = 0; i < len; i++) {
+                        Object obj = Objects.requireNonNull(
+                            loadDefault(name + "_" + i, null, option, type.getComponentType(), false,
+                                this.defaultsMap));
+                        equal &= Objects.equals(Array.get(arr, i), obj);
+                    }
+                } else {
+                    String str = this.defaultsMap.get(name);
+                    String[] split = str.split(";", -1); // Avoid conflicting with other comma-delimited types
+                    for (int i = 0; i < len; i++) {
+                        Object obj = Objects.requireNonNull(
+                            loadDefault(name, split[i], option, type.getComponentType(), false, this.defaultsMap));
+                        equal &= Objects.equals(Array.get(arr, i), obj);
+                    }
+                }
+                return equal;
+            } else {
+                Object obj = Objects.requireNonNull(
+                    loadDefault(name, null, option, type, mapping.separate, this.defaultsMap));
+                return Objects.equals(field.get(this), obj);
+            }
+        } catch (Exception exception) {
+            LOGGER.warn("Vivecraft: Failed to get default VR option: {}", option, exception);
+        }
+        return true;
+    }
+
+    /**
+     * @return if the setting has a value
+     */
+    public boolean hasValue(VrOptions option) {
+        return this.fieldEnumMap.containsKey(option);
     }
 
     /**
@@ -1236,24 +1298,24 @@ public class VRSettings {
     public void setOptionValue(VrOptions vrOption) {
         try {
             var mapping = this.fieldEnumMap.get(vrOption);
-            if (mapping == null) return;
+            if (mapping != null) {
+                Field field = mapping.field;
+                Class<?> type = field.getType();
 
-            Field field = mapping.field;
-            Class<?> type = field.getType();
-
-            Object obj = vrOption.setOptionValue(field.get(this));
-            if (obj != null) {
-                field.set(this, obj);
-            } else if (type == Boolean.TYPE) {
-                field.set(this, !(boolean) field.get(this));
-            } else if (OptionEnum.class.isAssignableFrom(type)) {
-                field.set(this, ((OptionEnum<?>) field.get(this)).getNext());
-            } else {
-                LOGGER.warn("Vivecraft: Don't know how to set VR option {} with type {}", mapping.configName,
-                    type.getSimpleName());
-                return;
+                Object obj = vrOption.setOptionValue(field.get(this));
+                if (obj != null) {
+                    field.set(this, obj);
+                } else if (type == Boolean.TYPE) {
+                    field.set(this, !(boolean) field.get(this));
+                } else if (OptionEnum.class.isAssignableFrom(type)) {
+                    field.set(this, ((OptionEnum<?>) field.get(this)).getNext());
+                } else {
+                    LOGGER.warn("Vivecraft: Don't know how to set VR option {} with type {}", mapping.configName,
+                        type.getSimpleName());
+                    return;
+                }
             }
-
+            // always call option change even nothing was done
             vrOption.onOptionChange();
             this.saveOptions();
         } catch (Exception exception) {
@@ -1300,11 +1362,13 @@ public class VRSettings {
 
     public enum VrOptions {
         DUMMY(false, true), // Dummy
-        RENDER_DEBUG_HEAD_HITBOX(false, true), // renders entities head hit boxes
-        RENDER_DEBUG_DEVICE_AXES(false, true), // renders axes for the local devices
-        RENDER_DEBUG_PLAYER_AXES(false, true), // renders axes for all client vr players
-        RENDER_DEBUG_TRACKERS(false, true), // renders a cube at the tracker position
-        VR_PLUGIN(false, true), // vr plugin to use
+        VR_PLUGIN(false, true) { // vr plugin to use
+
+            @Override
+            public boolean isChangeable() {
+                return !VRState.VR_INITIALIZED;
+            }
+        },
         VR_ENABLED(false, true) { // vr or nonvr
 
             @Override
@@ -1373,7 +1437,14 @@ public class VRSettings {
         RENDER_MENU_BACKGROUND(false, true), // HUD/GUI Background
         HUD_OCCLUSION(false, true), // HUD Occlusion
         MENU_ALWAYS_FOLLOW_FACE(false, true, "vivecraft.options.always",
-            "vivecraft.options.seated"), // Main Menu Follow
+            "vivecraft.options.seated") { // Main Menu Follow
+
+            @Override
+            void onOptionChange() {
+                // update screen pos
+                GuiHandler.onScreenChanged(Minecraft.getInstance().screen, Minecraft.getInstance().screen, false);
+            }
+        },
         CROSSHAIR_OCCLUSION(false, true), // Crosshair Occlusion
         CROSSHAIR_SCALE(true, false, 0.25f, 1.0f, 0.01f, -1), // Crosshair Size
         MENU_CROSSHAIR_SCALE(true, false, 0.25f, 2.5f, 0.05f, -1), // Menu Crosshair Size
@@ -1410,9 +1481,9 @@ public class VRSettings {
                 try {
                     SoundEvent se = BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse((String) value)).get()
                         .value();
-                    return I18n.get(se.location().getPath());
+                    return prefix + ClientUtils.getNameFromSoundEvent(se.location()).getString();
                 } catch (Exception e) {
-                    return "error";
+                    return prefix + "unknown sound: " + value;
                 }
             }
 
@@ -1448,6 +1519,7 @@ public class VRSettings {
         AUTO_OPEN_KEYBOARD(false, true), // Always Open Keyboard
         AUTO_CLOSE_KEYBOARD(false, true), // Close Keyboard on Screenchange
         RADIAL_MODE_HOLD(false, true, "vivecraft.options.hold", "vivecraft.options.press"), // Radial Menu Mode
+        RADIAL_NUMBER(false, false, 4, 14, 2, 0), // number of radial buttons
         PHYSICAL_KEYBOARD(false, true, "vivecraft.options.keyboard.physical",
             "vivecraft.options.keyboard.pointer"), // Keyboard Type
         PHYSICAL_KEYBOARD_SCALE(true, false, 0.75f, 1.5f, 0.01f, -1) { // Keyboard Size
@@ -1458,7 +1530,13 @@ public class VRSettings {
                     ClientDataHolderVR.getInstance().vrSettings.physicalKeyboardScale);
             }
         },
-        PHYSICAL_KEYBOARD_THEME(false, false), // Keyboard Theme
+        PHYSICAL_KEYBOARD_THEME(false, false) { // Keyboard Theme
+
+            @Override
+            void onOptionChange() {
+                KeyboardHandler.PHYSICAL_KEYBOARD.init();
+            }
+        },
         KEYBOARD_PRESS_BINDS(false, true), // Keyboard Presses Bindings
         GUI_APPEAR_OVER_BLOCK(false, true), // Appear Over Block
         SHADER_GUI_RENDER(false, false), // Shaders GUI
@@ -1467,7 +1545,24 @@ public class VRSettings {
         SHADER_SLOW(false, true, "options.off",
             "vivecraft.options.disableshaderoptimization.auto"), // disables shader optimizations
         SHADER_PATCHING(false, true), // automatic shader patching for known incompatibilites
-        DOUBLE_GUI_RESOLUTION(false, true), // 1440p GUI
+        DOUBLE_GUI_RESOLUTION(false, true) { // 1440p GUI
+
+            @Override
+            void onOptionChange() {
+                if (VRState.VR_INITIALIZED) {
+                    ClientDataHolderVR.getInstance().vrRenderer.resizeFrameBuffers("Gui Res Changed");
+                }
+            }
+        },
+        GUI_MIPMAPS(false, true) { // gui rendering with mipmaps
+
+            @Override
+            void onOptionChange() {
+                if (VRState.VR_INITIALIZED) {
+                    ClientDataHolderVR.getInstance().vrRenderer.reinitFrameBuffers("Gui Mips Changed");
+                }
+            }
+        },
         GUI_SCALE(true, true, 0, 6, 1, 0) { // GUI Scale
 
             @Override
@@ -1497,7 +1592,15 @@ public class VRSettings {
             "vivecraft.options.right"), // setting button position
         MODIFY_PAUSE_MENU(false, true), // if the pause menu should be altered
         // HMD/render
-        FSAA(false, true), // Lanczos Scaler
+        FSAA(false, true) { // Lanczos Scaler
+
+            @Override
+            void onOptionChange() {
+                if (VRState.VR_INITIALIZED) {
+                    ClientDataHolderVR.getInstance().vrRenderer.reinitFrameBuffers("FSAA Setting Changed");
+                }
+            }
+        },
         LOW_HEALTH_INDICATOR(false, true), // red low health pulse
         HIT_INDICATOR(false, true), // red flash when hit
         WATER_EFFECT(false, true), // distortion when entering/exiting water
@@ -1536,7 +1639,7 @@ public class VRSettings {
             @Override
             String getDisplayString(String prefix, Object value) {
                 if ((float) value == 0) {
-                    return prefix + I18n.get("options.off");
+                    return prefix + I18n.get(LangHelper.OFF_KEY);
                 } else {
                     return prefix + String.format("%.1f", (float) value) + "s";
                 }
@@ -1655,8 +1758,24 @@ public class VRSettings {
         REVERSE_HANDS(false, true), // Reverse Hands
         REVERSE_BOW(false, true), // Reverses Roomscale Bow Aiming
         AIM_DEVICE(false, true), // what device to use, to aim the crosshair with
-        STENCIL_ON(false, true), // Use Eye Stencil
-        STENCIL_BUFFER_DISABLE(false, true), // disables the use of the stencil buffer
+        STENCIL_ON(false, true) { // Use Eye Stencil
+
+            @Override
+            void onOptionChange() {
+                if (VRState.VR_INITIALIZED && StencilHelper.stencilBufferSupported()) {
+                    ClientDataHolderVR.getInstance().vrRenderer.reinitFrameBuffers("Stencil Setting Changed");
+                }
+            }
+        },
+        STENCIL_BUFFER_DISABLE(false, true) { // disables the use of the stencil buffer
+
+            @Override
+            void onOptionChange() {
+                if (VRState.VR_INITIALIZED && ClientDataHolderVR.getInstance().vrSettings.vrUseStencil) {
+                    ClientDataHolderVR.getInstance().vrRenderer.reinitFrameBuffers("Stencil Override Changed");
+                }
+            }
+        },
         BCB_ON(false, true), // Show Body Position
         WORLD_SCALE(true, false, 0, 29, 1, 2) { // World Scale
 
@@ -1838,7 +1957,6 @@ public class VRSettings {
         TOUCH_HOTBAR(false, true), // Touch Hotbar Enabled
         PLAY_MODE_SEATED(false, true, "vivecraft.options.seated", "vivecraft.options.standing"), // Play Mode
         VR_HOTSWITCH(false, true),
-        GUI_MIPMAPS(false, true), // gui rendering with mipmaps
         RENDER_SCALEFACTOR(true, false, 0.1f, 9f, 0.1f, 0) { // Resolution
 
             @Override
@@ -1950,7 +2068,16 @@ public class VRSettings {
         },
         VEHICLE_ROTATION(false, true), // Vehicle Rotation
         // SEATED
-        RESET_ORIGIN(false, true), // Reset Origin
+        RESET_ORIGIN(false, true) { // Reset Origin
+
+            @Override
+            void onOptionChange() {
+                if (VRState.VR_RUNNING) {
+                    MCVR.get().resetPosition();
+                    Minecraft.getInstance().setScreen(null);
+                }
+            }
+        },
         WORLD_ROTATION_X_SENSITIVITY(true, false, 0.1f, 5f, 0.01f, 2), // Rotation Speed
         X_SENSITIVITY(true, false, 0.1f, 5f, 0.01f, 2), // seated Rotation Speed
         Y_SENSITIVITY(true, false, 0.1f, 5f, 0.01f, 2), // seated Y Sensitivity
@@ -2021,7 +2148,7 @@ public class VRSettings {
             @Override
             String getDisplayString(String prefix, Object value) {
                 return (int) value > 0 ? prefix + LangHelper.get("vivecraft.options.teleportlimit", value) :
-                    prefix + "OFF";
+                    prefix + I18n.get(LangHelper.OFF_KEY);
             }
         },
         TELEPORT_UP_LIMIT(true, false, 0, 4, 1, 0) { // Up Limit
@@ -2029,7 +2156,7 @@ public class VRSettings {
             @Override
             String getDisplayString(String prefix, Object value) {
                 return (int) value > 0 ? prefix + LangHelper.get("vivecraft.options.teleportlimit", value) :
-                    prefix + "OFF";
+                    prefix + I18n.get(LangHelper.OFF_KEY);
             }
         },
         TELEPORT_HORIZ_LIMIT(true, false, 0, 32, 1, 0) { // Distance Limit
@@ -2037,7 +2164,7 @@ public class VRSettings {
             @Override
             String getDisplayString(String prefix, Object value) {
                 return (int) value > 0 ? prefix + LangHelper.get("vivecraft.options.teleportlimit", value) :
-                    prefix + "OFF";
+                    prefix + I18n.get(LangHelper.OFF_KEY);
             }
         },
         ALLOW_STANDING_ORIGIN_OFFSET(false, true, LangHelper.YES_KEY, LangHelper.NO_KEY), // Allow Origin Offset
@@ -2061,23 +2188,40 @@ public class VRSettings {
             "vivecraft.options.menuworldfallback.dirtbox"), // fallback for when menurwold is not shown
         HRTF_SELECTION(false, false) { // HRTF
 
-            // this is now handled by vanilla
+            @Override
+            String getDisplayString(String prefix, Object value) {
+                return prefix + ((int) value >= 0 ? I18n.get(LangHelper.ON_KEY) : I18n.get(LangHelper.OFF_KEY));
+            }
+
             @Override
             Object setOptionValue(Object value) {
-                return value;
+                return (int) value >= 0 ? -1 : 0;
+            }
+
+            @Override
+            void onOptionChange() {
+                if (VRState.VR_RUNNING) {
+                    SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+                    soundManager.reload();
+                    // need to manually play this, since a reload cancels all sounds
+                    soundManager.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                }
             }
         },
         RELOAD_EXTERNAL_CAMERA(false, false) { // Reload External Camera
 
             @Override
-            String getDisplayString(String prefix, Object value) {
-                return I18n.get("vivecraft.options." + name());
+            void onOptionChange() {
+                VRHotkeys.loadExternalCameraConfig(ClientDataHolderVR.getInstance().vrSettings);
             }
         },
         INGAME_BINDINGS_IN_GUI(false, true),
-        RADIAL_NUMBER(false, false, 4, 14, 2, 0),
-        RIGHT_CLICK_DELAY(false, false); // Right Click Repeat
-
+        RIGHT_CLICK_DELAY(false, false), // Right Click Repeat
+        RENDER_DEBUG_HEAD_HITBOX(false, true), // renders entities head hit boxes
+        RENDER_DEBUG_DEVICE_AXES(false, true), // renders axes for the local devices
+        RENDER_DEBUG_PLAYER_AXES(false, true), // renders axes for all client vr players
+        RENDER_DEBUG_TRACKERS(false, true) // renders a cube at the tracker position;
+        ;
         private final boolean enumFloat;
         private final boolean enumBoolean;
         private final float valueStep;
@@ -2158,6 +2302,10 @@ public class VRSettings {
         }
 
         void onOptionChange() {}
+
+        public boolean isChangeable() {
+            return true;
+        }
 
         public boolean getEnumFloat() {
             return this.enumFloat;

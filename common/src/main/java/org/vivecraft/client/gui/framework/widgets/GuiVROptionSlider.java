@@ -26,12 +26,9 @@ public class GuiVROptionSlider extends AbstractSliderButton implements GuiVROpti
         this.enumOptions = option;
         this.valueOnly = valueOnly;
 
-        ClientDataHolderVR dataholder = ClientDataHolderVR.getInstance();
-        if (dataholder.vrSettings.overrides.hasSetting(option) &&
-            dataholder.vrSettings.overrides.getSetting(option).isValueOverridden())
-        {
-            this.active = false;
-        }
+        VRSettings.ServerOverrides overrides = ClientDataHolderVR.getInstance().vrSettings.overrides;
+        this.active = option.isChangeable() &&
+            !(overrides.hasSetting(option) && overrides.getSetting(option).isValueOverridden());
     }
 
     public GuiVROptionSlider(int id, int x, int y, VRSettings.VrOptions option) {

@@ -1,9 +1,11 @@
 package org.vivecraft.client.gui.settings;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
-import org.vivecraft.client.gui.framework.widgets.GuiVROption;
+import org.vivecraft.client.gui.framework.VROptionEntry;
 import org.vivecraft.client.gui.framework.screens.GuiVROptionsBase;
+import org.vivecraft.client.gui.framework.widgets.GuiVROption;
 import org.vivecraft.client_vr.settings.VRSettings;
 
 public class GuiOtherHUDSettings extends GuiVROptionsBase {
@@ -16,9 +18,11 @@ public class GuiOtherHUDSettings extends GuiVROptionsBase {
         VRSettings.VrOptions.CROSSHAIR_SCALES_WITH_DISTANCE,
         VRSettings.VrOptions.CHAT_NOTIFICATIONS
     };
-    private static final VRSettings.VrOptions[] CHAT = new VRSettings.VrOptions[]{
-        VRSettings.VrOptions.CHAT_NOTIFICATION_SOUND
-    };
+    private final VROptionEntry[] chat = new VROptionEntry[]{
+        new VROptionEntry(VRSettings.VrOptions.CHAT_NOTIFICATION_SOUND, (button, mousePos) -> {
+            Minecraft.getInstance().setScreen(new GuiChatNotificationSelection(this));
+            return true;
+        })};
 
     private static final VRSettings.VrOptions[] MESSAGES = new VRSettings.VrOptions[]{
         VRSettings.VrOptions.SHOW_UPDATES,
@@ -40,7 +44,7 @@ public class GuiOtherHUDSettings extends GuiVROptionsBase {
         if (this.dataHolder.vrSettings.chatNotifications == VRSettings.ChatNotifications.SOUND ||
             this.dataHolder.vrSettings.chatNotifications == VRSettings.ChatNotifications.BOTH)
         {
-            super.init(CHAT, false);
+            super.init(this.chat, false);
         } else {
             super.init(new VRSettings.VrOptions[]{VRSettings.VrOptions.DUMMY}, false);
         }

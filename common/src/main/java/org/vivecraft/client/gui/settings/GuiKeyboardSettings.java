@@ -1,10 +1,8 @@
 package org.vivecraft.client.gui.settings;
 
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
-import org.vivecraft.client.gui.framework.widgets.GuiVROption;
-import org.vivecraft.client.gui.framework.screens.GuiVROptionsBase;
 import org.vivecraft.client.gui.framework.VROptionEntry;
+import org.vivecraft.client.gui.framework.screens.GuiVROptionsBase;
 import org.vivecraft.client_vr.gameplay.screenhandlers.KeyboardHandler;
 import org.vivecraft.client_vr.settings.VRSettings;
 
@@ -35,14 +33,5 @@ public class GuiKeyboardSettings extends GuiVROptionsBase {
     @Override
     protected void loadDefaults() {
         super.loadDefaults();
-    }
-
-    @Override
-    protected void actionPerformed(AbstractWidget widget) {
-        if (widget instanceof GuiVROption button) {
-            if (button.getId() == VRSettings.VrOptions.PHYSICAL_KEYBOARD_THEME.ordinal()) {
-                KeyboardHandler.PHYSICAL_KEYBOARD.init();
-            }
-        }
     }
 }

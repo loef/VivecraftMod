@@ -4,8 +4,11 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.phys.Vec3;
 import org.vivecraft.client_vr.extensions.MinecraftExtension;
@@ -126,5 +129,20 @@ public class ClientUtils {
 
     public static long milliTime() {
         return System.nanoTime() / 1000000L;
+    }
+
+    public static Component getNameFromSoundEvent(ResourceLocation soundLocation) {
+        String key = soundLocation.getPath();
+        if (I18n.exists(key)) {
+            return Component.translatable(key);
+        } else if (I18n.exists("subtitles." + key)) {
+            return Component.translatable("subtitles." + key);
+        } else if (key.startsWith("music_disc.")) {
+            String jukebox = key.replace("music_disc.", "jukebox_song.minecraft.");
+            if (I18n.exists(jukebox)) {
+                return Component.translatable(jukebox);
+            }
+        }
+        return Component.literal(key);
     }
 }
