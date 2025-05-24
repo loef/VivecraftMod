@@ -1,4 +1,4 @@
-package org.vivecraft.client.gui.framework;
+package org.vivecraft.client.gui.framework.widgets;
 
 import net.minecraft.client.gui.layouts.LayoutElement;
 import org.vivecraft.client_vr.settings.VRSettings;

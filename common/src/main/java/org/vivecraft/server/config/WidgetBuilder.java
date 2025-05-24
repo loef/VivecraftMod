@@ -3,7 +3,7 @@ package org.vivecraft.server.config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.network.chat.Component;
-import org.vivecraft.client.gui.settings.GuiListValueEditScreen;
+import org.vivecraft.client.gui.framework.screens.GuiStringListEditorScreen;
 
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -150,7 +150,7 @@ public class WidgetBuilder {
             .builder(
                 Component.translatable("vivecraft.options.editlist"),
                 button -> Minecraft.getInstance().setScreen(
-                    new GuiListValueEditScreen(
+                    new GuiStringListEditorScreen(
                         Component.literal(listValue.getPath().substring(listValue.getPath().lastIndexOf("."))),
                         Minecraft.getInstance().screen, (ConfigBuilder.ListValue<String>) listValue)))
             .size(width, height)

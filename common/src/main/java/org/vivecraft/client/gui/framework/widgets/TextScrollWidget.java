@@ -1,4 +1,4 @@
-package org.vivecraft.client.gui.widgets;
+package org.vivecraft.client.gui.framework.widgets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

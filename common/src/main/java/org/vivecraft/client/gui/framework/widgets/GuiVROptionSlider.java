@@ -1,4 +1,4 @@
-package org.vivecraft.client.gui.framework;
+package org.vivecraft.client.gui.framework.widgets;
 
 import net.minecraft.client.InputType;
 import net.minecraft.client.Minecraft;

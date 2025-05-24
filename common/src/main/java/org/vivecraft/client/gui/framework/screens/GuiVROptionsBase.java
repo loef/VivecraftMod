@@ -1,4 +1,4 @@
-package org.vivecraft.client.gui.framework;
+package org.vivecraft.client.gui.framework.screens;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -12,6 +12,11 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.phys.Vec2;
 import org.lwjgl.glfw.GLFW;
+import org.vivecraft.client.gui.framework.VROptionEntry;
+import org.vivecraft.client.gui.framework.VROptionLayout;
+import org.vivecraft.client.gui.framework.widgets.GuiVROption;
+import org.vivecraft.client.gui.framework.widgets.GuiVROptionButton;
+import org.vivecraft.client.gui.framework.widgets.GuiVROptionSlider;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.settings.VRSettings;
 

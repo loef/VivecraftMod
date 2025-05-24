@@ -16,7 +16,7 @@ import org.joml.Quaternionfc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.vivecraft.client.VivecraftVRMod;
-import org.vivecraft.client.gui.widgets.MultilineComponent;
+import org.vivecraft.client.gui.framework.widgets.MultilineComponent;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRState;
 import org.vivecraft.client_vr.provider.ControllerType;

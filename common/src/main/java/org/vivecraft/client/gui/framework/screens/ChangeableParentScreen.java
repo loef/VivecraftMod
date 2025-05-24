@@ -1,4 +1,4 @@
-package org.vivecraft.client.gui.screens;
+package org.vivecraft.client.gui.framework.screens;
 
 import net.minecraft.client.gui.screens.Screen;
 

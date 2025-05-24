@@ -1,11 +1,11 @@
-package org.vivecraft.client.gui.settings;
+package org.vivecraft.client.gui.framework.screens;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import org.vivecraft.client.gui.widgets.SettingsList;
+import org.vivecraft.client.gui.framework.widgets.SettingsList;
 
 import java.util.List;
 

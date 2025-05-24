@@ -1,4 +1,4 @@
-package org.vivecraft.client.gui.settings;
+package org.vivecraft.client.gui.framework.screens;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
@@ -11,7 +11,7 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import org.vivecraft.client.gui.widgets.SettingsList;
+import org.vivecraft.client.gui.framework.widgets.SettingsList;
 import org.vivecraft.server.config.ConfigBuilder;
 
 import java.util.ArrayList;
@@ -19,12 +19,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GuiListValueEditScreen extends GuiListScreen {
+public class GuiStringListEditorScreen extends GuiListScreen {
 
     protected final ConfigBuilder.ListValue<String> listValue;
     private List<String> elements;
 
-    public GuiListValueEditScreen(Component title, Screen lastScreen, ConfigBuilder.ListValue<String> listValue) {
+    public GuiStringListEditorScreen(Component title, Screen lastScreen, ConfigBuilder.ListValue<String> listValue) {
         super(title, lastScreen);
         this.listValue = listValue;
     }

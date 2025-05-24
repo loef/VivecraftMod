@@ -2,7 +2,8 @@ package org.vivecraft.client.gui.settings;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import org.vivecraft.client.gui.widgets.SettingsList;
+import org.vivecraft.client.gui.framework.screens.GuiListScreen;
+import org.vivecraft.client.gui.framework.widgets.SettingsList;
 import org.vivecraft.server.config.ConfigBuilder;
 import org.vivecraft.server.config.ServerConfig;
 

@@ -10,7 +10,8 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import org.vivecraft.client.gui.widgets.SettingsList;
+import org.vivecraft.client.gui.framework.screens.GuiListScreen;
+import org.vivecraft.client.gui.framework.widgets.SettingsList;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 
 import java.util.ArrayList;
