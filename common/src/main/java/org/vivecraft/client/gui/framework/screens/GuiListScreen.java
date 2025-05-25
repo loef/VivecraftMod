@@ -46,7 +46,7 @@ public abstract class GuiListScreen extends Screen {
         this.list = new SettingsList(this, this.minecraft, getEntries(), this.searchable);
 
         if (this.searchable) {
-            this.list.fuzzyFilter(filter);
+            this.list.filter(filter);
 
             this.searchBox = new EditBox(this.minecraft.font, this.width / 2 - 150, 20, 300, 20,
                 Component.translatable("vivecraft.options.screen.search"));
@@ -54,7 +54,7 @@ public abstract class GuiListScreen extends Screen {
                 .withStyle(ChatFormatting.GRAY)
                 .withStyle(ChatFormatting.ITALIC));
             this.searchBox.setValue(filter);
-            this.searchBox.setResponder(search -> this.list.fuzzyFilter(search));
+            this.searchBox.setResponder(search -> this.list.filter(search));
             this.addRenderableWidget(this.searchBox);
         } else {
             this.searchBox = null;

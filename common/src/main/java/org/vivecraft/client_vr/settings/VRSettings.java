@@ -586,6 +586,8 @@ public class VRSettings {
     public boolean vrSettingsButtonPositionLeft = true;
     @SettingField(VrOptions.MODIFY_PAUSE_MENU)
     public boolean modifyPauseMenu = true;
+    @SettingField(VrOptions.SEARCH_TYPE)
+    public boolean useFuzzySearch = true;
     @SettingField
     public boolean disableGarbageCollectorMessage = false;
     @SettingField
@@ -1591,6 +1593,7 @@ public class VRSettings {
         VR_SETTINGS_BUTTON_POSITION(false, true, "vivecraft.options.left",
             "vivecraft.options.right"), // setting button position
         MODIFY_PAUSE_MENU(false, true), // if the pause menu should be altered
+        SEARCH_TYPE(false, true, "vivecraft.options.searchtype.fuzzy", "vivecraft.options.searchtype.exact"),
         // HMD/render
         FSAA(false, true) { // Lanczos Scaler
 

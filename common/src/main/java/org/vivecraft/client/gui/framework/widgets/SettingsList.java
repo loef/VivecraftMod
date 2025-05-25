@@ -36,7 +36,6 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class SettingsList extends ContainerObjectSelectionList<SettingsList.BaseEntry> {
-    private int maxNameWidth;
 
     private final List<SettingsList.BaseEntry> allEntries;
 
@@ -54,9 +53,6 @@ public class SettingsList extends ContainerObjectSelectionList<SettingsList.Base
         this.allEntries = new ArrayList<>(entries);
 
         this.replaceEntriesFlatten(this.allEntries);
-
-        this.children()
-            .forEach(entry -> this.maxNameWidth = Math.max(this.maxNameWidth, minecraft.font.width(entry.name)));
     }
 
     private void replaceEntriesFlatten(List<SettingsList.BaseEntry> entries) {
@@ -71,12 +67,20 @@ public class SettingsList extends ContainerObjectSelectionList<SettingsList.Base
         return this.activeFilter;
     }
 
+    public void filter(String filter) {
+        if (ClientDataHolderVR.getInstance().vrSettings.useFuzzySearch) {
+            this.fuzzyFilter(filter);
+        } else {
+            this.exactFilter(filter);
+        }
+    }
+
     /**
      * filters for the given phrase with an exact search
      *
      * @param filter String to filter for (case-insensitive)
      */
-    public void exactFilter(String filter) {
+    private void exactFilter(String filter) {
         if (!filter.trim().equals(this.activeFilter)) {
             // scroll to the top, to not be in the void
             this.setScrollAmount(0);
@@ -91,7 +95,7 @@ public class SettingsList extends ContainerObjectSelectionList<SettingsList.Base
      *
      * @param filter String to search for (case-insensitive)
      */
-    public void fuzzyFilter(String filter) {
+    private void fuzzyFilter(String filter) {
         if (filter.trim().isEmpty()) {
             this.replaceEntriesFlatten(this.allEntries);
         } else if (!filter.trim().equals(this.activeFilter)) {

@@ -10,6 +10,7 @@ public class TooltipUtil {
 
     /**
      * gets the tooltip for the client setting {@code option}, also adds text when a setting is limited/not changeable
+     *
      * @param option VrOptions to get the tooltip for
      * @return multiline String with the tooltip
      */
@@ -43,8 +44,9 @@ public class TooltipUtil {
 
     /**
      * gets the tooltip/comment for the server setting at the give path {@code serverConfigPath}, if called on the client also adds a line if the setting is currently changeable
+     *
      * @param serverConfigPath path to the server config
-     * @param addAllTooltip if true, the '.tooltipall' lang string of the given path or its parent, is appended
+     * @param addAllTooltip    if true, the '.tooltipall' lang string of the given path or its parent, is appended
      * @return multiline String with the tooltip
      */
     public static String getServerConfigTooltip(String serverConfigPath, boolean addAllTooltip) {
