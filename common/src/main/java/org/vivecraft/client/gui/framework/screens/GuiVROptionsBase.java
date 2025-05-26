@@ -1,24 +1,30 @@
-package org.vivecraft.client.gui.framework;
+package org.vivecraft.client.gui.framework.screens;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec2;
 import org.lwjgl.glfw.GLFW;
+import org.vivecraft.client.gui.framework.TooltipRenderer;
+import org.vivecraft.client.gui.framework.VROptionEntry;
+import org.vivecraft.client.gui.framework.VROptionLayout;
+import org.vivecraft.client.gui.framework.widgets.GuiVROption;
+import org.vivecraft.client.gui.framework.widgets.GuiVROptionButton;
+import org.vivecraft.client.gui.framework.widgets.GuiVROptionSlider;
+import org.vivecraft.client.gui.settings.GuiAllSettings;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.settings.VRSettings;
+import org.vivecraft.common.TooltipUtil;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public abstract class GuiVROptionsBase extends Screen {
+    private static final ResourceLocation SEARCH_ICON =
+        ResourceLocation.fromNamespaceAndPath("vivecraft", "icon/search");
+
     protected ClientDataHolderVR dataHolder = ClientDataHolderVR.getInstance();
     protected final Screen lastScreen;
     protected final VRSettings vrSettings;
@@ -37,6 +43,16 @@ public abstract class GuiVROptionsBase extends Screen {
     }
 
     protected void addDefaultButtons() {
+        Button search = SpriteIconButton.builder(Component.translatable("vivecraft.options.screen.search"),
+                (p) -> this.minecraft.setScreen(new GuiAllSettings(this)), true)
+            .sprite(SEARCH_ICON, 15, 15)
+            .size(20, 20)
+            .build();
+        search.setX(this.width / 2 - 180);
+        search.setY((int) Math.ceil((float) (this.height / 6) - 10.0F));
+        search.setTooltip(Tooltip.create(Component.translatable("vivecraft.options.screen.search")));
+        this.addRenderableWidget(search);
+
         this.addRenderableWidget(this.btnDone = new Button.Builder(Component.translatable("gui.back"), (p) -> {
             if (!this.onDoneClicked()) {
                 this.dataHolder.vrSettings.saveOptions();
@@ -315,53 +331,11 @@ public abstract class GuiVROptionsBase extends Screen {
                 }
             }
         }
-        if (hover != null) {
-            if (hover instanceof GuiVROption guiHover) {
-                if (guiHover.getOption() != null) {
-                    String tooltipString = "vivecraft.options." + guiHover.getOption().name() + ".tooltip";
-                    String tooltip = "";
-                    // check if it has a tooltip
-                    if (I18n.exists(tooltipString)) {
-                        tooltip = I18n.get(tooltipString, (Object) null);
-                    }
-
-                    if (this.dataHolder.vrSettings.overrides.hasSetting(guiHover.getOption())) {
-                        VRSettings.ServerOverrides.Setting setting = this.dataHolder.vrSettings.overrides.getSetting(
-                            guiHover.getOption());
-                        if (setting.isValueOverridden()) {
-                            tooltip = I18n.get("vivecraft.message.overriddenbyserver") + tooltip;
-                        } else if (setting.isFloat() &&
-                            (setting.isValueMinOverridden() || setting.isValueMaxOverridden()))
-                        {
-                            tooltip = I18n.get("vivecraft.message.limitedbyserver", setting.getValueMin(),
-                                setting.getValueMax()) + tooltip;
-                        }
-                    }
-                    if (!tooltip.isEmpty()) {
-                        // add format reset at line ends
-                        tooltip = tooltip.replace("\n", "§r\n");
-
-                        // make last line the roughly 308 wide
-                        List<FormattedText> formattedText = this.font.getSplitter()
-                            .splitLines(tooltip, 308, Style.EMPTY);
-                        tooltip += " ".repeat((308 -
-                            (formattedText.isEmpty() ? 0 : this.font.width(formattedText.get(formattedText.size() - 1)))
-                        ) / this.font.width(" "));
-
-                        // if tooltip is not too low, draw below button, else above
-                        if (guiHover.getY() + guiHover.getHeight() + formattedText.size() * (this.font.lineHeight + 1) +
-                            14 < this.height)
-                        {
-                            guiGraphics.renderTooltip(this.font, this.font.split(Component.literal(tooltip), 308),
-                                this.width / 2 - 166, guiHover.getY() + guiHover.getHeight() + 14);
-                        } else {
-                            guiGraphics.renderTooltip(this.font, this.font.split(Component.literal(tooltip), 308),
-                                this.width / 2 - 166,
-                                guiHover.getY() - formattedText.size() * (this.font.lineHeight + 1) + 9);
-                        }
-                    }
-                }
-            }
+        if (hover instanceof GuiVROption guiHover && guiHover.getOption() != null &&
+            this.deferredTooltipRendering == null)
+        {
+            TooltipRenderer.renderTooltip(guiGraphics, TooltipUtil.getClientConfigTooltip(guiHover.getOption()),
+                this.width / 2, guiHover.getY(), guiHover.getHeight());
         }
     }
 

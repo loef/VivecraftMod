@@ -1,4 +1,4 @@
-package org.vivecraft.client.gui.framework;
+package org.vivecraft.client.gui.framework.widgets;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -27,12 +27,11 @@ public class GuiVROptionButton extends Button implements GuiVROption {
         super(x, y, width, height, Component.translatable(text), onPress, Button.DEFAULT_NARRATION);
         this.id = id;
         this.enumOptions = option;
-        ClientDataHolderVR dataholder = ClientDataHolderVR.getInstance();
 
-        if (option != null && dataholder.vrSettings.overrides.hasSetting(option) &&
-            dataholder.vrSettings.overrides.getSetting(option).isValueOverridden())
-        {
-            this.active = false;
+        VRSettings.ServerOverrides overrides = ClientDataHolderVR.getInstance().vrSettings.overrides;
+        if (option != null) {
+            this.active = option.isChangeable() &&
+                !(overrides.hasSetting(option) && overrides.getSetting(option).isValueOverridden());
         }
     }
 

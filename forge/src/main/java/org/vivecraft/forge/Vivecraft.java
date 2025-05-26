@@ -29,6 +29,8 @@ public class Vivecraft {
 
     public Vivecraft(FMLJavaModLoadingContext context) {
         // init server config
+        // this is too early for the lang files to be loaded, is needed to register the commands though
+        // server config is validated again later to have the comments
         ServerConfig.init(null);
 
         VIVECRAFT_NETWORK_CHANNEL.addListener(event -> {

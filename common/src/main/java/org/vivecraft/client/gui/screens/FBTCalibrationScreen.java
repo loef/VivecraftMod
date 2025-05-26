@@ -16,7 +16,7 @@ import org.joml.Quaternionfc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.vivecraft.client.VivecraftVRMod;
-import org.vivecraft.client.gui.widgets.MultilineComponent;
+import org.vivecraft.client.gui.framework.widgets.MultilineComponent;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRState;
 import org.vivecraft.client_vr.provider.ControllerType;
@@ -169,8 +169,6 @@ public class FBTCalibrationScreen extends Screen {
                     .setEnabled(ControllerType.RIGHT, false);
             }
         } else {
-            checkPosition();
-
             PoseStack poseStack = guiGraphics.pose();
             poseStack.pushPose();
 
@@ -289,7 +287,8 @@ public class FBTCalibrationScreen extends Screen {
         }
     }
 
-    private void checkPosition() {
+    @Override
+    public void tick() {
         if (!VRState.VR_RUNNING) {
             this.rightHand.set(MathUtils.DOWN);
             this.leftHand.set(MathUtils.DOWN);
