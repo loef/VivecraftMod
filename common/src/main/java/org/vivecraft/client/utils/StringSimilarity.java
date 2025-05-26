@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Ported from <a href="https://github.com/rapidfuzz/RapidFuzz">RapidFuzz</a> to java
- * RapidFuzz originally licensed under MIT
- * Copyright © 2020-present Max Bachmann
+ * Ported from <a href="https://github.com/rapidfuzz/RapidFuzz">RapidFuzz</a> to java<br>
+ * RapidFuzz originally licensed under MIT<br>
+ * Copyright © 2020-present Max Bachmann<br>
  * Copyright © 2011 Adam Cohen
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining
