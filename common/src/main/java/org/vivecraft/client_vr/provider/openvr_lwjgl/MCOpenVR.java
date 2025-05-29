@@ -1229,9 +1229,20 @@ public class MCOpenVR extends MCVR {
                     action.unpressBinding();
                 }
             }
-        } else {
+        } else if (checkIfNotMovement(action)) {
             action.unpressBinding();
         }
+    }
+
+    /**
+     * @param action VRInputAction to check for
+     * @return if the given action does not correspond to one of the movement keys, or if the player didn't move
+     */
+    private boolean checkIfNotMovement(VRInputAction action) {
+        return action.keyBinding != this.mc.options.keyLeft &&
+            action.keyBinding != this.mc.options.keyRight &&
+            action.keyBinding != this.mc.options.keyUp &&
+            action.keyBinding != this.mc.options.keyDown || !this.isMovement;
     }
 
     /**

@@ -124,6 +124,14 @@ public abstract class MCVR {
     protected boolean isFreeRotate;
     protected boolean isFlickStick;
     protected float flickStickRot;
+
+    // input movement states
+    public boolean isMovement;
+    private boolean wasMovement;
+    private boolean wasAutoSprinting;
+    // holds the actual movement input
+    public Vector2f movement = new Vector2f();
+
     protected ControllerType walkaboutController;
     protected ControllerType freeRotateController;
     protected float walkaboutYawStart;
@@ -1101,6 +1109,93 @@ public abstract class MCVR {
             this.mc.gui.getChat().addMessage(Component.translatable("vivecraft.messages.walkupblocks",
                 Component.translatable(this.dh.vrSettings.walkUpBlocks ? LangHelper.ON_KEY : LangHelper.OFF_KEY)));
         }
+
+        // process movement here, so we set the keybind states before tick
+        this.isMovement = false;
+        if (this.mc.player != null) {
+            boolean climbing = !this.mc.player.isInWater() && this.dh.climbTracker.isClimbeyClimb() &&
+                this.dh.climbTracker.isGrabbingLadder();
+            float forward = 0F;
+            if (!this.dh.vrSettings.seated && this.mc.screen == null && !KeyboardHandler.SHOWING && !climbing) {
+                // override everything
+                Vector2fc moveStrafe = this.getInputAction(VivecraftVRMod.INSTANCE.keyFreeMoveStrafe)
+                    .getAxis2DUseTracked();
+                Vector2fc moveRotate = this.getInputAction(VivecraftVRMod.INSTANCE.keyFreeMoveRotate)
+                    .getAxis2DUseTracked();
+                this.movement.zero();
+
+                if (moveStrafe.x() != 0.0F || moveStrafe.y() != 0.0F) {
+                    this.isMovement = true;
+                    this.movement.set(moveStrafe);
+                } else if (moveRotate.y() != 0.0F) {
+                    this.isMovement = true;
+                    this.movement.y = moveRotate.y();
+                    // use left/right key as fallback
+                    this.movement.x -= Math.abs(this.getInputAction(this.mc.options.keyRight).getAxis1DUseTracked());
+                    this.movement.x += Math.abs(this.getInputAction(this.mc.options.keyLeft).getAxis1DUseTracked());
+                } else if (this.dh.vrSettings.analogMovement) {
+                    // neither axis input active, use single key values
+                    this.movement.y = Math.abs(this.getInputAction(this.mc.options.keyUp).getAxis1DUseTracked());
+                    if (this.movement.y == 0.0F) {
+                        this.movement.y = Math.abs(
+                            this.getInputAction(VivecraftVRMod.INSTANCE.keyTeleportFallback).getAxis1DUseTracked());
+                    }
+
+                    this.movement.y -= Math.abs(this.getInputAction(this.mc.options.keyDown).getAxis1DUseTracked());
+
+                    this.movement.x -= Math.abs(this.getInputAction(this.mc.options.keyRight).getAxis1DUseTracked());
+                    this.movement.x += Math.abs(this.getInputAction(this.mc.options.keyLeft).getAxis1DUseTracked());
+
+                    float deadZone = 0.05F;
+                    this.movement.y = MathUtils.applyDeadzone(this.movement.y, deadZone);
+                    this.movement.x = MathUtils.applyDeadzone(this.movement.x, deadZone);
+
+                    this.isMovement = this.movement.x != 0.0F || this.movement.y != 0.0F;
+                }
+
+                forward = this.movement.y;
+
+                if (!this.dh.vrSettings.analogMovement) {
+                    this.movement.x = MathUtils.axisToDigital(this.movement.x, 0.5F);
+                    this.movement.y = MathUtils.axisToDigital(this.movement.y, 0.5F);
+                }
+
+                if (this.isMovement) {
+                    // just assuming all this below is needed for compatibility.
+                    this.getInputAction(this.mc.options.keyUp).setPressed(this.movement.y > 0F);
+                    this.getInputAction(this.mc.options.keyDown).setPressed(this.movement.y < 0F);
+                    this.getInputAction(this.mc.options.keyRight).setPressed(this.movement.x > 0F);
+                    this.getInputAction(this.mc.options.keyLeft).setPressed(this.movement.x < 0F);
+
+                    if (this.dh.vrSettings.autoSprint && !this.mc.player.isMovingSlowly()) {
+                        // Sprint only works for walk forwards obviously
+                        if (forward >= this.dh.vrSettings.autoSprintThreshold) {
+                            this.mc.player.setSprinting(true);
+                            this.wasAutoSprinting = true;
+                            this.movement.y = 1.0F;
+                        } else if (this.movement.y > 0.0F && this.dh.vrSettings.analogMovement) {
+                            // Adjust range so you can still reach full speed while not sprinting
+                            this.movement.y /= this.dh.vrSettings.autoSprintThreshold;
+                        }
+                    }
+                }
+            }
+
+            if (!this.isMovement && this.wasMovement) {
+                // stop movement when returning the stick to center
+                this.getInputAction(this.mc.options.keyUp).unpressBinding();
+                this.getInputAction(this.mc.options.keyDown).unpressBinding();
+                this.getInputAction(this.mc.options.keyLeft).unpressBinding();
+                this.getInputAction(this.mc.options.keyRight).unpressBinding();
+            }
+            this.wasMovement = this.isMovement;
+            if (this.wasAutoSprinting && forward < this.dh.vrSettings.autoSprintThreshold) {
+                // stop sprinting when below the threshold and sprinting was active
+                this.mc.player.setSprinting(false);
+                this.wasAutoSprinting = false;
+            }
+        }
+        // end movement
 
         GuiHandler.processBindingsGui();
         RadialHandler.processBindings();

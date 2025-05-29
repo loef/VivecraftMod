@@ -126,10 +126,34 @@ public class MathUtils {
         );
     }
 
+    /**
+     * checks if the abs value of {@code axis} is above {@code deadzone} and normalizes the range [deadzone, 1] to [0, 1]
+     *
+     * @param axis     value to check and normalize
+     * @param deadzone {@code axis} below this value will be 0
+     * @return normalized {@code axis}
+     */
     public static float applyDeadzone(float axis, float deadzone) {
         if (Math.abs(axis) > deadzone) {
             float scalar = 1.0F / (1.0F - deadzone);
             return (Math.abs(axis) - deadzone) * scalar * Math.signum(axis);
+        } else {
+            return 0F;
+        }
+    }
+
+    /**
+     * returns 0, 1, or -1 depending on sign and if the abs {@code value} is above {@code deadzone}
+     *
+     * @param value    value to check
+     * @param deadzone threshold value for the check
+     * @return 0, 1, or -1
+     */
+    public static float axisToDigital(float value, float deadzone) {
+        if (value > deadzone) {
+            return 1F;
+        } else if (value < -deadzone) {
+            return -1F;
         } else {
             return 0F;
         }

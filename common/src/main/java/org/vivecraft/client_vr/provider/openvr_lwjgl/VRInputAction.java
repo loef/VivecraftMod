@@ -330,6 +330,14 @@ public class VRInputAction {
         }
     }
 
+    public void setPressed(boolean pressed) {
+        if (pressed) {
+            this.pressBinding();
+        } else {
+            this.unpressBinding();
+        }
+    }
+
     private void pressBinding(ControllerType hand) {
         if (this.isHanded()) {
             if (hand == null || this.pressed[hand.ordinal()]) return;
