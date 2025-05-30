@@ -504,8 +504,7 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
                 ClientDataHolderVR.getInstance().menuWorldRenderer.tick();
             }
 
-            Profiler.get().push("vrProcessInputs");
-            ClientDataHolderVR.getInstance().vr.processInputs();
+            Profiler.get().push("vrProcessBindings");
             ClientDataHolderVR.getInstance().vr.processBindings();
 
             Profiler.get().popPush("vrInputActionsTick");
