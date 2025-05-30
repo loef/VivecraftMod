@@ -18,6 +18,7 @@ public class GuiHUDSettings extends GuiVROptionsBase {
         new VROptionEntry(VRSettings.VrOptions.TOUCH_HOTBAR),
         new VROptionEntry(VRSettings.VrOptions.MENU_ALWAYS_FOLLOW_FACE),
         new VROptionEntry(VRSettings.VrOptions.GUI_APPEAR_OVER_BLOCK),
+        new VROptionEntry(VRSettings.VrOptions.HUD_WRIST_OFFSET),
         new VROptionEntry("vivecraft.options.screen.guirendering.button", (button, mousePos) -> {
             Minecraft.getInstance().setScreen(new GuiRenderingSettings(this));
             return true;

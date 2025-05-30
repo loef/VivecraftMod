@@ -606,7 +606,7 @@ public class GuiHandler {
 
                         guilocal.set(xOffset * side,
                             yOffset + yScaleOffset * (1.0F - armScale),
-                            0.14F * armScale);
+                            (0.12F + 0.02F * DH.vrSettings.vrHudWristOffset) * armScale);
                         guilocal.mul(DH.vrPlayer.vrdata_world_render.worldScale);
 
                         if (modelArms) {

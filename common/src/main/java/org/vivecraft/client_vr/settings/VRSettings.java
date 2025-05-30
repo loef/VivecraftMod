@@ -496,6 +496,8 @@ public class VRSettings {
     public boolean menuAlwaysFollowFace;
     @SettingField(VrOptions.HUD_LOCK_TO)
     public HUDLock vrHudLockMode = HUDLock.WRIST;
+    @SettingField(VrOptions.HUD_WRIST_OFFSET)
+    public float vrHudWristOffset = 1F;
     @SettingField(VrOptions.HUD_OCCLUSION)
     public boolean hudOcclusion = true;
     @SettingField(VrOptions.CROSSHAIR_SCALE)
@@ -1401,6 +1403,7 @@ public class VRSettings {
                 }
             }
         },
+        HUD_WRIST_OFFSET(true, false, 0.0f, 4.0f, 0.25f, -1), // HUD Offset to the arm
         HUD_OPACITY(true, false, 0.15f, 1.0f, 0.05f, -1) { // HUD Opacity
 
             @Override
