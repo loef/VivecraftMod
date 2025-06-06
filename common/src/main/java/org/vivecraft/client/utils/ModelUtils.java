@@ -274,6 +274,29 @@ public class ModelUtils {
     }
 
     /**
+     * sets the matrix {@code tempM} so that it points in {@code dir}, using local {@code targetRot} to get the up dir
+     *
+     * @param targetRot target rotation the {@code tempM} should respect, in world space
+     * @param bodyYaw   players Y rotation
+     * @param dir       the direction the matrix should point at, in model space
+     * @param tempVUp   Vector3f object to work with, contains the up direction after the call
+     * @param tempM     Matrix3f object to work with, contains the rotation after the call
+     */
+    public static void pointAtModelWithLocal(
+        Quaternionfc targetRot, float bodyYaw, Vector3fc dir, Vector3f tempVUp, Matrix3f tempM)
+    {
+
+        // get the up vector the ModelPart should face
+        targetRot.transform(MathUtils.RIGHT, tempVUp);
+        worldToModelDirection(tempVUp, bodyYaw, tempVUp);
+
+        dir.cross(tempVUp, tempVUp);
+
+        // rotate model
+        pointAtModel(dir, tempVUp, tempM);
+    }
+
+    /**
      * sets the matrix {@code tempM} so that the ModelPart {@code part} points at the given model space point, while facing forward
      *
      * @param part     ModelPart to use as the pivot point
