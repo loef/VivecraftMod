@@ -24,7 +24,7 @@ public class PlayerPredicateMixin {
         if (player.getUseItem().is(Items.SPYGLASS) && ServerVRPlayers.isVRPlayer(player)) {
             vivePlayer.set(ServerVRPlayers.getVivePlayer(player));
             if (!vivePlayer.get().isSeated()) {
-                return vivePlayer.get().getBodyPartPos(BodyPart.values()[player.getUsedItemHand().ordinal()]);
+                return vivePlayer.get().getBodyPartPos(BodyPart.fromInteractionHand(player.getUsedItemHand()));
             }
         }
         return original.call(player);
@@ -37,7 +37,7 @@ public class PlayerPredicateMixin {
     {
         if (vivePlayer.get() != null && !vivePlayer.get().isSeated()) {
             return vivePlayer.get()
-                .getBodyPartVectorCustom(BodyPart.values()[player.getUsedItemHand().ordinal()], MathUtils.DOWN);
+                .getBodyPartVectorCustom(BodyPart.fromInteractionHand(player.getUsedItemHand()), MathUtils.DOWN);
         } else {
             return original.call(player, partialTick);
         }

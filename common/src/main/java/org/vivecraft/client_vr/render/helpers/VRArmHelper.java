@@ -38,7 +38,7 @@ public class VRArmHelper {
      * @return if first person hands should be rendered in the current RenderPass
      */
     public static boolean shouldRenderHands() {
-        if (ClientDataHolderVR.VIEW_ONLY) {
+        if (DATA_HOLDER.viewOnly) {
             return false;
         } else if (DATA_HOLDER.currentPass == RenderPass.THIRD) {
             return DATA_HOLDER.vrSettings.displayMirrorMode == VRSettings.MirrorMode.MIXED_REALITY;
@@ -61,13 +61,13 @@ public class VRArmHelper {
     {
         if (!renderMain && !renderOff) return;
         Profiler.get().push("hands");
-        ClientDataHolderVR.IS_FP_HAND = true;
+        DATA_HOLDER.isFpHand = true;
 
         VREffectsHelper.removeNausea(partialTick);
 
         if (renderMain) {
             // set main hand active, for the attack cooldown transparency
-            ClientDataHolderVR.IS_MAIN_HAND = true;
+            DATA_HOLDER.isMainHand = true;
 
             if (menuHandMain) {
                 renderMainMenuHand(0, false);
@@ -75,7 +75,7 @@ public class VRArmHelper {
                 renderVRHand_Main(partialTick);
             }
 
-            ClientDataHolderVR.IS_MAIN_HAND = false;
+            DATA_HOLDER.isMainHand = false;
         }
 
         if (renderOff) {
@@ -88,7 +88,7 @@ public class VRArmHelper {
 
         VREffectsHelper.reAddNausea();
 
-        ClientDataHolderVR.IS_FP_HAND = false;
+        DATA_HOLDER.isFpHand = false;
         Profiler.get().pop();
     }
 

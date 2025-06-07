@@ -606,6 +606,7 @@
   "vivecraft.messages.novrhotswitchinglegacy": "Veralteten Vivecraft server mod erkannt. Dieser Server unterstützt kein VR Schnellwechsel. Sie können den Modus nur im Hauptmenü wechseln.",
   "vivecraft.messages.novrhotswitching": "Dieser Server hat VR Schnellwechsel deaktiviert. Sie können den Modus nur im Hauptmenü wechseln.",
   "vivecraft.messages.vrhotswitchinginfo": "VR Schnellwechsel aktiviert: Setze dein Headset auf, um zu VR zu wechseln",
+  "vivecraft.messages.noheadaimserverplugin": "Dieser Server benutzt einen älteren Vivecraft Server Mod. Deswegen wird 'Controller Zielen' für einige Items erzwungen.",
   "vivecraft.messages.updateAvailable": "§a[Vivecraft]§r Update verfügbar: %s. Klicke für mehr Details.",
   "vivecraft.messages.updateTitle": "Neues Update Verfügbar",
   "vivecraft.messages.click": "Klicke für mehr Details.",

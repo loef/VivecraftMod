@@ -4,7 +4,6 @@ import net.irisshaders.iris.pipeline.PipelineManager;
 import net.irisshaders.iris.pipeline.WorldRenderingPipeline;
 import net.irisshaders.iris.shaderpack.materialmap.NamespacedId;
 import net.irisshaders.iris.shadows.ShadowRenderTargets;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.Group;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.vivecraft.client.utils.ClientUtils;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRState;
 import org.vivecraft.client_vr.render.RenderPass;
@@ -125,8 +125,7 @@ public class IrisPipelineManagerVRMixin implements PipelineManagerExtension {
                         !ClientDataHolderVR.getInstance().vrSettings.disableShaderOptimization)
                     {
                         first = false;
-                        Minecraft.getInstance().gui.getChat()
-                            .addMessage(Component.translatable("vivecraft.messages.slowshader"));
+                        ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.slowshader"));
                     }
                 }
                 // set to currently needed renderpass again

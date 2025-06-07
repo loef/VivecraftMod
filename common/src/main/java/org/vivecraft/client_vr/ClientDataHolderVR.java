@@ -25,16 +25,16 @@ public class ClientDataHolderVR {
     public static final ResourceLocation THIRD_PERSON_CAMERA_DISPLAY_MODEL = ResourceLocation.fromNamespaceAndPath(
         "vivecraft", "camcorder_display");
 
-    public static boolean KAT_VR;
-    public static boolean INFINADECK;
+    private static ClientDataHolderVR INSTANCE = new ClientDataHolderVR();
 
-    public static boolean KIOSK;
-    public static boolean VIEW_ONLY;
+    public final boolean katVr;
+    public final boolean infinadeck;
 
-    public static boolean IS_MAIN_HAND;
-    public static boolean IS_FP_HAND;
+    public final boolean kiosk;
+    public final boolean viewOnly;
 
-    private static ClientDataHolderVR INSTANCE;
+    public boolean isMainHand;
+    public boolean isFpHand;
 
     public VRPlayer vrPlayer;
     public MCVR vr;
@@ -45,24 +45,23 @@ public class ClientDataHolderVR {
     private final List<Tracker> trackers = new ArrayList<>();
 
     // our trackers
-    public final BackpackTracker backpackTracker = createTracker(BackpackTracker::new);
-    public final BowTracker bowTracker = createTracker(BowTracker::new);
-    public final CameraTracker cameraTracker = createTracker(CameraTracker::new);
-    public final ClimbTracker climbTracker = createTracker(ClimbTracker::new);
-    public final CrawlTracker crawlTracker = createTracker(CrawlTracker::new);
-    public final EatingTracker eatingTracker = createTracker(EatingTracker::new);
-    public final HorseTracker horseTracker = createTracker(HorseTracker::new);
-    public final InteractTracker interactTracker = createTracker(InteractTracker::new);
-    public final JumpTracker jumpTracker = createTracker(JumpTracker::new);
-    public final RowTracker rowTracker = createTracker(RowTracker::new);
-    public final RunTracker runTracker = createTracker(RunTracker::new);
-    public final SneakTracker sneakTracker = createTracker(SneakTracker::new);
-    public final SwimTracker swimTracker = createTracker(SwimTracker::new);
-    public final SwingTracker swingTracker = createTracker(SwingTracker::new);
-    public final TeleportTracker teleportTracker = createTracker(TeleportTracker::new);
-    public final TelescopeTracker telescopeTracker = createTracker(TelescopeTracker::new);
-    public final VehicleTracker vehicleTracker = createTracker(VehicleTracker::new);
-
+    public final BackpackTracker backpackTracker;
+    public final BowTracker bowTracker;
+    public final CameraTracker cameraTracker;
+    public final ClimbTracker climbTracker;
+    public final CrawlTracker crawlTracker;
+    public final EatingTracker eatingTracker;
+    public final HorseTracker horseTracker;
+    public final InteractTracker interactTracker;
+    public final JumpTracker jumpTracker;
+    public final RowTracker rowTracker;
+    public final RunTracker runTracker;
+    public final SneakTracker sneakTracker;
+    public final SwimTracker swimTracker;
+    public final SwingTracker swingTracker;
+    public final TeleportTracker teleportTracker;
+    public final TelescopeTracker telescopeTracker;
+    public final VehicleTracker vehicleTracker;
 
     public VRSettings vrSettings;
     public boolean grabScreenShot = false;
@@ -87,10 +86,44 @@ public class ClientDataHolderVR {
     public boolean showedStencilMessage;
     public boolean showedFbtCalibrationNotification;
 
-    public static ClientDataHolderVR getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new ClientDataHolderVR();
+    private ClientDataHolderVR() {
+        // need to set this at the beginning again, since the static initializer only sets it after creation
+        INSTANCE = this;
+        // read property settings
+        this.kiosk = System.getProperty("kiosk", "false").equals("true");
+        if (this.kiosk) {
+            VRSettings.LOGGER.info("Vivecraft: Setting kiosk");
+            this.viewOnly = System.getProperty("viewonly", "false").equals("true");
+            if (this.viewOnly) {
+                VRSettings.LOGGER.info("Vivecraft: Setting viewonly");
+            }
+        } else {
+            this.viewOnly = false;
         }
+        this.katVr = System.getProperty("katvr", "false").equals("true");
+        this.infinadeck = System.getProperty("infinadeck", "false").equals("true");
+
+        // create trackers
+        this.backpackTracker = createTracker(BackpackTracker::new);
+        this.bowTracker = createTracker(BowTracker::new);
+        this.cameraTracker = createTracker(CameraTracker::new);
+        this.climbTracker = createTracker(ClimbTracker::new);
+        this.crawlTracker = createTracker(CrawlTracker::new);
+        this.eatingTracker = createTracker(EatingTracker::new);
+        this.horseTracker = createTracker(HorseTracker::new);
+        this.interactTracker = createTracker(InteractTracker::new);
+        this.jumpTracker = createTracker(JumpTracker::new);
+        this.rowTracker = createTracker(RowTracker::new);
+        this.runTracker = createTracker(RunTracker::new);
+        this.sneakTracker = createTracker(SneakTracker::new);
+        this.swimTracker = createTracker(SwimTracker::new);
+        this.swingTracker = createTracker(SwingTracker::new);
+        this.teleportTracker = createTracker(TeleportTracker::new);
+        this.telescopeTracker = createTracker(TelescopeTracker::new);
+        this.vehicleTracker = createTracker(VehicleTracker::new);
+    }
+
+    public static ClientDataHolderVR getInstance() {
         return INSTANCE;
     }
 

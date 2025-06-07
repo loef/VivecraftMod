@@ -41,6 +41,7 @@ import java.util.List;
 
 public class SwingTracker extends Tracker {
     private static final int[] CONTROLLER_AND_FEET = new int[]{MCVR.MAIN_CONTROLLER, MCVR.OFFHAND_CONTROLLER, MCVR.RIGHT_FOOT_TRACKER, MCVR.LEFT_FOOT_TRACKER};
+    private static final BodyPart[] BODYPARTS = new BodyPart[]{BodyPart.MAIN_HAND, BodyPart.OFF_HAND, BodyPart.RIGHT_FOOT, BodyPart.LEFT_FOOT};
     private static final float SPEED_THRESH = 3.0F;
 
     private final Vec3[] lastWeaponEndAir = new Vec3[]{Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, Vec3.ZERO};
@@ -238,7 +239,7 @@ public class SwingTracker extends Tracker {
                             // Minecraft.getInstance().physicalGuiManager.preClickAction();
 
                             if (!EpicFightHelper.isLoaded() || !EpicFightHelper.attack()) {
-                                ClientNetworking.sendActiveBodyPart(BodyPart.values()[i]);
+                                ClientNetworking.sendActiveBodyPart(BODYPARTS[i], true);
                                 // only attack if epic fight didn't trigger
                                 this.mc.gameMode.attack(player, entity);
                             } else {
@@ -364,7 +365,7 @@ public class SwingTracker extends Tracker {
                             // this.mc.physicalGuiManager.preClickAction();
 
                             // send hitting hand
-                            ClientNetworking.sendActiveBodyPart(BodyPart.values()[i]);
+                            ClientNetworking.sendActiveBodyPart(BODYPARTS[i], true);
 
                             // this will either destroy the block if in creative or set it as the current block.
                             // does nothing in survival if you are already hitting this block.
@@ -406,7 +407,7 @@ public class SwingTracker extends Tracker {
         }
 
         // reset hitting hand
-        ClientNetworking.sendActiveBodyPart(BodyPart.MAIN_HAND);
+        ClientNetworking.resetActiveBodyPart();
 
         Profiler.get().pop();
     }
@@ -507,7 +508,9 @@ public class SwingTracker extends Tracker {
             fade = 0.75F;
         }
 
-        if (ClientDataHolderVR.getInstance().swingTracker.lastWeaponSolid[ClientDataHolderVR.IS_MAIN_HAND ? 0 : 1]) {
+        if (ClientDataHolderVR.getInstance().swingTracker.lastWeaponSolid[ClientDataHolderVR.getInstance().isMainHand ?
+            0 : 1])
+        {
             fade -= 0.25F;
         }
 

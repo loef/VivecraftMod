@@ -238,11 +238,11 @@ public class MCOpenVR extends MCVR {
                 VR_ShutdownInternal();
                 this.initialized = false;
 
-                if (ClientDataHolderVR.KAT_VR) {
+                if (this.dh.katVr) {
                     jkatvr.Halt();
                 }
 
-                if (ClientDataHolderVR.INFINADECK) {
+                if (this.dh.infinadeck) {
                     jinfinadeck.Destroy();
                 }
             } catch (Throwable throwable) {
@@ -352,7 +352,7 @@ public class MCOpenVR extends MCVR {
             this.initialized = true;
 
             // initialize treadmill support, if they are enabled
-            if (ClientDataHolderVR.KAT_VR) {
+            if (this.dh.katVr) {
                 try {
                     VRSettings.LOGGER.info("Vivecraft: Waiting for KATVR....");
                     FileUtils.unpackFolder("natives/katvr", "openvr/katvr");
@@ -371,7 +371,7 @@ public class MCOpenVR extends MCVR {
                 }
             }
 
-            if (ClientDataHolderVR.INFINADECK) {
+            if (this.dh.infinadeck) {
                 try {
                     VRSettings.LOGGER.info("Vivecraft: Waiting for Infinadeck....");
                     FileUtils.unpackFolder("natives/infinadeck", "openvr/infinadeck");
@@ -463,7 +463,7 @@ public class MCOpenVR extends MCVR {
 
     @Override
     public void processInputs() {
-        if (this.dh.vrSettings.seated || ClientDataHolderVR.VIEW_ONLY || !this.inputInitialized) return;
+        if (this.dh.vrSettings.seated || this.dh.viewOnly || !this.inputInitialized) return;
 
         for (VRInputAction action : this.inputActions.values()) {
             if (action.isHanded()) {

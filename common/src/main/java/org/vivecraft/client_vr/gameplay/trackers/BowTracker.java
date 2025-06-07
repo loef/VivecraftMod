@@ -21,6 +21,7 @@ import org.vivecraft.client_vr.VRData;
 import org.vivecraft.client_vr.extensions.PlayerExtension;
 import org.vivecraft.client_vr.provider.ControllerType;
 import org.vivecraft.client_vr.settings.VRSettings;
+import org.vivecraft.common.network.BodyPart;
 import org.vivecraft.common.network.packet.c2s.DrawPayloadC2S;
 import org.vivecraft.common.utils.MathUtils;
 
@@ -219,13 +220,13 @@ public class BowTracker extends Tracker {
                 this.dh.vr.triggerHapticPulse(arrowHand, 500);
                 this.dh.vr.triggerHapticPulse(bowHand, 3000);
                 ClientNetworking.sendServerPacket(new DrawPayloadC2S(this.getDrawPercent()));
-                ClientNetworking.sendActiveHand(InteractionHand.values()[arrowHand]);
+                ClientNetworking.sendActiveBodyPart(arrowHand == 0 ? BodyPart.MAIN_HAND : BodyPart.OFF_HAND, true);
 
                 this.mc.gameMode.releaseUsingItem(player);
 
                 // reset to 0, in case user switches modes.
                 ClientNetworking.sendServerPacket(new DrawPayloadC2S(0.0F));
-                ClientNetworking.sendActiveHand(InteractionHand.MAIN_HAND);
+                ClientNetworking.resetActiveBodyPart();
                 this.isDrawing = false;
             }
 

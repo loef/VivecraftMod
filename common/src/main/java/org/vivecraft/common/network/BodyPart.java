@@ -1,5 +1,7 @@
 package org.vivecraft.common.network;
 
+import net.minecraft.world.InteractionHand;
+
 public enum BodyPart {
     MAIN_HAND,
     OFF_HAND,
@@ -9,7 +11,8 @@ public enum BodyPart {
     RIGHT_KNEE,
     LEFT_KNEE,
     RIGHT_ELBOW,
-    LEFT_ELBOW;
+    LEFT_ELBOW,
+    HEAD;
 
     /**
      * @return the opposite limb
@@ -28,13 +31,17 @@ public enum BodyPart {
         };
     }
 
+    public static BodyPart fromInteractionHand(InteractionHand hand) {
+        return hand == InteractionHand.MAIN_HAND ? MAIN_HAND : OFF_HAND;
+    }
+
     /**
      * @param fbtMode FBT mode to check for
      * @return if {@code this} limb is valid for the given FBT mode
      */
     public boolean isValid(FBTMode fbtMode) {
         return switch (this) {
-            case MAIN_HAND, OFF_HAND -> true;
+            case MAIN_HAND, OFF_HAND, HEAD -> true;
             case RIGHT_FOOT, LEFT_FOOT, WAIST -> fbtMode != FBTMode.ARMS_ONLY;
             case RIGHT_KNEE, LEFT_KNEE, RIGHT_ELBOW, LEFT_ELBOW -> fbtMode == FBTMode.WITH_JOINTS;
         };

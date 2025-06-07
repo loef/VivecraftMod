@@ -11,14 +11,18 @@ public class CommonNetworkHelper {
 
     public static final ResourceLocation CHANNEL = ResourceLocation.parse("vivecraft:data");
 
+    public static final int NETWORK_VERSION_LEGACY = -1;
+    // adds full body tracker data
+    public static final int NETWORK_VERSION_FBT = 1;
+    // adds dual wielding packet and server logic
+    public static final int NETWORK_VERSION_DUAL_WIELDING = 2;
+    // adds the head as a valid active BodyPart, and adds a useForAim flag
+    public static final int NETWORK_VERSION_HEAD_AIM = 3;
+
     // maximum supported network version
-    public static final int MAX_SUPPORTED_NETWORK_VERSION = 2;
+    public static final int MAX_SUPPORTED_NETWORK_VERSION = NETWORK_VERSION_HEAD_AIM;
     // minimum supported network version
     public static final int MIN_SUPPORTED_NETWORK_VERSION = 0;
-
-    public static final int NETWORK_VERSION_LEGACY = -1;
-    public static final int NETWORK_VERSION_FBT = 1;
-    public static final int NETWORK_VERSION_DUAL_WIELDING = 2;
 
     public static void serializeF(FriendlyByteBuf buffer, Vector3fc vec3) {
         buffer.writeFloat(vec3.x());

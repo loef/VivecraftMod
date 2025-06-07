@@ -292,7 +292,7 @@ public class MenuWorldRenderer {
             if (IrisHelper.isLoaded() && IrisHelper.isShaderActive() && IrisHelper.hasIssuesWithMenuWorld()) {
                 VRSettings.LOGGER.info("Vivecraft: Temporarily disabling shaders to build Menuworld.");
                 this.reenableShaders = true;
-                this.mc.gui.getChat().addMessage(Component.translatable("vivecraft.messages.menuworldshaderdisable"));
+                ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.menuworldshaderdisable"));
                 IrisHelper.setShadersActive(false);
             }
 

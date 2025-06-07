@@ -63,7 +63,7 @@ public class InventoryMixin {
         if (bodyPart != null) {
             if (bodyPart == BodyPart.OFF_HAND) {
                 return this.offhand.get(0);
-            } else if (bodyPart != BodyPart.MAIN_HAND) {
+            } else if (bodyPart != BodyPart.MAIN_HAND && bodyPart != BodyPart.HEAD) {
                 // feet
                 return ItemStack.EMPTY;
             }

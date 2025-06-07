@@ -9,6 +9,7 @@ import org.vivecraft.client.gui.screens.FBTCalibrationScreen;
 import org.vivecraft.client_vr.provider.MCVR;
 import org.vivecraft.client_vr.render.RenderPass;
 import org.vivecraft.client_vr.settings.VRSettings;
+import org.vivecraft.common.network.BodyPart;
 import org.vivecraft.common.network.FBTMode;
 import org.vivecraft.common.utils.MathUtils;
 
@@ -261,6 +262,26 @@ public class VRData {
             case MCVR.LEFT_ELBOW_TRACKER -> this.elbow_left;
             case MCVR.RIGHT_ELBOW_TRACKER -> this.elbow_right;
             default -> this.c0;
+        };
+    }
+
+    /**
+     * @param bodyPart BodyPart to get the data for
+     * @return the device pose for the specified BodyPart, if the device is not available {@code null} is returned
+     */
+    @Nullable
+    public VRDevicePose getBodyPart(BodyPart bodyPart) {
+        return switch (bodyPart) {
+            case MAIN_HAND -> this.c0;
+            case OFF_HAND -> this.c1;
+            case WAIST -> this.waist;
+            case LEFT_FOOT -> this.foot_left;
+            case RIGHT_FOOT -> this.foot_right;
+            case LEFT_KNEE -> this.knee_left;
+            case RIGHT_KNEE -> this.knee_right;
+            case LEFT_ELBOW -> this.elbow_left;
+            case RIGHT_ELBOW -> this.elbow_right;
+            case HEAD -> this.hmd;
         };
     }
 

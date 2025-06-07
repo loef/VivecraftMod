@@ -126,7 +126,7 @@ public abstract class PauseScreenVRMixin extends Screen {
             }
         }
 
-        if (ClientDataHolderVR.KAT_VR) {
+        if (ClientDataHolderVR.getInstance().katVr) {
             rowHelper.addChild(new Button.Builder(Component.translatable("vivecraft.gui.alignkatwalk"),
                 (p) -> {
                     jkatvr.resetYaw(ClientDataHolderVR.getInstance().vrPlayer.vrdata_room_pre.hmd.getYaw());

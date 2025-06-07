@@ -199,7 +199,7 @@ public class VREffectsHelper {
                     DATA_HOLDER.vrSettings.showChatMessageStencil)
                 {
                     DATA_HOLDER.showedStencilMessage = true;
-                    MC.gui.getChat().addMessage(Component.translatable("vivecraft.messages.stencil",
+                    ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.stencil",
                         Component.translatable("vivecraft.messages.3options",
                                 Component.translatable("options.title"),
                                 Component.translatable("vivecraft.options.screen.main"),
@@ -1204,7 +1204,7 @@ public class VREffectsHelper {
      * @return if the crosshair should be rendered
      */
     private static boolean shouldRenderCrosshair() {
-        if (ClientDataHolderVR.VIEW_ONLY) {
+        if (DATA_HOLDER.viewOnly) {
             return false;
         } else if (MC.level == null) {
             return false;

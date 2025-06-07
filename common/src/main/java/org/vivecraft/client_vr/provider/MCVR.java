@@ -17,6 +17,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.joml.*;
 import org.lwjgl.glfw.GLFW;
 import org.vivecraft.client.VivecraftVRMod;
+import org.vivecraft.client.utils.ClientUtils;
 import org.vivecraft.client.utils.LangHelper;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.QuaternionfHistory;
@@ -825,20 +826,20 @@ public abstract class MCVR {
             if (++this.moveModeSwitchCount == 80 || toggleMovementPressed) {
                 if (this.dh.vrSettings.seated) {
                     this.dh.vrSettings.seatedFreeMove = !this.dh.vrSettings.seatedFreeMove;
-                    this.mc.gui.getChat().addMessage(Component.translatable("vivecraft.messages.movementmodeswitch",
+                    ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.movementmodeswitch",
                         this.dh.vrSettings.seatedFreeMove ? Component.translatable("vivecraft.options.freemove") :
                             Component.translatable("vivecraft.options.teleport")));
                 } else if (this.dh.vrPlayer.isTeleportSupported()) {
                     this.dh.vrSettings.forceStandingFreeMove = !this.dh.vrSettings.forceStandingFreeMove;
-                    this.mc.gui.getChat().addMessage(Component.translatable("vivecraft.messages.movementmodeswitch",
+                    ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.movementmodeswitch",
                         this.dh.vrSettings.seatedFreeMove ? Component.translatable("vivecraft.options.freemove") :
                             Component.translatable("vivecraft.options.teleport")));
                 } else if (this.dh.vrPlayer.isTeleportOverridden()) {
                     this.dh.vrPlayer.setTeleportOverride(false);
-                    this.mc.gui.getChat().addMessage(Component.translatable("vivecraft.messages.teleportdisabled"));
+                    ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.teleportdisabled"));
                 } else {
                     this.dh.vrPlayer.setTeleportOverride(true);
-                    this.mc.gui.getChat().addMessage(Component.translatable("vivecraft.messages.teleportenabled"));
+                    ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.teleportenabled"));
                 }
             }
         } else {
@@ -1001,7 +1002,7 @@ public abstract class MCVR {
         }
 
         // start third person cam movement
-        if (MOD.keyMoveThirdPersonCam.consumeClick() && !ClientDataHolderVR.KIOSK && !this.dh.vrSettings.seated &&
+        if (MOD.keyMoveThirdPersonCam.consumeClick() && !this.dh.kiosk && !this.dh.vrSettings.seated &&
             (this.dh.vrSettings.displayMirrorMode == VRSettings.MirrorMode.MIXED_REALITY ||
                 this.dh.vrSettings.displayMirrorMode == VRSettings.MirrorMode.THIRD_PERSON
             ))
@@ -1050,7 +1051,7 @@ public abstract class MCVR {
         if (MOD.keyMenuButton.consumeClick()) {
             // handle menu directly
             if (!gui) {
-                if (!ClientDataHolderVR.KIOSK) {
+                if (!this.dh.kiosk) {
                     this.mc.pauseGame(false);
                 }
             } else {
@@ -1106,7 +1107,7 @@ public abstract class MCVR {
         // Walk up blocks
         if (MOD.keyToggleWalkUpBlocks.consumeClick()) {
             this.dh.vrSettings.walkUpBlocks = !this.dh.vrSettings.walkUpBlocks;
-            this.mc.gui.getChat().addMessage(Component.translatable("vivecraft.messages.walkupblocks",
+            ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.walkupblocks",
                 Component.translatable(this.dh.vrSettings.walkUpBlocks ? LangHelper.ON_KEY : LangHelper.OFF_KEY)));
         }
 

@@ -91,13 +91,13 @@ public abstract class ServerPlayerMixin extends PlayerMixin {
     {
         ServerVivePlayer serverVivePlayer = vivecraft$getVivePlayer();
         if (!Xplat.isFakePlayer((ServerPlayer) (Object) this) && serverVivePlayer != null && serverVivePlayer.isVR()) {
-            Vec3 aim = serverVivePlayer.getBodyPartDir(serverVivePlayer.activeBodyPart);
+            Vec3 aim = serverVivePlayer.getAimDir(false);
             float yaw = (float) Math.atan2(-aim.x, aim.z);
 
             xOffset = -Mth.sin(yaw);
             zOffset = Mth.cos(yaw);
 
-            Vec3 pos = serverVivePlayer.getBodyPartPos(serverVivePlayer.activeBodyPart);
+            Vec3 pos = serverVivePlayer.getAimPos(false);
 
             return original.call(instance, type,
                 pos.x + xOffset, pos.y, pos.z + zOffset,
@@ -147,8 +147,8 @@ public abstract class ServerPlayerMixin extends PlayerMixin {
             serverVivePlayer.isVR())
         {
             // spawn item from players hand
-            Vec3 pos = serverVivePlayer.getBodyPartPos(serverVivePlayer.activeBodyPart);
-            Vec3 aim = serverVivePlayer.getBodyPartDir(serverVivePlayer.activeBodyPart);
+            Vec3 pos = serverVivePlayer.getAimPos(false);
+            Vec3 aim = serverVivePlayer.getAimDir(false);
 
             // item speed, taken from Player#drop
             final float speed = 0.3F;

@@ -340,7 +340,7 @@ public class ServerUtil {
     public static void debugParticleAxes(ServerVivePlayer vivePlayer) {
         if (vivePlayer.isVR() && vivePlayer.vrPlayerState != null) {
             for (BodyPart bodyPart : BodyPart.values()) {
-                if (bodyPart.isValid(vivePlayer.vrPlayerState.fbtMode())) {
+                if (bodyPart.isValid(vivePlayer.vrPlayerState.fbtMode()) && bodyPart != BodyPart.HEAD) {
                     debugParticleAxes(
                         vivePlayer.player.serverLevel(),
                         vivePlayer.getBodyPartPos(bodyPart),

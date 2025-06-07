@@ -203,6 +203,7 @@ public record VrPlayerState(boolean seated, Pose hmd, boolean leftHanded, Pose m
             case LEFT_KNEE -> this.leftKnee;
             case RIGHT_KNEE -> this.rightKnee;
             case WAIST -> this.waist;
+            case HEAD -> this.hmd;
         };
     }
 

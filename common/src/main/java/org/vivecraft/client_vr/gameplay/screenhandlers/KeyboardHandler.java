@@ -35,7 +35,7 @@ public class KeyboardHandler {
     private static boolean LAST_PRESSED_SHIFT;
 
     public static boolean setOverlayShowing(boolean showingState) {
-        if (ClientDataHolderVR.KIOSK) return false;
+        if (DH.kiosk) return false;
         if (DH.vrSettings.seated) {
             showingState = false;
         }

@@ -21,6 +21,7 @@ public class ServerVivePlayer {
     public float worldScale = 1.0F;
     public float heightScale = 1.0F;
     public BodyPart activeBodyPart = BodyPart.MAIN_HAND;
+    public boolean useBodyPartForAim = false;
     public boolean crawling;
     // if the player has VR active
     private boolean isVR = false;
@@ -64,14 +65,29 @@ public class ServerVivePlayer {
     }
 
     /**
+     * @param ignoreUseForAim ignores the useBodyPartForAim state when set, and always uses the active BodyPart for the aim
      * @return the direction the player is aiming, accounts for the roomscale bow
      */
-    public Vec3 getAimDir() {
+    public Vec3 getAimDir(boolean ignoreUseForAim) {
         if (!this.isSeated() && this.draw > 0.0F) {
             return this.getBodyPartPos(this.activeBodyPart.opposite())
                 .subtract(this.getBodyPartPos(this.activeBodyPart)).normalize();
-        } else {
+        } else if (ignoreUseForAim || this.useBodyPartForAim) {
             return this.getBodyPartDir(this.activeBodyPart);
+        } else {
+            return this.getBodyPartDir(BodyPart.MAIN_HAND);
+        }
+    }
+
+    /**
+     * @param ignoreUseForAim ignores the useBodyPartForAim state when set, and always uses the active BodyPart for the aim
+     * @return the position from which the player is aiming
+     */
+    public Vec3 getAimPos(boolean ignoreUseForAim) {
+        if (ignoreUseForAim || this.useBodyPartForAim) {
+            return this.getBodyPartPos(this.activeBodyPart);
+        } else {
+            return this.getBodyPartPos(BodyPart.MAIN_HAND);
         }
     }
 
@@ -114,7 +130,7 @@ public class ServerVivePlayer {
 
             // in seated the realPosition is at the head,
             // so reconstruct the seated position when wanting the visual position
-            if (this.isSeated() && !realPosition) {
+            if (this.isSeated() && bodyPart.isHand() && !realPosition) {
                 Vec3 dir = this.getHMDDir();
                 dir = dir.yRot(Mth.DEG_TO_RAD * (bodyPart == BodyPart.MAIN_HAND ? -35.0F : 35.0F));
                 dir = new Vec3(dir.x, 0.0D, dir.z);

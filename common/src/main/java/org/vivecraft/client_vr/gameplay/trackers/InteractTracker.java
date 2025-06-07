@@ -315,12 +315,14 @@ public class InteractTracker extends Tracker {
                         this.mc.gameMode.interact(this.mc.player, this.inEntity[c], hand).consumesAction();
                 } else if (this.inBlockHit[c] != null) {
                     // force main hand, since 1.20.5+ only checks no item interactions for the main hand
-                    ClientNetworking.sendActiveHand(hand);
+                    ClientNetworking.sendActiveHand(hand, true);
                     success = this.mc.gameMode.useItemOn(this.mc.player, InteractionHand.MAIN_HAND, this.inBlockHit[c])
                         .consumesAction();
-                    ClientNetworking.sendActiveHand(InteractionHand.MAIN_HAND);
+                    ClientNetworking.resetActiveBodyPart();
                 } else if (this.bukkit[c]) {
+                    ClientNetworking.sendActiveHand(hand, true);
                     success = this.mc.gameMode.useItem(this.mc.player, hand).consumesAction();
+                    ClientNetworking.resetActiveBodyPart();
                 }
 
                 if (success) {

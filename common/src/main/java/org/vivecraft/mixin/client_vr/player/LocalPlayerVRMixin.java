@@ -260,7 +260,7 @@ public abstract class LocalPlayerVRMixin extends LocalPlayer_PlayerVRMixin imple
     @Override
     protected void vivecraft$beforeReleaseUsingItem(CallbackInfo ci) {
         if (VRState.VR_RUNNING && vivecraft$isLocalPlayer(this)) {
-            ClientNetworking.sendActiveHand(this.getUsedItemHand());
+            ClientNetworking.sendActiveHand(this.getUsedItemHand(), false);
         }
     }
 
@@ -329,10 +329,10 @@ public abstract class LocalPlayerVRMixin extends LocalPlayer_PlayerVRMixin imple
             double mY = 0.0D;
             double addFactor = 1.0D;
 
-            if (speed >= (double) 1.0E-4F || ClientDataHolderVR.KAT_VR) {
+            if (speed >= (double) 1.0E-4F || ClientDataHolderVR.getInstance().katVr) {
                 speed = Mth.sqrt((float) speed);
 
-                if (speed < 1.0D && !ClientDataHolderVR.KAT_VR) {
+                if (speed < 1.0D && !ClientDataHolderVR.getInstance().katVr) {
                     speed = 1.0D;
                 }
 
@@ -342,7 +342,7 @@ public abstract class LocalPlayerVRMixin extends LocalPlayer_PlayerVRMixin imple
                 Vec3 direction = new Vec3(strafe, 0.0D, forward);
                 boolean isFlyingOrSwimming = !this.isPassenger() && (this.getAbilities().flying || this.isSwimming());
 
-                if (ClientDataHolderVR.KAT_VR) {
+                if (ClientDataHolderVR.getInstance().katVr) {
                     jkatvr.query();
                     speed = jkatvr.getSpeed() * jkatvr.walkDirection() *
                         this.vivecraft$dataholder.vrSettings.movementSpeedMultiplier;
@@ -354,7 +354,7 @@ public abstract class LocalPlayerVRMixin extends LocalPlayer_PlayerVRMixin imple
 
                     direction = direction.yRot(
                         -jkatvr.getYaw() * Mth.DEG_TO_RAD + vrplayer.vrdata_world_pre.rotation_radians);
-                } else if (ClientDataHolderVR.INFINADECK) {
+                } else if (ClientDataHolderVR.getInstance().infinadeck) {
                     jinfinadeck.query();
                     speed = jinfinadeck.getSpeed() * jinfinadeck.walkDirection() *
                         this.vivecraft$dataholder.vrSettings.movementSpeedMultiplier;

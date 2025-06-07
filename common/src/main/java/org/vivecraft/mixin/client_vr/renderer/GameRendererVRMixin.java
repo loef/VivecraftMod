@@ -370,7 +370,7 @@ public abstract class GameRendererVRMixin
 
     @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;render(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
     private boolean vivecraft$noGUIWithViewOnly(Gui instance, GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
-        return RenderPassType.isVanilla() || !ClientDataHolderVR.VIEW_ONLY;
+        return RenderPassType.isVanilla() || !vivecraft$DATA_HOLDER.viewOnly;
     }
 
     @Inject(method = "takeAutoScreenshot", at = @At("HEAD"), cancellable = true)

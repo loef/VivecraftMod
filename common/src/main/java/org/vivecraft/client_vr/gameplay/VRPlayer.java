@@ -67,9 +67,6 @@ public class VRPlayer {
     public float worldScale = this.dh.vrSettings.overrides.getSetting(VRSettings.VrOptions.WORLD_SCALE).getFloat();
     private float rawWorldScale = this.dh.vrSettings.overrides.getSetting(VRSettings.VrOptions.WORLD_SCALE).getFloat();
     private boolean teleportOverride = false;
-    public boolean teleportWarning = false;
-    public boolean vrSwitchWarning = false;
-    public int chatWarningTimer = -1;
     public Vec3 roomOrigin = Vec3.ZERO;
 
     // based on a heuristic of which locomotion type was last used
@@ -633,6 +630,9 @@ public class VRPlayer {
             itemStack.getItem() instanceof SpawnEggItem ||
             itemStack.getItem() instanceof PotionItem ||
             itemStack.getItem() instanceof BowItem ||
+            itemStack.getItem() instanceof FishingRodItem ||
+            itemStack.getItem() instanceof WindChargeItem ||
+            // crossbows actually don't work with this; they use the head rotation to aim, which is only updated on tick
             (itemStack.getItem() instanceof CrossbowItem && CrossbowItem.isCharged(itemStack)) ||
             itemStack.is(ItemTags.VIVECRAFT_THROW_ITEMS)
         )
@@ -640,13 +640,16 @@ public class VRPlayer {
             // use r_hand aim
 
             VRData data = this.dh.vrPlayer.vrdata_world_pre;
-            out = new Vec3(data.getController(c).getDirection());
             Vector3fc aim = this.dh.bowTracker.getAimVector();
 
             if (this.dh.bowTracker.isNotched() && aim != null && aim.lengthSquared() > 0.0F) {
                 out = new Vec3(-aim.x(), -aim.y(), -aim.z());
+            } else if (this.dh.vrSettings.aimDevice != VRSettings.AimDevice.HMD) {
+                out = new Vec3(data.getController(c).getDirection());
             }
-        } else if (itemStack.getItem() == Items.BUCKET && this.dh.interactTracker.bukkit[c]) {
+        } else if (itemStack.getItem() == Items.BUCKET && this.dh.interactTracker.bukkit[c] &&
+            ClientNetworking.LAST_SENT_BODY_PART.ordinal() == c && ClientNetworking.IS_LAST_BODY_PART_AIM)
+        {
             out = entity.getEyePosition(1.0F)
                 .subtract(this.dh.vrPlayer.vrdata_world_pre.getController(c).getPosition())
                 .normalize().reverse(); // backwards

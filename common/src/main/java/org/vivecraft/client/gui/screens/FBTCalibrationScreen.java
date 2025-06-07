@@ -17,6 +17,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.vivecraft.client.VivecraftVRMod;
 import org.vivecraft.client.gui.framework.widgets.MultilineComponent;
+import org.vivecraft.client.utils.ClientUtils;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRState;
 import org.vivecraft.client_vr.provider.ControllerType;
@@ -273,8 +274,7 @@ public class FBTCalibrationScreen extends Screen {
                     ClientDataHolderVR.getInstance().vr.calibrateFBT(this.yaw + Mth.PI);
                     ClientDataHolderVR.getInstance().vrSettings.unlabeledTrackersUsed = this.usingUnlabeledTrackers;
                     ClientDataHolderVR.getInstance().vrSettings.saveOptions();
-                    this.minecraft.gui.getChat()
-                        .addMessage(Component.translatable("vivecraft.messages.fbtcalibrationsuccess"));
+                    ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.fbtcalibrationsuccess"));
                     this.calibrated = true;
                     if (!this.usingUnlabeledTrackers) {
                         this.minecraft.setScreen(this.parent);

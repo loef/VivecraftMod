@@ -197,8 +197,12 @@ public class ServerNetworking {
                 player.connection.aboveGroundTickCount = 0;
             }
             case ACTIVEHAND -> {
-                BodyPart newBodyPart =
-                    vivePlayer.isSeated() ? BodyPart.MAIN_HAND : ((ActiveBodyPartPayloadC2S) c2sPayload).bodyPart();
+                ActiveBodyPartPayloadC2S activeBodypart = (ActiveBodyPartPayloadC2S) c2sPayload;
+                BodyPart newBodyPart = activeBodypart.bodyPart();
+                if (vivePlayer.isSeated() && newBodyPart != BodyPart.HEAD) {
+                    newBodyPart = BodyPart.MAIN_HAND;
+                }
+                vivePlayer.useBodyPartForAim = activeBodypart.useForAim();
                 if (vivePlayer.activeBodyPart != newBodyPart) {
                     // handle equipment changes
                     ItemStack oldItem = player.getItemBySlot(EquipmentSlot.MAINHAND);

@@ -9,6 +9,7 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
+import org.vivecraft.client.utils.ClientUtils;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.MethodHolder;
 import org.vivecraft.client_vr.VRData;
@@ -54,14 +55,14 @@ public class VRHotkeys {
                     // Debug aim
                     if (key == GLFW.GLFW_KEY_RIGHT_SHIFT) {
                         dataHolder.vrSettings.storeDebugAim = true;
-                        minecraft.gui.getChat().addMessage(Component.translatable("vivecraft.messages.showaim"));
+                        ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.showaim"));
                         gotKey = true;
                     }
 
                     // Player inertia
                     if (key == GLFW.GLFW_KEY_I) {
                         dataHolder.vrSettings.inertiaFactor = dataHolder.vrSettings.inertiaFactor.getNext();
-                        minecraft.gui.getChat().addMessage(Component.translatable("vivecraft.messages.playerinertia",
+                        ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.playerinertia",
                             Component.translatable(dataHolder.vrSettings.inertiaFactor.getLangKey())));
 
                         gotKey = true;
@@ -71,12 +72,10 @@ public class VRHotkeys {
                     if (key == GLFW.GLFW_KEY_R) {
                         if (dataHolder.vrPlayer.isTeleportOverridden()) {
                             dataHolder.vrPlayer.setTeleportOverride(false);
-                            minecraft.gui.getChat()
-                                .addMessage(Component.translatable("vivecraft.messages.teleportdisabled"));
+                            ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.teleportdisabled"));
                         } else {
                             dataHolder.vrPlayer.setTeleportOverride(true);
-                            minecraft.gui.getChat()
-                                .addMessage(Component.translatable("vivecraft.messages.teleportenabled"));
+                            ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.teleportenabled"));
                         }
 
                         gotKey = true;
@@ -246,13 +245,13 @@ public class VRHotkeys {
     }
 
     private static void logPositionRotation(Vector3f position, Quaternionf rotation) {
-        Minecraft.getInstance().gui.getChat().addMessage(
+        ClientUtils.addChatMessage(
             Component.translatable("vivecraft.messages.coords",
                 "%.2f".formatted(position.x),
                 "%.2f".formatted(position.y),
                 "%.2f".formatted(position.z)));
         Vector3f angle = MathUtils.getEulerAnglesYZX(rotation);
-        Minecraft.getInstance().gui.getChat().addMessage(
+        ClientUtils.addChatMessage(
             Component.translatable("vivecraft.messages.angles",
                 "%.1f".formatted(Math.toDegrees(angle.x)),
                 "%.1f".formatted(Math.toDegrees(angle.y)),

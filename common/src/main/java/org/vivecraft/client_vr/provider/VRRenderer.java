@@ -21,6 +21,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.vivecraft.client.Xplat;
 import org.vivecraft.client.extensions.RenderTargetExtension;
+import org.vivecraft.client.utils.ClientUtils;
 import org.vivecraft.client.utils.StencilHelper;
 import org.vivecraft.client.utils.TextUtils;
 import org.vivecraft.client_vr.ClientDataHolderVR;
@@ -526,7 +527,7 @@ public abstract class VRRenderer {
             minecraft.getShaderManager().getProgram(VRShaders.VR_TRANSPARENCY_SHADER) == null)
         {
             // fabulous shader didn't compile
-            minecraft.gui.getChat().addMessage(Component.translatable("vivecraft.messages.fabulousFailed"));
+            ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.fabulousFailed"));
             minecraft.options.graphicsMode().set(GraphicsStatus.FAST);
             minecraft.levelRenderer.allChanged();
             this.reinitFrameBuffers("fabulous missing");
