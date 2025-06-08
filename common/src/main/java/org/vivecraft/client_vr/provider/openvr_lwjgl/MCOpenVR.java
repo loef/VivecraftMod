@@ -401,6 +401,7 @@ public class MCOpenVR extends MCVR {
     private void initializeOpenVR() throws RuntimeException {
         int token = VR_InitInternal(this.errorBuffer, EVRApplicationType_VRApplication_Scene);
 
+        VRSettings.LOGGER.info("Vivecraft: Connecting to OpenVR");
         if (!this.isError()) {
             OpenVR.create(token);
         }
