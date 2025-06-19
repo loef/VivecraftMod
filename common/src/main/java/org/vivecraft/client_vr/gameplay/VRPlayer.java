@@ -226,7 +226,7 @@ public class VRPlayer {
                     VRSettings.LOGGER.info(
                         "VIVECRAFT: disconnected user from server. runtime IPD: {}, measured IPD: {}, runtime worldscale: {}",
                         queriedIPD, measuredIPD, runtimeWorldScale);
-                    this.mc.level.disconnect();
+                    this.mc.level.disconnect(Component.translatable("vivecraft.message.worldscaleOutOfRange.title"));
                     this.mc.disconnect(new DisconnectedScreen(new JoinMultiplayerScreen(new TitleScreen()),
                         Component.translatable("vivecraft.message.worldscaleOutOfRange.title"),
                         Component.translatable("vivecraft.message.worldscaleOutOfRange",
@@ -235,7 +235,8 @@ public class VRPlayer {
                             Component.literal("%.2fx".formatted(worldScaleOverride.getValueMax()))
                                 .withStyle(style -> style.withColor(ChatFormatting.GREEN)),
                             Component.literal(this.dh.vr.getRuntimeName())
-                                .withStyle(style -> style.withColor(ChatFormatting.GOLD)))));
+                                .withStyle(style -> style.withColor(ChatFormatting.GOLD)))),
+                        false);
                 }
             }
         }

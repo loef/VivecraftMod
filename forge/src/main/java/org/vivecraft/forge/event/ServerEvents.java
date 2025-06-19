@@ -2,7 +2,7 @@ package org.vivecraft.forge.event;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.vivecraft.client.Xplat;
 

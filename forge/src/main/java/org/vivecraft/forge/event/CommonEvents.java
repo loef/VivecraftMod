@@ -1,7 +1,7 @@
 package org.vivecraft.forge.event;
 
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.vivecraft.server.ServerUtil;
 

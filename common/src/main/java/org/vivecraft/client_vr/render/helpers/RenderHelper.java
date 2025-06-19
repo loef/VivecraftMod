@@ -1,14 +1,12 @@
 package org.vivecraft.client_vr.render.helpers;
 
-import com.mojang.blaze3d.ProjectionType;
 import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,10 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
-import org.joml.Vector3f;
+import org.joml.*;
 import org.lwjgl.opengl.GL11C;
 import org.lwjgl.opengl.GL30C;
 import org.vivecraft.client_vr.ClientDataHolderVR;
@@ -33,11 +28,13 @@ import org.vivecraft.client_vr.gameplay.screenhandlers.GuiHandler;
 import org.vivecraft.client_vr.gameplay.trackers.TelescopeTracker;
 import org.vivecraft.client_vr.provider.MCVR;
 import org.vivecraft.client_vr.render.RenderPass;
+import org.vivecraft.client_vr.render.VRShaders;
 import org.vivecraft.client_vr.render.helpers.opengl.OpenGLHelper;
-import org.vivecraft.client_vr.render.rendertypes.ShaderLightRenderType;
 import org.vivecraft.client_vr.render.rendertypes.VRRenderTypes;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.common.utils.MathUtils;
+
+import java.lang.Math;
 
 public class RenderHelper {
 
@@ -47,8 +44,8 @@ public class RenderHelper {
     public static final ResourceLocation WHITE_TEXTURE = ResourceLocation.parse("vivecraft:textures/white.png");
     public static final ResourceLocation BLACK_TEXTURE = ResourceLocation.parse("vivecraft:textures/black.png");
 
-    public static GpuTexture getGpuTexture(ResourceLocation resourceLocation) {
-        return MC.getTextureManager().getTexture(resourceLocation).getTexture();
+    public static GpuTextureView getGpuTexture(ResourceLocation resourceLocation) {
+        return MC.getTextureManager().getTexture(resourceLocation).getTextureView();
     }
 
     /**
@@ -210,39 +207,20 @@ public class RenderHelper {
     /**
      * renders the given screen to the current main target and generates mipmaps for it
      *
-     * @param guiGraphics  GuiGraphics to render with
-     * @param deltaTracker tracker to get the partial tick from
-     * @param screen       the Screen to render
-     * @param maxGuiScale  if set, renders the screen at max gui scale
+     * @param screen      the Screen to render
+     * @param maxGuiScale if set, renders the screen at max gui scale
      */
-    public static void drawScreen(
-        GuiGraphics guiGraphics, DeltaTracker deltaTracker, Screen screen, boolean maxGuiScale)
-    {
-        // setup modelview for screen rendering
-        Matrix4fStack poseStack = RenderSystem.getModelViewStack();
-        poseStack.pushMatrix();
-        poseStack.identity();
-        poseStack.translate(0.0F, 0.0F, -11000.0F);
-
+    public static void drawScreen(Screen screen, boolean maxGuiScale) {
         double guiScale = maxGuiScale ? GuiHandler.GUI_SCALE_FACTOR_MAX : MC.getWindow().getGuiScale();
 
         // set gui scale to make the scissor work, that checks the window gui scale
         int backupGuiScale = GuiHandler.GUI_SCALE_FACTOR;
         GuiHandler.GUI_SCALE_FACTOR = (int) guiScale;
 
-        Matrix4f guiProjection = (new Matrix4f()).setOrtho(
-            0.0F, (float) (MC.getMainRenderTarget().width / guiScale),
-            (float) (MC.getMainRenderTarget().height / guiScale), 0.0F,
-            1000.0F, 21000.0F);
-        RenderSystem.setProjectionMatrix(guiProjection, ProjectionType.ORTHOGRAPHIC);
-
-        screen.render(guiGraphics, 0, 0, deltaTracker.getRealtimeDeltaTicks());
-        guiGraphics.flush();
+        GuiRenderHelper.renderScreen(screen);
 
         // reset gui scale
         GuiHandler.GUI_SCALE_FACTOR = backupGuiScale;
-
-        poseStack.popMatrix();
 
         if (DATA_HOLDER.vrSettings.guiMipmaps) {
             // update mipmaps for Gui layer
@@ -261,7 +239,7 @@ public class RenderHelper {
         float size = 15.0F * Math.max(ClientDataHolderVR.getInstance().vrSettings.menuCrosshairScale,
             1.0F / (float) MC.getWindow().getGuiScale());
 
-        guiGraphics.blitSprite(VRRenderTypes::crosshairMenu, Gui.CROSSHAIR_SPRITE, (int) (mouseX - size * 0.5F + 1),
+        guiGraphics.blitSprite(VRShaders.CROSSHAIR_MENU, Gui.CROSSHAIR_SPRITE, (int) (mouseX - size * 0.5F + 1),
             (int) (mouseY - size * 0.5F + 1), (int) size, (int) size);
     }
 
@@ -281,7 +259,7 @@ public class RenderHelper {
         float sizeX = size * 0.5F;
         float sizeY = sizeX * displayHeight / displayWidth;
 
-        RenderType renderType = VRRenderTypes.guiTextureOverlay(source.getColorTexture());
+        RenderType renderType = VRRenderTypes.guiTextureAlways(source.getColorTextureView());
         VertexConsumer consumer = MC.renderBuffers().bufferSource().getBuffer(renderType);
         consumer
             .addVertex(matrix, -sizeX, -sizeY, 0)
@@ -358,9 +336,8 @@ public class RenderHelper {
         float sizeY = sizeX * displayHeight / displayWidth;
 
         Vector3f normal = new Matrix3f(matrix).transform(new Vector3f(0, 0, 1)).normalize();
-        RenderType wrapped = new ShaderLightRenderType(renderType, normal);
 
-        VertexConsumer consumer = MC.renderBuffers().bufferSource().getBuffer(wrapped);
+        VertexConsumer consumer = MC.renderBuffers().bufferSource().getBuffer(renderType);
 
         consumer.addVertex(matrix, -sizeX, -sizeY, 0)
             .setColor(color[0], color[1], color[2], color[3])
@@ -383,7 +360,7 @@ public class RenderHelper {
             .setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight)
             .setNormal(normal.x, normal.y, normal.z);
 
-        MC.renderBuffers().bufferSource().endBatch(wrapped);
+        MC.renderBuffers().bufferSource().endBatch(renderType);
     }
 
     /**
@@ -530,6 +507,78 @@ public class RenderHelper {
     {
         consumer.addVertex(matrix, (float) pos.x, (float) pos.y, (float) pos.z)
             .setColor(color.getX(), color.getY(), color.getZ(), alpha);
+    }
+
+    /**
+     * renders a box to the given GuiGraphics
+     *
+     * @param guiGraphics GuiGraphics to use
+     * @param start       start of the box, combined with end gives the axis the box is on
+     * @param end         end of the box, combined with start gives the axis the box is on
+     * @param xSize       X size of the box
+     * @param ySize       Y size of the box
+     * @param matrix      Matrix4f to use for positioning
+     * @param color       packed color in the format 0xAARRGGBB
+     */
+    public static void renderBox2D(
+        GuiGraphics guiGraphics, Vector3fc start, Vector3fc end, float xSize, float ySize, Matrix4f matrix, int color)
+    {
+        float minX = -xSize * 0.5F;
+        float maxX = xSize * 0.5F;
+        float minY = -ySize * 0.5F;
+        float maxY = ySize * 0.5F;
+        Vector3f forward = start.sub(end, new Vector3f()).normalize();
+        Vector3f right = forward.cross(MathUtils.UP, new Vector3f());
+        if (right.lengthSquared() == 0) {
+            right.set(MathUtils.LEFT);
+        } else {
+            right.normalize();
+        }
+        Vector3f up = right.cross(forward, new Vector3f());
+
+        Vector3f left = right.mul(minX, new Vector3f());
+        right.mul(maxX);
+
+        Vector3f down = up.mul(minY, new Vector3f());
+        up.mul(maxY);
+
+        Vector3fc backRightBottom = start.add(right, new Vector3f()).add(down);
+        Vector3fc backRightTop = start.add(right, new Vector3f()).add(up);
+        Vector3fc backLeftBottom = start.add(left, new Vector3f()).add(down);
+        Vector3fc backLeftTop = start.add(left, new Vector3f()).add(up);
+
+        Vector3fc frontRightBottom = end.add(right, new Vector3f()).add(down);
+        Vector3fc frontRightTop = end.add(right, new Vector3f()).add(up);
+        Vector3fc frontLeftBottom = end.add(left, new Vector3f()).add(down);
+        Vector3fc frontLeftTop = end.add(left, new Vector3f()).add(up);
+
+        //drawQuad(guiGraphics, matrix, backRightBottom, backLeftBottom, backLeftTop, backRightTop, color);
+        drawQuad(guiGraphics, matrix, frontLeftBottom, frontRightBottom, frontRightTop, frontLeftTop, 0xFF00FF00);
+        //drawQuad(guiGraphics, matrix, frontRightBottom, backRightBottom, backRightTop, frontRightTop, 0xFF00FF00);
+        //drawQuad(guiGraphics, matrix, backLeftBottom, frontLeftBottom, frontLeftTop, backLeftTop, color);
+        //drawQuad(guiGraphics, matrix, backLeftTop, frontLeftTop, frontRightTop, backRightTop, 0xFF00FF00);
+        //drawQuad(guiGraphics, matrix, frontLeftBottom, backLeftBottom, backRightBottom, frontRightBottom, 0xFFFF0000);
+    }
+
+    /**
+     * transforms and draws a quad to the GuiGraphics
+     *
+     * @param guiGraphics GuiGraphics to use
+     * @param matrix      matrix to use for the transform
+     * @param v1          first corner
+     * @param v2          second corner
+     * @param v3          third corner
+     * @param v4          fourth corner
+     * @param color       packed color in the format 0xAARRGGBB
+     */
+    private static void drawQuad(
+        GuiGraphics guiGraphics, Matrix4f matrix, Vector3fc v1, Vector3fc v2, Vector3fc v3, Vector3fc v4, int color)
+    {
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().set(matrix.m00(), matrix.m01(), matrix.m10(), matrix.m11(), 200, 0);
+        //guiGraphics.fill();
+        guiGraphics.fill((int)v1.x(), (int)v1.y(), (int)v3.x(), (int)v3.y(), color);
+        guiGraphics.pose().popMatrix();
     }
 
     /**

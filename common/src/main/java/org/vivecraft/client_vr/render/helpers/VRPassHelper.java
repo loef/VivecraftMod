@@ -72,7 +72,7 @@ public class VRPassHelper {
         if (DATA_HOLDER.currentPass == RenderPass.CAMERA) {
             Profiler.get().push("cameraCopy");
             DATA_HOLDER.vrRenderer.cameraRenderFramebuffer.blitAndBlendToTexture(
-                DATA_HOLDER.vrRenderer.cameraFramebuffer.getColorTexture());
+                DATA_HOLDER.vrRenderer.cameraFramebuffer.getColorTextureView());
             Profiler.get().pop();
         }
 
@@ -109,22 +109,13 @@ public class VRPassHelper {
 
         Profiler.get().push("VR guis");
 
-        // to render gui stuff
-        GuiGraphics guiGraphics = new GuiGraphics(MC, MC.renderBuffers().bufferSource());
-
         Profiler.get().push("gui cursor");
         // draw cursor on Gui Layer
         if (MC.screen != null || !MC.mouseHandler.isMouseGrabbed()) {
-            Matrix4fStack poseStack = RenderSystem.getModelViewStack();
+            /*Matrix4fStack poseStack = RenderSystem.getModelViewStack();
             poseStack.pushMatrix();
             poseStack.identity();
-            poseStack.translate(0.0f, 0.0f, -11000.0f);
-
-            Matrix4f guiProjection = (new Matrix4f()).setOrtho(
-                0.0F, MC.getWindow().getGuiScaledWidth(),
-                MC.getWindow().getGuiScaledHeight(), 0.0F,
-                1000.0F, 21000.0F);
-            RenderSystem.setProjectionMatrix(guiProjection, ProjectionType.ORTHOGRAPHIC);
+            poseStack.translate(0.0f, 0.0f, -11000.0f);*/
 
             int x = (int) (
                 MC.mouseHandler.xpos() * (double) MC.getWindow().getGuiScaledWidth() /
@@ -134,10 +125,10 @@ public class VRPassHelper {
                 MC.mouseHandler.ypos() * (double) MC.getWindow().getGuiScaledHeight() /
                     (double) MC.getWindow().getScreenHeight()
             );
-            RenderHelper.drawMouseMenuQuad(guiGraphics, x, y);
+            RenderHelper.drawMouseMenuQuad(GuiRenderHelper.getGuiGraphics(), x, y);
+            GuiRenderHelper.finish();
 
-            guiGraphics.flush();
-            poseStack.popMatrix();
+            //poseStack.popMatrix();
         }
 
         // pop pose that we pushed before the gui
@@ -159,7 +150,7 @@ public class VRPassHelper {
             RenderSystem.getDevice().createCommandEncoder().clearColorAndDepthTextures(
                 KeyboardHandler.FRAMEBUFFER.getColorTexture(), 0,
                 KeyboardHandler.FRAMEBUFFER.getDepthTexture(), 1F);
-            RenderHelper.drawScreen(guiGraphics, deltaTracker, KeyboardHandler.UI, true);
+            RenderHelper.drawScreen(KeyboardHandler.UI, true);
         }
 
         Profiler.get().popPush("Radial Menu");
@@ -168,7 +159,7 @@ public class VRPassHelper {
             RenderSystem.getDevice().createCommandEncoder().clearColorAndDepthTextures(
                 RadialHandler.FRAMEBUFFER.getColorTexture(), 0,
                 RadialHandler.FRAMEBUFFER.getDepthTexture(), 1F);
-            RenderHelper.drawScreen(guiGraphics, deltaTracker, RadialHandler.UI, true);
+            RenderHelper.drawScreen(RadialHandler.UI, true);
         }
         Profiler.get().pop();
         RenderHelper.checkGLError("post 2d ");

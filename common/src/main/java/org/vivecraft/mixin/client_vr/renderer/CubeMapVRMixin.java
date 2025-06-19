@@ -16,11 +16,4 @@ public class CubeMapVRMixin {
     private RenderPipeline vivecraft$solidPipeline(RenderPipeline instance) {
         return VRState.VR_RUNNING ? VRShaders.SOLID_PANORAMA : instance;
     }
-
-    @ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderColor(FFFF)V", ordinal = 0, remap = false), index = 3, remap = true)
-    private float vivecraft$whyTheTransparencyChange(
-        float thisAlpha, @Local(argsOnly = true, ordinal = 2) float alpha)
-    {
-        return VRState.VR_RUNNING ? alpha : thisAlpha;
-    }
 }
