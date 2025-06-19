@@ -687,6 +687,9 @@ public class VREffectsHelper {
             renderGuiAndShadow(partialTick, !shouldOccludeGui(), true);
         }
 
+        // iris, need to end all, to have stuff rendered in the right order
+        MC.renderBuffers().bufferSource().endBatch();
+
         // render hands in second pass when gui is open
         boolean renderHandsSecond =
             RadialHandler.isShowing() || KeyboardHandler.SHOWING || Minecraft.getInstance().screen != null;
@@ -698,6 +701,9 @@ public class VREffectsHelper {
         }
 
         renderVRSelfEffects(partialTick);
+
+        // iris, need to end all, to have stuff rendered before end of frame
+        MC.renderBuffers().bufferSource().endBatch();
     }
 
     /**

@@ -90,7 +90,8 @@ public abstract class VRRenderer {
     // last error caused by this renderer
     protected String lastError = "";
 
-    private final PerspectiveProjectionMatrixBuffer stencilProjectionMatrix = new PerspectiveProjectionMatrixBuffer("stencil");
+    private final PerspectiveProjectionMatrixBuffer stencilProjectionMatrix = new PerspectiveProjectionMatrixBuffer(
+        "stencil");
 
     public VRRenderer(MCVR vr) {
         this.vr = vr;
@@ -261,7 +262,8 @@ public abstract class VRRenderer {
                     0.0F)
                 .setColor(0, 0, 0, 255);
         }
-        Minecraft.getInstance().renderBuffers().bufferSource().endBatch(renderType);
+        // need to end all, because of iris batching
+        Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
     }
 
     /**
@@ -288,7 +290,8 @@ public abstract class VRRenderer {
                 .setColor(0, 0, 0, 255);
         }
 
-        Minecraft.getInstance().renderBuffers().bufferSource().endBatch(renderType);
+        // need to end all, because of iris batching
+        Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
     }
 
     /**

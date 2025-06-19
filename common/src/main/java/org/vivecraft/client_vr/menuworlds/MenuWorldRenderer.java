@@ -1359,7 +1359,6 @@ public class MenuWorldRenderer {
                 renderPass.setVertexBuffer(0, RenderSystem.getQuadVertexBuffer());
                 renderPass.setIndexBuffer(autoStorageIndexBuffer.getBuffer(6), autoStorageIndexBuffer.type());
                 renderPass.drawIndexed(0, 0, 6, 1);
-                ;
             }
             this.lightMapUbo.rotate();
             this.lightmapUpdateNeeded = false;
@@ -1431,7 +1430,7 @@ public class MenuWorldRenderer {
             this.menuWorldRenderer = menuWorldRenderer;
             this.fogBuffer = new MappableRingBuffer(() -> "Menuworld Fog UBO",
                 GpuBuffer.USAGE_UNIFORM | GpuBuffer.USAGE_MAP_WRITE, FogRenderer.FOG_UBO_SIZE);
-            try (MemoryStack memoryStack = MemoryStack.stackPush();) {
+            try (MemoryStack memoryStack = MemoryStack.stackPush()) {
                 ByteBuffer byteBuffer = memoryStack.malloc(FogRenderer.FOG_UBO_SIZE);
                 Std140Builder.intoBuffer(byteBuffer).putVec4(new Vector4f(0.0f)).putFloat(Float.MAX_VALUE)
                     .putFloat(Float.MAX_VALUE).putFloat(Float.MAX_VALUE).putFloat(Float.MAX_VALUE)

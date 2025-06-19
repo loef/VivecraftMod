@@ -84,8 +84,12 @@ public class VRRenderTypes {
                 .setOverlayState(RenderStateShard.OVERLAY)
                 .createCompositeState(false)));
 
-    private static final RenderType DEBUG_QUADS_ALWAYS = RenderType.create("debug_quads_vr", 1536, false, false,
-        VRShaders.DEBUG_QUADS_ALWAYS, RenderType.CompositeState.builder()
+    private static final RenderType QUADS = RenderType.create("quads_vr", 1536, false, false,
+        VRShaders.QUADS, RenderType.CompositeState.builder()
+            .createCompositeState(false));
+
+    private static final RenderType QUADS_ALWAYS = RenderType.create("quads_always_vr", 1536, false, false,
+        VRShaders.QUADS_ALWAYS, RenderType.CompositeState.builder()
             .createCompositeState(false));
 
     private static final RenderType DEBUG_TRIANGLES_ALWAYS = RenderType.create("debug_triangles_vr", 1536, false, false,
@@ -126,7 +130,7 @@ public class VRRenderTypes {
     }
 
     public static RenderType debugQuads(boolean depthAlways) {
-        return depthAlways ? DEBUG_QUADS_ALWAYS : RenderType.debugQuads();
+        return depthAlways ? QUADS_ALWAYS : QUADS;
     }
 
     public static RenderType debugTrianglesAlways() {

@@ -167,8 +167,13 @@ public class VRShaders {
         .withShaderDefine("ALPHA_CUTOUT", 0.1F)
         .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST).build();
 
-    public static final RenderPipeline DEBUG_QUADS_ALWAYS = RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
-        .withLocation("pipeline/debug_quads_always_vr")
+    public static final RenderPipeline QUADS = RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
+        .withLocation("pipeline/quads_vr")
+        .withCull(false)
+        .build();
+
+    public static final RenderPipeline QUADS_ALWAYS = RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
+        .withLocation("pipeline/quads_always_vr")
         .withCull(false)
         .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST).build();
 
@@ -197,7 +202,7 @@ public class VRShaders {
 
     public static final Set<RenderPipeline> DEPTH_ALWAYS_PIPELINES = new HashSet<>(
         Set.of(CROSSHAIR_WORLD_ALWAYS, ENTITY_TRANSLUCENT_ALWAYS_NO_CARDINAL_LIGHT,
-            ENTITY_CUTOUT_NO_CULL_ALWAYS_NO_CARDINAL_LIGHT, DEBUG_QUADS_ALWAYS, DEBUG_TRIANGLES_ALWAYS));
+            ENTITY_CUTOUT_NO_CULL_ALWAYS_NO_CARDINAL_LIGHT, QUADS_ALWAYS, DEBUG_TRIANGLES_ALWAYS));
 
     private VRShaders() {}
 

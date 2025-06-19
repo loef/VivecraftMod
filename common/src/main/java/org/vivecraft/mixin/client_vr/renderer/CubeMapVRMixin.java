@@ -1,12 +1,10 @@
 package org.vivecraft.mixin.client_vr.renderer;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.renderer.CubeMap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.vivecraft.client_vr.VRState;
 import org.vivecraft.client_vr.render.VRShaders;
 

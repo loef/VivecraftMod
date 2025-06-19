@@ -355,13 +355,17 @@ public abstract class GuiVROptionsBase extends Screen {
                             14 < this.height)
                         {
                             guiGraphics.renderTooltip(this.font,
-                                this.font.split(Component.literal(tooltip), 308).stream().map(ClientTooltipComponent::create).toList(),
-                                this.width / 2 - 166, guiHover.getY() + guiHover.getHeight() + 14, DefaultTooltipPositioner.INSTANCE, null);
+                                this.font.split(Component.literal(tooltip), 308).stream()
+                                    .map(ClientTooltipComponent::create).toList(),
+                                this.width / 2 - 166, guiHover.getY() + guiHover.getHeight() + 14,
+                                DefaultTooltipPositioner.INSTANCE, null);
                         } else {
                             guiGraphics.renderTooltip(this.font,
-                                this.font.split(Component.literal(tooltip), 308).stream().map(ClientTooltipComponent::create).toList(),
+                                this.font.split(Component.literal(tooltip), 308).stream()
+                                    .map(ClientTooltipComponent::create).toList(),
                                 this.width / 2 - 166,
-                                guiHover.getY() - formattedText.size() * (this.font.lineHeight + 1) + 9, DefaultTooltipPositioner.INSTANCE, null);
+                                guiHover.getY() - formattedText.size() * (this.font.lineHeight + 1) + 9,
+                                DefaultTooltipPositioner.INSTANCE, null);
                         }
                     }
                 }

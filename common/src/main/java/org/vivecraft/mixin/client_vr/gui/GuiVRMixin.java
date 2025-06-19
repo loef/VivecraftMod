@@ -5,13 +5,10 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
@@ -31,8 +28,6 @@ import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRState;
 import org.vivecraft.client_vr.extensions.GuiExtension;
 import org.vivecraft.client_xr.render_pass.RenderPassType;
-
-import java.util.function.Function;
 
 @Mixin(Gui.class)
 public abstract class GuiVRMixin implements GuiExtension {

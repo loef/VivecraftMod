@@ -5,7 +5,6 @@ import com.mojang.blaze3d.opengl.*;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.TextureFormat;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30C;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -65,7 +64,8 @@ public class GlDeviceMixin implements GlDeviceExtension {
             } else if (error != 0) {
                 throw new IllegalStateException("OpenGL error " + error);
             } else {
-                GlTexture glTexture = new GlTexture(usageFlags, label, textureFormat, width, height, depthLayers, mipmapLevels, texId);
+                GlTexture glTexture = new GlTexture(usageFlags, label, textureFormat, width, height, depthLayers,
+                    mipmapLevels, texId);
                 this.debugLabels.applyLabel(glTexture);
                 return glTexture;
             }

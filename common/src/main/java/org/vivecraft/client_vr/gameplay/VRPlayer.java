@@ -228,14 +228,14 @@ public class VRPlayer {
                         queriedIPD, measuredIPD, runtimeWorldScale);
                     this.mc.level.disconnect(Component.translatable("vivecraft.message.worldscaleOutOfRange.title"));
                     this.mc.disconnect(new DisconnectedScreen(new JoinMultiplayerScreen(new TitleScreen()),
-                        Component.translatable("vivecraft.message.worldscaleOutOfRange.title"),
-                        Component.translatable("vivecraft.message.worldscaleOutOfRange",
-                            Component.literal("%.2fx".formatted(worldScaleOverride.getValueMin()))
-                                .withStyle(style -> style.withColor(ChatFormatting.GREEN)),
-                            Component.literal("%.2fx".formatted(worldScaleOverride.getValueMax()))
-                                .withStyle(style -> style.withColor(ChatFormatting.GREEN)),
-                            Component.literal(this.dh.vr.getRuntimeName())
-                                .withStyle(style -> style.withColor(ChatFormatting.GOLD)))),
+                            Component.translatable("vivecraft.message.worldscaleOutOfRange.title"),
+                            Component.translatable("vivecraft.message.worldscaleOutOfRange",
+                                Component.literal("%.2fx".formatted(worldScaleOverride.getValueMin()))
+                                    .withStyle(style -> style.withColor(ChatFormatting.GREEN)),
+                                Component.literal("%.2fx".formatted(worldScaleOverride.getValueMax()))
+                                    .withStyle(style -> style.withColor(ChatFormatting.GREEN)),
+                                Component.literal(this.dh.vr.getRuntimeName())
+                                    .withStyle(style -> style.withColor(ChatFormatting.GOLD)))),
                         false);
                 }
             }

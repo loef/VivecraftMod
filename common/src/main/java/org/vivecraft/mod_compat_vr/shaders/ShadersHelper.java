@@ -2,6 +2,7 @@ package org.vivecraft.mod_compat_vr.shaders;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderPipelines;
 import org.apache.commons.lang3.tuple.Triple;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRState;
@@ -162,7 +163,8 @@ public class ShadersHelper {
             consumer.accept(VRShaders.ENTITY_CUTOUT_NO_CULL_NO_CARDINAL_LIGHT, "ENTITIES");
             consumer.accept(VRShaders.ENTITY_CUTOUT_NO_CULL_ALWAYS_NO_CARDINAL_LIGHT, "ENTITIES");
             consumer.accept(VRShaders.ENTITY_SOLID_NO_CARDINAL_LIGHT, "ENTITIES");
-            consumer.accept(VRShaders.DEBUG_QUADS_ALWAYS, "BASIC");
+            consumer.accept(VRShaders.QUADS, "BASIC");
+            consumer.accept(VRShaders.QUADS_ALWAYS, "BASIC");
             consumer.accept(VRShaders.DEBUG_TRIANGLES_ALWAYS, "BASIC");
             consumer.accept(VRShaders.DEBUG_TRIANGLE_FAN_ALWAYS, "BASIC");
             consumer.accept(VRShaders.TEXT_NO_CULL, "ENTITIES_TRANSLUCENT");

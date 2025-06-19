@@ -477,6 +477,12 @@ public abstract class GameRendererVRMixin
         return RenderPassType.isVanilla();
     }
 
+    @ModifyExpressionValue(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;shouldRenderDebugCrosshair()Z"))
+    private boolean vivecraft$noDebugCrosshairInVR(boolean renderCrosshair)
+    {
+        return renderCrosshair && RenderPassType.isVanilla();
+    }
+
     @Inject(method = "renderItemInHand", at = @At("HEAD"), cancellable = true)
     private void vivecraft$noHandsInVR(CallbackInfo ci) {
         if (!RenderPassType.isVanilla()) {
