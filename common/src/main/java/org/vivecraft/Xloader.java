@@ -1,4 +1,4 @@
-package org.vivecraft.client;
+package org.vivecraft;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 

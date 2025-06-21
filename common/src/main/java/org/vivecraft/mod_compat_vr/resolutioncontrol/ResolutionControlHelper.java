@@ -1,7 +1,7 @@
 package org.vivecraft.mod_compat_vr.resolutioncontrol;
 
 import io.github.ultimateboomer.resolutioncontrol.ResolutionControlMod;
-import org.vivecraft.client.Xloader;
+import org.vivecraft.Xloader;
 
 public class ResolutionControlHelper {
 

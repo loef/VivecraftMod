@@ -1,7 +1,7 @@
 package org.vivecraft.mod_compat_vr.epicfight;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import org.vivecraft.client.Xloader;
+import org.vivecraft.Xloader;
 import org.vivecraft.client_vr.provider.InputSimulator;
 import yesman.epicfight.client.ClientEngine;
 import yesman.epicfight.client.input.EpicFightKeyMappings;

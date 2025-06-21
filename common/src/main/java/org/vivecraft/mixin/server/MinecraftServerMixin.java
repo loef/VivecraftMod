@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.vivecraft.client.Xloader;
+import org.vivecraft.Xloader;
 import org.vivecraft.server.MinecraftServerExt;
 import org.vivecraft.server.ServerNetworking;
 import org.vivecraft.server.ServerUtil;

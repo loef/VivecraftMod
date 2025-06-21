@@ -1,8 +1,8 @@
-package org.vivecraft.client.fabric;
+package org.vivecraft.fabric;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
-import org.vivecraft.client.Xloader;
+import org.vivecraft.Xloader;
 import org.vivecraft.common.utils.ClassUtils;
 
 import java.nio.file.Path;

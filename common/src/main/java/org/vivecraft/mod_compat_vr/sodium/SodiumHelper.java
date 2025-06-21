@@ -3,7 +3,7 @@ package org.vivecraft.mod_compat_vr.sodium;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import org.joml.Vector2f;
-import org.vivecraft.client.Xloader;
+import org.vivecraft.Xloader;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.common.utils.ClassUtils;
 import org.vivecraft.mod_compat_vr.sodium.extensions.ModelCuboidExtension;

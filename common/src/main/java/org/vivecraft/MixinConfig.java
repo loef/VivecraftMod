@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import org.spongepowered.asm.service.MixinService;
-import org.vivecraft.client.Xloader;
 import org.vivecraft.client_vr.extensions.ClassDependentMixin;
 import org.vivecraft.mod_compat_vr.sodium.SodiumHelper;
 

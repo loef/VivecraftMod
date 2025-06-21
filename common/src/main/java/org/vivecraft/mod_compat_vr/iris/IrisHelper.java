@@ -3,7 +3,7 @@ package org.vivecraft.mod_compat_vr.iris;
 import net.irisshaders.iris.api.v0.IrisApi;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
-import org.vivecraft.client.Xloader;
+import org.vivecraft.Xloader;
 import org.vivecraft.client_vr.render.RenderPass;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.client_xr.render_pass.RenderPassManager;

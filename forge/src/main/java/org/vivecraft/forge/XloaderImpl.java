@@ -1,10 +1,10 @@
-package org.vivecraft.client.forge;
+package org.vivecraft.forge;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
-import org.vivecraft.client.Xloader;
+import org.vivecraft.Xloader;
 
 import java.nio.file.Path;
 

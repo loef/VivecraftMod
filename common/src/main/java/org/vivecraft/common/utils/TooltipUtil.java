@@ -2,7 +2,7 @@ package org.vivecraft.common.utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.locale.Language;
-import org.vivecraft.client.Xloader;
+import org.vivecraft.Xloader;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.settings.VRSettings;
 

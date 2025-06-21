@@ -1,7 +1,7 @@
 package org.vivecraft.mod_compat_vr.pehkui;
 
 import net.minecraft.world.entity.Entity;
-import org.vivecraft.client.Xloader;
+import org.vivecraft.Xloader;
 import virtuoel.pehkui.util.ScaleUtils;
 
 public class PehkuiHelper {

@@ -1,6 +1,6 @@
 package org.vivecraft.common;
 
-import org.vivecraft.client.Xloader;
+import org.vivecraft.Xloader;
 
 public class CommonDataHolder {
 

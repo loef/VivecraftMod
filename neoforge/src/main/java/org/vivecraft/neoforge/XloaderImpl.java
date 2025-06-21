@@ -1,10 +1,10 @@
-package org.vivecraft.client.neoforge;
+package org.vivecraft.neoforge;
 
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.fml.loading.LoadingModList;
-import org.vivecraft.client.Xloader;
+import org.vivecraft.Xloader;
 
 import java.nio.file.Path;
 

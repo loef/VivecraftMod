@@ -1,4 +1,4 @@
-package org.vivecraft.client.fabric;
+package org.vivecraft.fabric;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -21,8 +21,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.FluidState;
-import org.vivecraft.client.Xloader;
-import org.vivecraft.client.Xplat;
+import org.vivecraft.Xloader;
+import org.vivecraft.Xplat;
 import org.vivecraft.common.network.packet.c2s.VivecraftPayloadC2S;
 import org.vivecraft.common.network.packet.s2c.VivecraftPayloadS2C;
 import org.vivecraft.fabric.mixin.world.level.biome.BiomeAccessor;

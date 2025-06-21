@@ -1,6 +1,6 @@
 package org.vivecraft.mod_compat_vr.immersiveportals;
 
-import org.vivecraft.client.Xloader;
+import org.vivecraft.Xloader;
 import qouteall.imm_ptl.core.IPGlobal;
 import qouteall.imm_ptl.core.render.context_management.PortalRendering;
 

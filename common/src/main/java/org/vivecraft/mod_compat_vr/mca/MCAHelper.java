@@ -2,7 +2,7 @@ package org.vivecraft.mod_compat_vr.mca;
 
 import net.minecraft.world.entity.LivingEntity;
 import org.joml.Vector3f;
-import org.vivecraft.client.Xloader;
+import org.vivecraft.Xloader;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
