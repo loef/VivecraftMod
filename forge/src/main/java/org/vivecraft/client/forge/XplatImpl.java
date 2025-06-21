@@ -14,12 +14,8 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.settings.KeyModifier;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.network.NetworkDirection;
 import org.lwjgl.glfw.GLFW;
 import org.vivecraft.client.Xplat;
@@ -27,46 +23,11 @@ import org.vivecraft.common.network.packet.c2s.VivecraftPayloadC2S;
 import org.vivecraft.common.network.packet.s2c.VivecraftPayloadS2C;
 import org.vivecraft.forge.Vivecraft;
 
-import java.nio.file.Path;
-
 public class XplatImpl implements Xplat {
-
-    public static void init() {}
-
-    public static boolean isModLoaded(String name) {
-        return FMLLoader.getLoadingModList().getModFileById(name) != null;
-    }
-
-    public static Path getConfigPath(String fileName) {
-        return FMLPaths.CONFIGDIR.get().resolve(fileName);
-    }
-
-    public static boolean isDedicatedServer() {
-        return FMLEnvironment.dist == Dist.DEDICATED_SERVER;
-    }
-
-    public static Xplat.ModLoader getModloader() {
-        return Xplat.ModLoader.FORGE;
-    }
-
-    public static String getModVersion() {
-        if (isModLoadedSuccess()) {
-            return FMLLoader.getLoadingModList().getModFileById("vivecraft").versionString();
-        }
-        return "no version";
-    }
-
-    public static boolean isModLoadedSuccess() {
-        return FMLLoader.getLoadingModList().getModFileById("vivecraft") != null;
-    }
 
     public static boolean enableRenderTargetStencil(RenderTarget renderTarget) {
         renderTarget.enableStencil();
         return true;
-    }
-
-    public static Path getJarPath() {
-        return FMLLoader.getLoadingModList().getModFileById("vivecraft").getFile().getSecureJar().getPath("/");
     }
 
     public static String getUseMethodName() {

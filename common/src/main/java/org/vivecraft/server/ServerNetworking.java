@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vivecraft.client.Xloader;
 import org.vivecraft.client.Xplat;
 import org.vivecraft.common.CommonDataHolder;
 import org.vivecraft.common.network.BodyPart;
@@ -358,8 +359,8 @@ public class ServerNetworking {
             }
             trackedPlayer.send(packetProvider.apply(vivePlayer.networkVersion));
         }
-        if (ServerConfig.SEND_DATA_TO_OWNER.get() || Xplat.isModLoaded("replaymod") ||
-            Xplat.isModLoaded("reforgedplaymod") || Xplat.isModLoaded("flashback"))
+        if (ServerConfig.SEND_DATA_TO_OWNER.get() || Xloader.isModLoaded("replaymod") ||
+            Xloader.isModLoaded("reforgedplaymod") || Xloader.isModLoaded("flashback"))
         {
             // force on when a replay mod is loaded
             vivePlayer.player.connection.send(packetProvider.apply(vivePlayer.networkVersion));

@@ -21,7 +21,7 @@ import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vivecraft.client.Xplat;
+import org.vivecraft.client.Xloader;
 import org.vivecraft.client.render.VRPlayerRenderer;
 import org.vivecraft.client.render.armor.VRArmorLayer;
 import org.vivecraft.client.utils.ClientUtils;
@@ -631,7 +631,7 @@ public class VRSettings {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     public VRSettings() {
-        this.vrCfgFile = Xplat.getConfigPath("vivecraft-client-config.json").toFile();
+        this.vrCfgFile = Xloader.getConfigPath("vivecraft-client-config.json").toFile();
 
         // Need to do this in the instance because array sizes aren't known until instantiation
         initializeFieldInfo();

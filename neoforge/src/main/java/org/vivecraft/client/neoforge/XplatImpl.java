@@ -14,10 +14,6 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.material.FluidState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.fml.loading.LoadingModList;
 import net.neoforged.neoforge.client.settings.KeyModifier;
 import net.neoforged.neoforge.client.textures.FluidSpriteCache;
 import net.neoforged.neoforge.common.util.FakePlayer;
@@ -27,47 +23,12 @@ import org.vivecraft.common.network.packet.c2s.VivecraftPayloadC2S;
 import org.vivecraft.common.network.packet.s2c.VivecraftPayloadS2C;
 import org.vivecraft.neoforge.packet.VivecraftPayloadBiDir;
 
-import java.nio.file.Path;
-
 public class XplatImpl implements Xplat {
-
-    public static void init() {}
-
-    public static boolean isModLoaded(String name) {
-        return LoadingModList.get().getModFileById(name) != null;
-    }
-
-    public static Path getConfigPath(String fileName) {
-        return FMLPaths.CONFIGDIR.get().resolve(fileName);
-    }
-
-    public static boolean isDedicatedServer() {
-        return FMLEnvironment.dist == Dist.DEDICATED_SERVER;
-    }
-
-    public static ModLoader getModloader() {
-        return ModLoader.NEOFORGE;
-    }
-
-    public static String getModVersion() {
-        if (isModLoadedSuccess()) {
-            return LoadingModList.get().getModFileById("vivecraft").versionString();
-        }
-        return "no version";
-    }
-
-    public static boolean isModLoadedSuccess() {
-        return LoadingModList.get().getModFileById("vivecraft") != null;
-    }
 
     public static boolean enableRenderTargetStencil(RenderTarget renderTarget) {
         // TODO there is no stencil support yet
         //renderTarget.enableStencil();
         return true;
-    }
-
-    public static Path getJarPath() {
-        return LoadingModList.get().getModFileById("vivecraft").getFile().getSecureJar().getPath("/");
     }
 
     public static String getUseMethodName() {
