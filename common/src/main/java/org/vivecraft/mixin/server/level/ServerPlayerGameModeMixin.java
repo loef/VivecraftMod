@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.vivecraft.common.network.BodyPart;
+import org.vivecraft.api.data.VRBodyPart;
 import org.vivecraft.server.ServerVRPlayers;
 import org.vivecraft.server.ServerVivePlayer;
 import org.vivecraft.server.config.ServerConfig;
@@ -62,7 +62,7 @@ public class ServerPlayerGameModeMixin {
     @Unique
     private <T> T vivecraft$wrapWithBodyPartChange(Supplier<T> supplier, boolean reset) {
         ServerVivePlayer vivePlayer = ServerVRPlayers.getVivePlayer(this.player);
-        BodyPart org = null;
+        VRBodyPart org = null;
         if (vivePlayer != null && vivePlayer.isVR() && vivePlayer.delayedDestroyBodyPart != null) {
             org = vivePlayer.activeBodyPart;
             vivePlayer.activeBodyPart = vivePlayer.delayedDestroyBodyPart;
