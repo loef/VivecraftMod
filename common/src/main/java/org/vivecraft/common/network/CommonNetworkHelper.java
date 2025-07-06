@@ -20,9 +20,11 @@ public class CommonNetworkHelper {
     public static final int NETWORK_VERSION_HEAD_AIM = 3;
     // allows sending haptic events to the client
     public static final int NETWORK_VERSION_HAPTIC_PACKET = 4;
+    // adds a packet, to inform the client what vr changes are on non default values
+    public static final int NETWORK_VERSION_SERVER_VR_CHANGES = 5;
 
     // maximum supported network version
-    public static final int MAX_SUPPORTED_NETWORK_VERSION = NETWORK_VERSION_HAPTIC_PACKET;
+    public static final int MAX_SUPPORTED_NETWORK_VERSION = NETWORK_VERSION_SERVER_VR_CHANGES;
     // minimum supported network version
     public static final int MIN_SUPPORTED_NETWORK_VERSION = 0;
 

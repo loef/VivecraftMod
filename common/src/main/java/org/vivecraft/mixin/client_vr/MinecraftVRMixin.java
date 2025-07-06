@@ -53,6 +53,7 @@ import org.vivecraft.client.VivecraftVRMod;
 import org.vivecraft.client.gui.VivecraftClickEvent;
 import org.vivecraft.client.gui.framework.screens.ChangeableParentScreen;
 import org.vivecraft.client.gui.screens.ErrorScreen;
+import org.vivecraft.client.gui.screens.ServerVrChangesScreen;
 import org.vivecraft.client.gui.screens.UpdateScreen;
 import org.vivecraft.client.network.ClientNetworking;
 import org.vivecraft.client.utils.ClientUtils;
@@ -482,7 +483,7 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
                         ClientNetworking.DISPLAYED_HEAD_AIM_WARNING = true;
                     }
 
-                    // other server settings that should only be shown once when joining
+                    // other server messages that should only be shown once when joining
                     if (ClientNetworking.ABLE_TO_DISPLAY_CHAT_WARNINGS) {
                         boolean showMessage = !ClientNetworking.DISPLAYED_CHAT_WARNING ||
                             dataHolder.vrSettings.showServerPluginMissingMessageAlways;
@@ -508,14 +509,31 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
                     }
                 }
             }
-            // fbt calibration notification
-            if (VRState.VR_INITIALIZED && !dataHolder.showedFbtCalibrationNotification &&
-                ((MCVR.get().hasFBT() && !dataHolder.vrSettings.fbtCalibrated) ||
-                    (MCVR.get().hasExtendedFBT() && !dataHolder.vrSettings.fbtExtendedCalibrated)
-                ))
-            {
-                dataHolder.showedFbtCalibrationNotification = true;
-                ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.calibratefbtchat"));
+            if (VRState.VR_INITIALIZED) {
+                // fbt calibration notification
+                if (!dataHolder.showedFbtCalibrationNotification &&
+                    ((MCVR.get().hasFBT() && !dataHolder.vrSettings.fbtCalibrated) ||
+                        (MCVR.get().hasExtendedFBT() && !dataHolder.vrSettings.fbtExtendedCalibrated)
+                    ))
+                {
+                    dataHolder.showedFbtCalibrationNotification = true;
+                    ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.calibratefbtchat"));
+                }
+
+                // non default server settings
+                if (!ClientNetworking.DISPLAYED_VR_CHANGES && ClientNetworking.SERVER_VR_CHANGES_LIST != null &&
+                    dataHolder.vrSettings.showServerVrChangesMessage.getAsBoolean())
+                {
+                    ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.nondefaultvrchanges",
+                        Component.translatable("vivecraft.messages.click").withStyle(style -> style
+                            .withClickEvent(new VivecraftClickEvent(VivecraftClickEvent.VivecraftAction.OPEN_SCREEN,
+                                new ServerVrChangesScreen(ClientNetworking.SERVER_VR_CHANGES_LIST)))
+                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                Component.translatable("vivecraft.messages.click")))
+                            .withColor(ChatFormatting.GREEN))));
+                    ClientNetworking.SERVER_VR_CHANGES_LIST = null;
+                    ClientNetworking.DISPLAYED_VR_CHANGES = true;
+                }
             }
         }
 
