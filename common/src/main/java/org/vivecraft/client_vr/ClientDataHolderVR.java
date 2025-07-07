@@ -68,6 +68,7 @@ public class ClientDataHolderVR {
     public final TeleportTracker teleportTracker;
     public final TelescopeTracker telescopeTracker;
     public final VehicleTracker vehicleTracker;
+    public final HapticTracker hapticTracker;
 
     // our interact modules
     public final InteractiveHotbarModule hotbarModule;
@@ -135,6 +136,7 @@ public class ClientDataHolderVR {
         this.teleportTracker = createTracker(TeleportTracker::new);
         this.telescopeTracker = createTracker(TelescopeTracker::new);
         this.vehicleTracker = createTracker(VehicleTracker::new);
+        this.hapticTracker = createTracker(HapticTracker::new);
 
         // create interact modules
         this.hotbarModule = new InteractiveHotbarModule();

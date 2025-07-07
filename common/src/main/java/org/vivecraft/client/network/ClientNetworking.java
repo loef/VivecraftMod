@@ -44,6 +44,7 @@ public class ClientNetworking {
     public static boolean TELEPORT_WARNING = false;
     public static boolean VR_SWITCHING_WARNING = false;
     public static boolean HEAD_AIM_WARNING = false;
+    public static boolean REQUESTED_DAMAGE_DIRECTION = false;
 
     public static boolean SERVER_HAS_VIVECRAFT = false;
 
@@ -412,6 +413,8 @@ public class ClientNetworking {
                     );
                 }
             }
+            case DAMAGE_DIRECTION ->
+                dataholder.hapticTracker.setLastHitDirection(((DamageDirectionPayloadS2C) s2cPayload).damageDir());
         }
     }
 }

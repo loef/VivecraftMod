@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -39,8 +40,11 @@ import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.vivecraft.Xplat;
 import org.vivecraft.api.data.VRBodyPart;
+import org.vivecraft.common.network.packet.s2c.DamageDirectionPayloadS2C;
 import org.vivecraft.common.utils.MathUtils;
+import org.vivecraft.common.utils.Utils;
 import org.vivecraft.mixin.world.entity.PlayerMixin;
 import org.vivecraft.server.ServerNetworking;
 import org.vivecraft.server.ServerVRPlayers;
@@ -55,6 +59,9 @@ public abstract class ServerPlayerMixin extends PlayerMixin {
     @Shadow
     @Final
     public MinecraftServer server;
+
+    @Shadow
+    public ServerGamePacketListenerImpl connection;
 
     protected ServerPlayerMixin(EntityType<? extends LivingEntity> entityType, Level level) {
         super(entityType, level);
@@ -344,6 +351,19 @@ public abstract class ServerPlayerMixin extends PlayerMixin {
                     other.sendSystemMessage(Component.literal(blockedDamageCase));
                 }
                 cir.setReturnValue(false);
+            }
+        }
+    }
+
+    @Inject(method = "hurtServer", at = @At("RETURN"))
+    private void vivecraft$sendDamageDir(
+        CallbackInfoReturnable<Boolean> cir, @Local(argsOnly = true) DamageSource damageSource)
+    {
+        if (cir.getReturnValueZ()) {
+            ServerVivePlayer vivePlayer = this.vivecraft$getVivePlayer();
+            if (vivePlayer != null && vivePlayer.isVR() && vivePlayer.wantsDamageDirection) {
+                this.connection.send(Xplat.getS2CPacket(
+                    new DamageDirectionPayloadS2C(Utils.getDirFromDamageSource(damageSource, this))));
             }
         }
     }

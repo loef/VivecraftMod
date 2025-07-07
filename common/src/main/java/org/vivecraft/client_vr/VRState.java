@@ -9,6 +9,7 @@ import org.vivecraft.client.api_impl.VRClientAPIImpl;
 import org.vivecraft.client.gui.screens.ErrorScreen;
 import org.vivecraft.client.gui.screens.GarbageCollectorScreen;
 import org.vivecraft.client.utils.TextUtils;
+import org.vivecraft.client_vr.bodylink.Haptics;
 import org.vivecraft.client_vr.gameplay.VRPlayer;
 import org.vivecraft.client_vr.menuworlds.MenuWorldRenderer;
 import org.vivecraft.client_vr.provider.nullvr.NullVR;
@@ -71,6 +72,13 @@ public class VRState {
             RenderPassManager.setVanillaRenderPass();
 
             dh.vrPlayer = new VRPlayer();
+
+            if (Xloader.isModLoaded("hapticcraft")) {
+                VRSettings.LOGGER.info(
+                    "Vivecraft: Not activating bHaptics integration, because the official 'HapticCraft' is loaded!");
+            } else {
+                Haptics.connect();
+            }
 
             dh.menuWorldRenderer = new MenuWorldRenderer();
 
@@ -145,6 +153,9 @@ public class VRState {
             dh.menuWorldRenderer.completeDestroy();
             dh.menuWorldRenderer = null;
         }
+
+        Haptics.disconnect();
+
         VR_ENABLED = false;
         VR_INITIALIZED = false;
         VR_RUNNING = false;

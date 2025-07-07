@@ -36,6 +36,8 @@ public class ServerVivePlayer {
     public ServerPlayer player;
     // network protocol this player is communicating with
     public int networkVersion = CommonNetworkHelper.MAX_SUPPORTED_NETWORK_VERSION;
+    // if the client requested damage direction data
+    public boolean wantsDamageDirection = false;
 
     public ServerVivePlayer(ServerPlayer player) {
         this.player = player;

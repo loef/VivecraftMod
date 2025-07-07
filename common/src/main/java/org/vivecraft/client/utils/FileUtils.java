@@ -53,6 +53,29 @@ public class FileUtils {
     }
 
     /**
+     * loads contents of an asset to a String
+     *
+     * @param sourcePath Path to the source file inside the mods assets
+     * @param required   if set and an error occurs, it will not be caught
+     * @return contents of the asset, or {@code null} if there was an error and {@code required} is false
+     */
+    public static String loadAssetToString(String sourcePath, boolean required) {
+        try {
+            Optional<Resource> resource = Minecraft.getInstance().getResourceManager()
+                .getResource(ResourceLocation.fromNamespaceAndPath("vivecraft", sourcePath));
+
+            if (resource.isPresent()) {
+                try (InputStream is = resource.get().open()) {
+                    return IOUtils.toString(is, StandardCharsets.UTF_8);
+                }
+            }
+        } catch (Exception exception) {
+            handleAssetException(exception, sourcePath, required);
+        }
+        return null;
+    }
+
+    /**
      * unpacks an asset through the Resource manager, this means a resource pack can override the file
      *
      * @param sourcePath   Path to the source file inside the mods assets
