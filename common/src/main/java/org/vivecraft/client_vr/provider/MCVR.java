@@ -1176,23 +1176,18 @@ public abstract class MCVR {
 
                 forward = this.movement.y;
 
+                Vector2f digital = MathUtils.toDigital(this.movement, this.dh.vrSettings.digitalMovementDeadzone);
+
                 if (!this.dh.vrSettings.analogMovement) {
-                    this.movement.x = MathUtils.axisToDigital(this.movement.x,
-                        this.dh.vrSettings.digitalMovementDeadzone);
-                    this.movement.y = MathUtils.axisToDigital(this.movement.y,
-                        this.dh.vrSettings.digitalMovementDeadzone);
+                    this.movement = digital;
                 }
 
                 if (this.isMovement) {
                     // just assuming all this below is needed for compatibility.
-                    this.getInputAction(this.mc.options.keyUp)
-                        .setPressed(this.movement.y > this.dh.vrSettings.digitalMovementDeadzone);
-                    this.getInputAction(this.mc.options.keyDown)
-                        .setPressed(this.movement.y < -this.dh.vrSettings.digitalMovementDeadzone);
-                    this.getInputAction(this.mc.options.keyRight)
-                        .setPressed(this.movement.x > this.dh.vrSettings.digitalMovementDeadzone);
-                    this.getInputAction(this.mc.options.keyLeft)
-                        .setPressed(this.movement.x < -this.dh.vrSettings.digitalMovementDeadzone);
+                    this.getInputAction(this.mc.options.keyUp).setPressed(digital.y > 0);
+                    this.getInputAction(this.mc.options.keyDown).setPressed(digital.y < 0);
+                    this.getInputAction(this.mc.options.keyRight).setPressed(digital.x > 0);
+                    this.getInputAction(this.mc.options.keyLeft).setPressed(digital.x < 0);
 
                     if (this.dh.vrSettings.autoSprint && !this.mc.player.isMovingSlowly()) {
                         // Sprint only works for walk forwards obviously

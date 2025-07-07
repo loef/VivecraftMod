@@ -16,6 +16,7 @@ import org.vivecraft.client.VivecraftVRMod;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRState;
 import org.vivecraft.client_vr.provider.MCVR;
+import org.vivecraft.mod_compat_vr.create.CreateHelper;
 
 @Mixin(KeyboardInput.class)
 public class KeyboardInputVRMixin extends ClientInput {
@@ -50,7 +51,10 @@ public class KeyboardInputVRMixin extends ClientInput {
     private void vivecraft$analogInput(CallbackInfo ci, @Share("climbing") LocalBooleanRef climbing) {
         if (!VRState.VR_RUNNING) return;
 
-        if (MCVR.get().isMovement) {
+        // we only need to set it when using analog input
+        if (MCVR.get().isMovement && ClientDataHolderVR.getInstance().vrSettings.analogMovement &&
+            !(CreateHelper.isLoaded() && CreateHelper.blocksMovement()))
+        {
             this.forwardImpulse = MCVR.get().movement.y;
             this.leftImpulse = -MCVR.get().movement.x;
         }

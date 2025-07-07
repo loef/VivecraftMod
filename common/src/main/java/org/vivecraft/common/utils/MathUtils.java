@@ -174,20 +174,32 @@ public class MathUtils {
     }
 
     /**
-     * returns 0, 1, or -1 depending on sign and if the abs {@code value} is above {@code deadzone}
+     * converts the given {@code value} to represent a digital signal in X/Y, if the length is above {@code deadzone}
+     * the resulting digital signal is dependent on the angle the original {@code value} points at
      *
-     * @param value    value to check
+     * @param value    value to convert
      * @param deadzone threshold value for the check
-     * @return 0, 1, or -1
+     * @return a new Vector2f holding the digital value
      */
-    public static float axisToDigital(float value, float deadzone) {
-        if (value > deadzone) {
-            return 1F;
-        } else if (value < -deadzone) {
-            return -1F;
-        } else {
-            return 0F;
+    public static Vector2f toDigital(Vector2f value, float deadzone) {
+        Vector2f digital = new Vector2f();
+        if (value.length() > deadzone) {
+            // get pointing angle, forward 0, back +-PI
+            float angle = (float) Math.atan2(value.x, value.y);
+            float angleAbs = Math.abs(angle);
+            final float PI_8TH = Mth.PI / 8F;
+            // left/right
+            if (angleAbs >= PI_8TH && angleAbs <= Mth.PI - PI_8TH) {
+                digital.x = Math.signum(angle);
+            }
+            // forward/back
+            if (angleAbs < Mth.HALF_PI - PI_8TH) {
+                digital.y = 1F;
+            } else if (angleAbs > Mth.HALF_PI + PI_8TH) {
+                digital.y = -1F;
+            }
         }
+        return digital;
     }
 
     public static float normalizedDotXZ(Vector3fc a, Vector3fc b) {
