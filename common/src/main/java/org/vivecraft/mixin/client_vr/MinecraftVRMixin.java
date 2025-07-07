@@ -358,7 +358,7 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
     @WrapOperation(method = {"continueAttack", "startAttack"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;swing(Lnet/minecraft/world/InteractionHand;)V"))
     private void vivecraft$swingArmAttack(LocalPlayer instance, InteractionHand hand, Operation<Void> original) {
         if (VRState.VR_RUNNING) {
-            ClientDataHolderVR.getInstance().swingType = VRFirstPersonArmSwing.Attack;
+            ClientDataHolderVR.getInstance().swingType = VRFirstPersonArmSwing.ATTACK;
         }
         original.call(instance, hand);
     }
@@ -420,7 +420,7 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
     @WrapOperation(method = "startUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;swing(Lnet/minecraft/world/InteractionHand;)V"))
     private void vivecraft$swingArmUse(LocalPlayer instance, InteractionHand hand, Operation<Void> original) {
         if (VRState.VR_RUNNING) {
-            ClientDataHolderVR.getInstance().swingType = VRFirstPersonArmSwing.Use;
+            ClientDataHolderVR.getInstance().swingType = VRFirstPersonArmSwing.USE;
         }
         original.call(instance, hand);
     }
@@ -665,7 +665,7 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
     @WrapOperation(method = "handleKeybinds", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;swing(Lnet/minecraft/world/InteractionHand;)V"))
     private void vivecraft$swingArmDrop(LocalPlayer instance, InteractionHand hand, Operation<Void> original) {
         if (VRState.VR_RUNNING) {
-            ClientDataHolderVR.getInstance().swingType = VRFirstPersonArmSwing.Attack;
+            ClientDataHolderVR.getInstance().swingType = VRFirstPersonArmSwing.ATTACK;
         }
         original.call(instance, hand);
     }
