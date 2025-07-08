@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.vivecraft.Xloader;
 import org.vivecraft.api.client.data.RenderPass;
 import org.vivecraft.client.network.ClientNetworking;
 import org.vivecraft.client_vr.ClientDataHolderVR;
@@ -245,6 +246,9 @@ public abstract class ItemInHandRendererVRMixin {
     }
 
     @Unique
+    private boolean vivecraft$didLogModelError = false;
+
+    @Unique
     private void vivecraft$vrPlayerArm(
         PoseStack poseStack, MultiBufferSource buffer, int combinedLight, float swingProgress, HumanoidArm side)
     {
@@ -257,6 +261,16 @@ public abstract class ItemInHandRendererVRMixin {
         RenderSystem.setShaderTexture(0, player.getSkin().texture());
         VRArmRenderer vrArmRenderer = ((EntityRenderDispatcherVRExtension) this.entityRenderDispatcher).vivecraft$getArmSkinMap()
             .get(player.getSkin().model().id());
+
+        if (vrArmRenderer == null) {
+            if (!this.vivecraft$didLogModelError) {
+                VRSettings.LOGGER.error(
+                    "Vivecraft: Some mod broke player model reloading. Possible Culprit 'Stfu' loader: {}",
+                    Xloader.isModLoaded("stfu"));
+                this.vivecraft$didLogModelError = true;
+            }
+            return;
+        }
 
         poseStack.pushPose();
 
