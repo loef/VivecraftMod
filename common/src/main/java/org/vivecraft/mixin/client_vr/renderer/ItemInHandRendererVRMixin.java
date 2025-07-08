@@ -265,7 +265,7 @@ public abstract class ItemInHandRendererVRMixin {
         if (vrArmRenderer == null) {
             if (!this.vivecraft$didLogModelError) {
                 VRSettings.LOGGER.error(
-                    "Vivecraft: Some mod broke player model reloading. Possible Culprit 'Stfu' loader: {}",
+                    "Vivecraft: Some mod broke player model reloading. Possible culprit 'Stfu' loaded: {}",
                     Xloader.isModLoaded("stfu"));
                 this.vivecraft$didLogModelError = true;
             }
