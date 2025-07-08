@@ -27,7 +27,7 @@ public class KeyboardInputVRMixin extends ClientInput {
         Operation<Input> original, @Share("climbing") LocalBooleanRef climbing)
     {
         if (VRState.VR_RUNNING) {
-            climbing.set(!Minecraft.getInstance().player.isInWater() &&
+            climbing.set(Minecraft.getInstance().player != null && !Minecraft.getInstance().player.isInWater() &&
                 ClientDataHolderVR.getInstance().climbTracker.isClimbeyClimb() &&
                 ClientDataHolderVR.getInstance().climbTracker.isGrabbingLadder());
 
