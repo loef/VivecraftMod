@@ -192,10 +192,7 @@ public class ServerVivePlayer {
      * @return if the player is using left-handed mode
      */
     public boolean isLeftHanded() {
-        if (this.vrPlayerState == null) {
-            return false;
-        }
-        return this.vrPlayerState.leftHanded();
+        return this.vrPlayerState != null && this.vrPlayerState.leftHanded();
     }
 
     @Nullable

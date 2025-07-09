@@ -188,7 +188,7 @@ public abstract class ServerPlayerMixin extends PlayerMixin {
                 {
                     // check if it blocks
                     Vector3fc sideDir;
-                    if (serverVivePlayer.vrPlayerState().leftHanded()) {
+                    if (serverVivePlayer.isLeftHanded()) {
                         sideDir = hand == InteractionHand.MAIN_HAND ? MathUtils.RIGHT : MathUtils.LEFT;
                     } else {
                         sideDir = hand == InteractionHand.MAIN_HAND ? MathUtils.LEFT : MathUtils.RIGHT;
