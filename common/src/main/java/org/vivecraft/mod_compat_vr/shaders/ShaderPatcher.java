@@ -17,6 +17,7 @@ public class ShaderPatcher {
         new EbinProjInvPatch(),
         new MakeupProjInvPatch(),
         new SuperDuperProj2Patch(),
+        new SuperDuperLineProj2Patch(),
         new SuperDuperProj3Patch(),
         new EbinProjPatch(),
         new ProjDiag3Patch(),

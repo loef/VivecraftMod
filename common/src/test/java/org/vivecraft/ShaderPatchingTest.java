@@ -22,7 +22,7 @@ public class ShaderPatchingTest {
             String patched = p.patch(orig);
 
             for (String line : orig.split("\n")) {
-                boolean contains = patched.contains(line);
+                boolean contains = patched.contains(line) && !line.contains("// don't patch");
                 Assertions.assertFalse(contains, p.getClass().getSimpleName() +
                     ": Patched output: \n'%s'\n still contained original line \n'%s'\n patterns: \n%s"
                         .formatted(patched, line,
