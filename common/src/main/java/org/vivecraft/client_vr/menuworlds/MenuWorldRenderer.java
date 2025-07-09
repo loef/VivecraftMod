@@ -129,6 +129,8 @@ public class MenuWorldRenderer {
 
     private static boolean FIRST_RENDER_DONE;
 
+    private boolean rendering = false;
+
     public MenuWorldRenderer() {
         this.mc = Minecraft.getInstance();
 
@@ -189,6 +191,7 @@ public class MenuWorldRenderer {
     }
 
     public void render(Matrix4fStack poseStack) {
+        this.rendering = true;
 
         // temporarily disable fabulous to render the menu world
         GraphicsStatus current = this.mc.options.graphicsMode().get();
@@ -257,6 +260,7 @@ public class MenuWorldRenderer {
         poseStack.popMatrix();
         turnOffLightLayer();
         this.mc.options.graphicsMode().set(current);
+        this.rendering = false;
     }
 
     private void renderChunkLayer(RenderType layer, Matrix4f modelView, Matrix4f Projection) {
@@ -274,6 +278,10 @@ public class MenuWorldRenderer {
             vertexBuffer.drawWithShader(modelView, Projection, shaderInstance);
         }
         turnOffLightLayer();
+    }
+
+    public boolean isRendering() {
+        return this.rendering;
     }
 
     public void prepare() {

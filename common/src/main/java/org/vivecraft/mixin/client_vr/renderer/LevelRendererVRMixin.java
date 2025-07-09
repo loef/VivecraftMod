@@ -8,6 +8,7 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import com.mojang.blaze3d.framegraph.FramePass;
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.resource.RenderTargetDescriptor;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -34,6 +35,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.MultiPassTextureTarget;
 import org.vivecraft.client_vr.VRState;
@@ -342,6 +344,15 @@ public abstract class LevelRendererVRMixin implements ResourceManagerReloadListe
                 LevelTargetBundleExtension.VR_TARGETS);
         } else {
             return original.call(instance, id, externalTargets);
+        }
+    }
+
+    @Inject(method = "getCloudsTarget", at = @At("HEAD"), cancellable = true)
+    private void vivecraft$getCloudsTarget(CallbackInfoReturnable<RenderTarget> cir) {
+        if (ClientDataHolderVR.getInstance().menuWorldRenderer != null &&
+            ClientDataHolderVR.getInstance().menuWorldRenderer.isRendering())
+        {
+            cir.setReturnValue(null);
         }
     }
 
