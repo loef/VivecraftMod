@@ -310,7 +310,7 @@ public class ClientNetworking {
                     ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.serverplugin",
                         ((VersionPayloadS2C) s2cPayload).version()));
                 }
-                if (VRState.VR_ENABLED && dataholder.vrSettings.manualCalibration == -1.0F &&
+                if (VRState.VR_INITIALIZED && dataholder.vrSettings.manualCalibration == -1.0F &&
                     !dataholder.vrSettings.seated)
                 {
                     ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.calibrateheight"));

@@ -232,7 +232,7 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
         if (VRState.VR_RUNNING) {
             ClientDataHolderVR.getInstance().vrPlayer.preTick();
         }
-        if (VRState.VR_ENABLED) {
+        if (VRState.VR_INITIALIZED) {
             if (ClientDataHolderVR.getInstance().menuWorldRenderer != null) {
                 ClientDataHolderVR.getInstance().menuWorldRenderer.checkTask();
                 if (ClientDataHolderVR.getInstance().menuWorldRenderer.isBuilding()) {
@@ -319,6 +319,9 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
             this.mainRenderTarget.bindWrite(true);
             ShaderHelper.drawMirror();
             RenderHelper.checkGLError("post-mirror");
+        } else if (VRState.VR_ENABLED && !VRState.VR_INITIALIZED) {
+            // show message that the game is connecting to the vr runtime
+            RenderHelper.drawVRConnectingMessage();
         }
     }
 

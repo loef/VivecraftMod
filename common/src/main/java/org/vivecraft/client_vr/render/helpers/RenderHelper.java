@@ -15,7 +15,9 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.ShaderProgram;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.Vec3;
@@ -34,6 +36,8 @@ import org.vivecraft.client_vr.render.VRShaders;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.common.utils.MathUtils;
 import org.vivecraft.mixin.client.blaze3d.RenderSystemAccessor;
+
+import java.util.List;
 
 public class RenderHelper {
 
@@ -307,6 +311,52 @@ public class RenderHelper {
 
         guiGraphics.blitSprite(VRShaders.MENU_CROSSHAIR, Gui.CROSSHAIR_SPRITE, (int) (mouseX - size * 0.5F + 1),
             (int) (mouseY - size * 0.5F + 1), (int) size, (int) size);
+    }
+
+    /**
+     * draws the "connecting to vr runtime" message to the main rendertarget screen
+     */
+    public static void drawVRConnectingMessage() {
+        // clear depth, because text that was already there would be over ours
+        RenderSystem.clear(GL11C.GL_DEPTH_BUFFER_BIT);
+        // setup modelview for screen rendering
+        Matrix4fStack poseStack = RenderSystem.getModelViewStack();
+        poseStack.pushMatrix();
+        poseStack.identity();
+        poseStack.translate(0.0F, 0.0F, -11000.0F);
+
+        // setup projection
+        float guiScale = (float) MC.getWindow().getGuiScale();
+        Matrix4f guiProjection = (new Matrix4f()).setOrtho(
+            0.0F, MC.getMainRenderTarget().width / guiScale,
+            MC.getMainRenderTarget().height / guiScale, 0.0F,
+            1000.0F, 21000.0F);
+        RenderSystem.setProjectionMatrix(guiProjection, ProjectionType.ORTHOGRAPHIC);
+
+        GuiGraphics guiGraphics = new GuiGraphics(MC, MC.renderBuffers().bufferSource());
+
+        int width = 200;
+        List<FormattedCharSequence> formattedChars = MC.font.split(
+            Component.translatable("vivecraft.messages.connectingtoruntime"), width - 10);
+        int height = formattedChars.size() * 8 + Math.max(formattedChars.size() - 1, 0) * 4 + 10;
+
+        int x = guiGraphics.guiWidth() / 2 - width / 2;
+        int y = guiGraphics.guiHeight() / 2 - height / 2;
+
+        // transparent background to dim the game
+        guiGraphics.fill(0, 0, guiGraphics.guiWidth(), guiGraphics.guiHeight(), 0x40000000);
+
+        // black background with border
+        guiGraphics.fill(x, y, x + width, y + height, 0xFF000000);
+        guiGraphics.renderOutline(x, y, width, height, 0xFFFFFFFF);
+
+        for (int line = 0; line < formattedChars.size(); line++) {
+            guiGraphics.drawCenteredString(MC.font, formattedChars.get(line), guiGraphics.guiWidth() / 2,
+                y + 5 + line * 12, 0xFFFFFFFF);
+        }
+        guiGraphics.flush();
+
+        poseStack.popMatrix();
     }
 
     /**

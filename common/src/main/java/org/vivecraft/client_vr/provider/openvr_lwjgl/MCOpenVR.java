@@ -1352,8 +1352,8 @@ public class MCOpenVR extends MCVR {
                             this.mc.stop();
                         } else {
                             VRSettings.LOGGER.info("Vivecraft: SteamVR closed, disabling VR");
-                            VRState.VR_ENABLED = !VRState.VR_ENABLED;
-                            ClientDataHolderVR.getInstance().vrSettings.vrEnabled = VRState.VR_ENABLED;
+                            VRState.VR_ENABLED = false;
+                            ClientDataHolderVR.getInstance().vrSettings.vrEnabled = false;
                             ClientDataHolderVR.getInstance().vrSettings.saveOptions();
                         }
                     }

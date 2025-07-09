@@ -653,6 +653,7 @@
   "vivecraft.messages.serversettingsnotavailablesingle": "§6This is a server setting and can only be adjusted in singleplayer.§r\n§6If you are an OP you can use the '/vivecraft-server-config' command on servers with vivecraft to change it.§r",
   "vivecraft.messages.nondefaultvrchanges": "§a[Vivecraft]§r This server has some gameplay settings set to non-default values. %s",
   "vivecraft.messages.nondefaultvrchanges.title": "Non-Default Gameplay Settings",
+  "vivecraft.messages.connectingtoruntime": "Connecting to the VR Runtime",
 
   "vivecraft.messages.tracker.waist": "Waist",
   "vivecraft.messages.tracker.rightFoot": "Right Foot",

@@ -651,6 +651,7 @@
   "vivecraft.messages.serversettingsnotavailablesingle": "§6Dies ist eine Servereinstellung, und kann nur im Einzelspielermodus geändert werden.§r\n§6Wenn du ein OP bist, kannst du sie mit dem Befehl '/vivecraft-server-config' auf Servern mit Vivecraft verändern.§r",
   "vivecraft.messages.nondefaultvrchanges": "§a[Vivecraft]§r Dieser Server hat einige Gameplayeinstellungen geänderter. %s",
   "vivecraft.messages.nondefaultvrchanges.title": "Geänderte Gameplayeinstellungen",
+  "vivecraft.messages.connectingtoruntime": "Verbinde mit der VR Laufzeit",
 
   "vivecraft.messages.tracker.waist": "Taille",
   "vivecraft.messages.tracker.rightFoot": "Rechter Fuß",

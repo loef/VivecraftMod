@@ -41,8 +41,18 @@ public class VRState {
      */
     public static boolean VR_RUNNING = false;
 
+    /**
+     * frame delay flag, to show the connecting message
+     */
+    private static boolean FRAME_DELAY = false;
+
     public static void initializeVR() {
         if (VR_INITIALIZED) {
+            return;
+        }
+        if (!FRAME_DELAY) {
+            // delay one frame, to show the connecting message
+            FRAME_DELAY = true;
             return;
         }
         try {
@@ -159,6 +169,7 @@ public class VRState {
         VR_ENABLED = false;
         VR_INITIALIZED = false;
         VR_RUNNING = false;
+        FRAME_DELAY = false;
         if (disableVRSetting) {
             dh.vrSettings.vrEnabled = false;
             dh.vrSettings.saveOptions();

@@ -47,7 +47,7 @@ public abstract class PauseScreenVRMixin extends Screen {
 
     @Inject(method = "createPauseMenu", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/layouts/GridLayout$RowHelper;addChild(Lnet/minecraft/client/gui/layouts/LayoutElement;)Lnet/minecraft/client/gui/layouts/LayoutElement;", ordinal = 4))
     private void vivecraft$addTopButtons(CallbackInfo ci, @Local GridLayout.RowHelper rowHelper) {
-        if (!VRState.VR_ENABLED || !ClientDataHolderVR.getInstance().vrSettings.modifyPauseMenu) {
+        if (!VRState.VR_INITIALIZED || !ClientDataHolderVR.getInstance().vrSettings.modifyPauseMenu) {
             return;
         }
         // reset row to above
@@ -83,7 +83,7 @@ public abstract class PauseScreenVRMixin extends Screen {
     // use the disconnect button as an anchor, and shift by -3 to shift before the addChild call
     @Inject(method = "createPauseMenu", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/client/gui/screens/PauseScreen;disconnectButton:Lnet/minecraft/client/gui/components/Button;", shift = At.Shift.BY, by = -3))
     private void vivecraft$addLowerButtons(CallbackInfo ci, @Local GridLayout.RowHelper rowHelper) {
-        if (!VRState.VR_ENABLED || !ClientDataHolderVR.getInstance().vrSettings.modifyPauseMenu) {
+        if (!VRState.VR_INITIALIZED || !ClientDataHolderVR.getInstance().vrSettings.modifyPauseMenu) {
             return;
         }
         GridLayout gridWidgetOverlay_Profiler = new GridLayout();
@@ -154,7 +154,8 @@ public abstract class PauseScreenVRMixin extends Screen {
     private LayoutElement vivecraft$hideFeedback(
         GridLayout.RowHelper rowHelper, LayoutElement child, Operation<LayoutElement> original)
     {
-        ((Button) child).visible = !VRState.VR_ENABLED || !ClientDataHolderVR.getInstance().vrSettings.modifyPauseMenu;
+        ((Button) child).visible =
+            !VRState.VR_INITIALIZED || !ClientDataHolderVR.getInstance().vrSettings.modifyPauseMenu;
         return original.call(rowHelper, child);
     }
 
@@ -162,7 +163,7 @@ public abstract class PauseScreenVRMixin extends Screen {
     private LayoutElement vivecraft$hideServerLinks(
         GridLayout.RowHelper rowHelper, LayoutElement child, Operation<LayoutElement> original)
     {
-        ((Button) child).visible = !VRState.VR_ENABLED ||
+        ((Button) child).visible = !VRState.VR_INITIALIZED ||
             (ModMenuHelper.shouldOffsetButtons() && !this.minecraft.player.connection.serverLinks().isEmpty()) ||
             !ClientDataHolderVR.getInstance().vrSettings.modifyPauseMenu;
         return original.call(rowHelper, child);
@@ -173,7 +174,7 @@ public abstract class PauseScreenVRMixin extends Screen {
         PauseScreen instance, Component component, Supplier<Screen> supplier, Operation<Button> original)
     {
         ServerLinks links = this.minecraft.player.connection.serverLinks();
-        if (VRState.VR_ENABLED && !ModMenuHelper.shouldOffsetButtons() && !links.isEmpty()) {
+        if (VRState.VR_INITIALIZED && !ModMenuHelper.shouldOffsetButtons() && !links.isEmpty()) {
             Supplier<Screen> sub = () -> new ServerLinksScreen(this, links);
             return original.call(instance, Component.empty().append(SERVER_LINKS), sub);
         } else {
@@ -185,7 +186,8 @@ public abstract class PauseScreenVRMixin extends Screen {
     private static LayoutElement vivecraft$hideReportBugs(
         GridLayout.RowHelper rowHelper, LayoutElement child, Operation<LayoutElement> original)
     {
-        ((Button) child).visible = !VRState.VR_ENABLED || !ClientDataHolderVR.getInstance().vrSettings.modifyPauseMenu;
+        ((Button) child).visible =
+            !VRState.VR_INITIALIZED || !ClientDataHolderVR.getInstance().vrSettings.modifyPauseMenu;
         return original.call(rowHelper, child);
     }
 }
