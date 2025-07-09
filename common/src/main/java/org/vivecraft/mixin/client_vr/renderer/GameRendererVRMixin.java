@@ -137,9 +137,9 @@ public abstract class GameRendererVRMixin
     @WrapMethod(method = "pick(F)V")
     private void vivecraft$vrPick(float partialTick, Operation<Void> original) {
         if (VRState.VR_RUNNING) {
-            // skip when data not available yet
+            // skip when data not available yet, or screen is open
             if (vivecraft$DATA_HOLDER.vrPlayer.vrdata_world_render == null ||
-                this.minecraft.getCameraEntity() == null)
+                this.minecraft.getCameraEntity() == null || this.minecraft.screen != null)
             {
                 return;
             }
