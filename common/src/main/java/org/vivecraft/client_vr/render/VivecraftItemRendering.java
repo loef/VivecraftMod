@@ -301,6 +301,7 @@ public class VivecraftItemRendering {
             case BLOCK_3D -> {
                 translateX += 0.05F;
                 translateZ -= 0.1F;
+                rotation.mul(Axis.XP.rotationDegrees(90 - gunAngle));
                 scale = 0.3F;
             }
             case BLOCK_STICK -> {
