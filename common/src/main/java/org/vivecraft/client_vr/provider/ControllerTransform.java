@@ -1,10 +1,15 @@
-package org.vivecraft.client_vr.provider.nullvr;
+package org.vivecraft.client_vr.provider;
 
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.vivecraft.client_vr.settings.OptionEnum;
 
-public enum ControllerTransform {
+/**
+ * these are default controller transforms taken from the SteamVR models
+ */
+public enum ControllerTransform implements OptionEnum<ControllerTransform> {
+    AUTO,
     NULL,
     VIVE(
         new Vector3f(0.0F, 0.003F, 0.097F),

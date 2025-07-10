@@ -13,10 +13,7 @@ import org.vivecraft.client.utils.ClientUtils;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.MethodHolder;
 import org.vivecraft.client_vr.gameplay.screenhandlers.GuiHandler;
-import org.vivecraft.client_vr.provider.ControllerType;
-import org.vivecraft.client_vr.provider.DeviceSource;
-import org.vivecraft.client_vr.provider.MCVR;
-import org.vivecraft.client_vr.provider.VRRenderer;
+import org.vivecraft.client_vr.provider.*;
 import org.vivecraft.client_vr.provider.openvr_lwjgl.VRInputAction;
 import org.vivecraft.client_vr.render.MirrorNotification;
 import org.vivecraft.client_vr.settings.VRSettings;
@@ -196,6 +193,9 @@ public class NullVR extends MCVR {
     }
 
     @Override
+    public void refreshControllerTransforms() {}
+
+    @Override
     public Matrix4fc getControllerComponentTransform(int controllerIndex, String componentName) {
         return switch (componentName) {
             case "tip" -> controllerIndex == MAIN_CONTROLLER ? this.controllerType.tipR : this.controllerType.tipL;
@@ -296,6 +296,9 @@ public class NullVR extends MCVR {
 
                 if (key == GLFW.GLFW_KEY_F9) {
                     this.controllerType = ClientUtils.getNextEnum(this.controllerType, offset);
+                    if (this.controllerType == ControllerTransform.AUTO) {
+                        this.controllerType = ClientUtils.getNextEnum(this.controllerType, offset);
+                    }
                     Vector3f tipForward = this.controllerType.tipR.transformDirection(MathUtils.BACK, new Vector3f());
                     Vector3f handForward = this.controllerType.handGripR.transformDirection(MathUtils.BACK,
                         new Vector3f());

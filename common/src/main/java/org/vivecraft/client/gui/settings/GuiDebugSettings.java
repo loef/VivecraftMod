@@ -9,8 +9,8 @@ import org.vivecraft.client_vr.settings.VRSettings;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GuiDebugRenderSettings extends GuiListScreen {
-    public GuiDebugRenderSettings(Screen lastScreen) {
+public class GuiDebugSettings extends GuiListScreen {
+    public GuiDebugSettings(Screen lastScreen) {
         super(Component.translatable("vivecraft.options.screen.debug"), lastScreen);
     }
 
@@ -24,6 +24,7 @@ public class GuiDebugRenderSettings extends GuiListScreen {
         entries.add(SettingsList.vrOptionToEntry(VRSettings.VrOptions.MAIN_PLAYER_DATA));
         entries.add(SettingsList.vrOptionToEntry(VRSettings.VrOptions.RENDER_DEBUG_GAMEPLAY_TRACKER));
         entries.add(SettingsList.vrOptionToEntry(VRSettings.VrOptions.GAMEPLAY_TRACKER_TO_RENDER));
+        entries.add(SettingsList.vrOptionToEntry(VRSettings.VrOptions.CONTROLLER_TRANSFORM));
 
         return entries;
     }

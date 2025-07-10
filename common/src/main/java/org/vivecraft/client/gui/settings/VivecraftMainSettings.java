@@ -42,7 +42,7 @@ public class VivecraftMainSettings extends GuiListScreen {
 
         entries.add(new SettingsList.CategoryEntry(Component.literal("Debug")));
 
-        entries.add(new SettingsList.ScreenEntry("vivecraft.options.screen.debug", GuiDebugRenderSettings::new));
+        entries.add(new SettingsList.ScreenEntry("vivecraft.options.screen.debug", GuiDebugSettings::new));
 
         return entries;
     }

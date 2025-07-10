@@ -1530,6 +1530,11 @@ public abstract class MCVR {
     public abstract Vector2fc getPlayAreaSize();
 
     /**
+     * refetches the controller transforms, if possible
+     */
+    public abstract void refreshControllerTransforms();
+
+    /**
      * @param controllerIndex index of the controller to get the transform for
      * @param componentName   name of the transform. `tip` or `handgrip`
      * @return the controller transform with the given name, that was fetched during {@link MCVR#poll}

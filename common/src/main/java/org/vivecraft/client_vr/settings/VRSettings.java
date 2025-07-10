@@ -35,6 +35,7 @@ import org.vivecraft.client_vr.gameplay.screenhandlers.GuiHandler;
 import org.vivecraft.client_vr.gameplay.screenhandlers.KeyboardHandler;
 import org.vivecraft.client_vr.gameplay.trackers.DebugRenderTracker;
 import org.vivecraft.client_vr.gui.PhysicalKeyboard;
+import org.vivecraft.client_vr.provider.ControllerTransform;
 import org.vivecraft.client_vr.provider.MCVR;
 import org.vivecraft.common.utils.math.AngleOrder;
 
@@ -469,6 +470,10 @@ public class VRSettings {
     public boolean renderGameplayTrackers = false;
     @SettingField(VrOptions.GAMEPLAY_TRACKER_TO_RENDER)
     public String gameplayTrackerToRender = "";
+
+    // other debug settings
+    @SettingField(VrOptions.CONTROLLER_TRANSFORM)
+    public ControllerTransform controllerTransform = ControllerTransform.AUTO;
 
     //
 
@@ -2251,6 +2256,20 @@ public class VRSettings {
         },
         INGAME_BINDINGS_IN_GUI(false, true),
         RIGHT_CLICK_DELAY(false, false), // Right Click Repeat
+        CONTROLLER_TRANSFORM(false, true) { // forced transform for controllers
+
+            @Override
+            String getDisplayString(String prefix, Object value) {
+                return prefix + ((ControllerTransform) value).name().replace("_", "/");
+            }
+
+            @Override
+            void onOptionChange() {
+                if (VRState.VR_INITIALIZED) {
+                    MCVR.get().refreshControllerTransforms();
+                }
+            }
+        },
         RENDER_DEBUG_HEAD_HITBOX(false, true), // renders entities head hit boxes
         RENDER_DEBUG_DEVICE_AXES(false, true), // renders axes for the local devices
         RENDER_DEBUG_PLAYER_AXES(false, true), // renders axes for all client vr players

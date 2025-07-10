@@ -811,6 +811,10 @@ public class MCOpenVR extends MCVR {
         return !activeSets.isEmpty();
     }
 
+    public void refreshControllerTransforms() {
+        this.getXforms = true;
+    }
+
     @Override
     public Matrix4fc getControllerComponentTransform(int controllerIndex, String componentName) {
         return this.controllerComponentTransforms != null &&
@@ -881,90 +885,104 @@ public class MCOpenVR extends MCVR {
             this.controllerComponentTransforms.put(component, new Matrix4f[2]);
 
             for (int c = 0; c < 2; c++) {
-                if (this.deviceSource[c].source != DeviceSource.Source.OPENVR ||
-                    this.deviceSource[c].deviceIndex == k_unTrackedDeviceIndexInvalid)
-                {
-                    failed = true;
-                    continue;
-                }
-                try (MemoryStack stack = MemoryStack.stackPush()) {
-                    var stringBuffer = stack.calloc(k_unMaxPropertyStringSize);
-
-                    VRSystem_GetStringTrackedDeviceProperty(this.deviceSource[c].deviceIndex,
-                        VR.ETrackedDeviceProperty_Prop_RenderModelName_String, stringBuffer, this.errorBuffer);
-
-                    String renderModelName = memUTF8NullTerminated(stringBuffer);
-
-                    VRSystem_GetStringTrackedDeviceProperty(this.deviceSource[c].deviceIndex,
-                        VR.ETrackedDeviceProperty_Prop_InputProfilePath_String, stringBuffer, this.errorBuffer);
-
-                    String inputProfilePath = memUTF8NullTerminated(stringBuffer);
-                    boolean isWMR = inputProfilePath.contains("holographic");
-                    boolean isRifts = inputProfilePath.contains("rifts");
-
-                    String componentName = component;
-                    if (isWMR && component.equals(k_pch_Controller_Component_HandGrip)) {
-                        // I have no idea, Microsoft, none.
-                        componentName = "body";
+                if (this.dh.vrSettings.controllerTransform != ControllerTransform.AUTO) {
+                    VRSettings.LOGGER.info("Vivecraft: forcing {} controller transforms!",
+                        this.dh.vrSettings.controllerTransform);
+                    if (component.equals(k_pch_Controller_Component_Tip)) {
+                        this.controllerComponentTransforms.get(component)[c] = new Matrix4f(
+                            c == 0 ? this.dh.vrSettings.controllerTransform.tipR :
+                                this.dh.vrSettings.controllerTransform.tipL);
+                    } else {
+                        this.controllerComponentTransforms.get(component)[c] = new Matrix4f(
+                            c == 0 ? this.dh.vrSettings.controllerTransform.handGripR :
+                                this.dh.vrSettings.controllerTransform.handGripL);
                     }
-
-                    long button = VRRenderModels_GetComponentButtonMask(renderModelName, componentName);
-
-                    if (button > 0L) {
-                        // see now... wtf OpenVR, '0' is the system button, it cant also be the error value!
-                        // (hint: it's a mask, not an index)
-                        // u get 1 button per component, nothing more
-                        this.controllerComponentNames.put(button, component);
-                    }
-
-                    long sourceHandle = this.deviceHandle[c];
-
-                    if (sourceHandle == k_ulInvalidInputValueHandle) {
+                } else {
+                    if (this.deviceSource[c].source != DeviceSource.Source.OPENVR ||
+                        this.deviceSource[c].deviceIndex == k_unTrackedDeviceIndexInvalid)
+                    {
                         failed = true;
                         continue;
                     }
+                    try (MemoryStack stack = MemoryStack.stackPush()) {
+                        var stringBuffer = stack.calloc(k_unMaxPropertyStringSize);
 
-                    var renderModelComponentState = RenderModelComponentState.calloc(stack);
-                    boolean valid = VRRenderModels_GetComponentStateForDevicePath(renderModelName, componentName,
-                        sourceHandle, RenderModelControllerModeState.calloc(stack), renderModelComponentState);
+                        VRSystem_GetStringTrackedDeviceProperty(this.deviceSource[c].deviceIndex,
+                            VR.ETrackedDeviceProperty_Prop_RenderModelName_String, stringBuffer, this.errorBuffer);
 
-                    if (!valid) {
-                        failed = true;
-                        continue;
-                    }
+                        String renderModelName = memUTF8NullTerminated(stringBuffer);
 
-                    Matrix4f localTransform = OpenVRUtil.convertSteamVRMatrix3ToMatrix4f(
-                        renderModelComponentState.mTrackingToComponentLocal(), new Matrix4f());
-                    this.controllerComponentTransforms.get(component)[c] = localTransform;
+                        VRSystem_GetStringTrackedDeviceProperty(this.deviceSource[c].deviceIndex,
+                            VR.ETrackedDeviceProperty_Prop_InputProfilePath_String, stringBuffer, this.errorBuffer);
 
-                    if (c == LEFT_CONTROLLER && isRifts && component.equals(k_pch_Controller_Component_HandGrip)) {
-                        // I have no idea, Valve, none.
-                        this.controllerComponentTransforms.get(
-                            component)[LEFT_CONTROLLER] = this.controllerComponentTransforms.get(
-                            component)[RIGHT_CONTROLLER];
-                    }
+                        String inputProfilePath = memUTF8NullTerminated(stringBuffer);
+                        boolean isWMR = inputProfilePath.contains("holographic");
+                        boolean isRifts = inputProfilePath.contains("rifts");
 
-                    if (!failed && c == RIGHT_CONTROLLER) {
-                        // calculate gun angle
-                        try {
-                            Matrix4fc tip = this.getControllerComponentTransform(RIGHT_CONTROLLER,
-                                k_pch_Controller_Component_Tip);
-                            Matrix4fc hand = this.getControllerComponentTransform(RIGHT_CONTROLLER,
-                                k_pch_Controller_Component_HandGrip);
-
-                            Vector3f tipVec = tip.transformDirection(MathUtils.BACK, new Vector3f());
-                            Vector3f handVec = hand.transformDirection(MathUtils.BACK, new Vector3f());
-
-                            float dot = Math.abs(tipVec.dot(handVec));
-
-                            float angleRad = (float) Math.acos(dot);
-                            float angleDeg = Mth.RAD_TO_DEG * angleRad;
-
-                            this.gunStyle = angleDeg > 10.0F;
-                            this.gunAngle = angleDeg;
-                        } catch (Exception exception) {
-                            failed = true;
+                        String componentName = component;
+                        if (isWMR && component.equals(k_pch_Controller_Component_HandGrip)) {
+                            // I have no idea, Microsoft, none.
+                            componentName = "body";
                         }
+
+                        long button = VRRenderModels_GetComponentButtonMask(renderModelName, componentName);
+
+                        if (button > 0L) {
+                            // see now... wtf OpenVR, '0' is the system button, it cant also be the error value!
+                            // (hint: it's a mask, not an index)
+                            // u get 1 button per component, nothing more
+                            this.controllerComponentNames.put(button, component);
+                        }
+
+                        long sourceHandle = this.deviceHandle[c];
+
+                        if (sourceHandle == k_ulInvalidInputValueHandle) {
+                            failed = true;
+                            continue;
+                        }
+
+                        var renderModelComponentState = RenderModelComponentState.calloc(stack);
+                        boolean valid = VRRenderModels_GetComponentStateForDevicePath(renderModelName, componentName,
+                            sourceHandle, RenderModelControllerModeState.calloc(stack), renderModelComponentState);
+
+                        if (!valid) {
+                            failed = true;
+                            continue;
+                        }
+
+                        Matrix4f localTransform = OpenVRUtil.convertSteamVRMatrix3ToMatrix4f(
+                            renderModelComponentState.mTrackingToComponentLocal(), new Matrix4f());
+                        this.controllerComponentTransforms.get(component)[c] = localTransform;
+
+                        if (c == LEFT_CONTROLLER && isRifts && component.equals(k_pch_Controller_Component_HandGrip)) {
+                            // I have no idea, Valve, none.
+                            this.controllerComponentTransforms.get(
+                                component)[LEFT_CONTROLLER] = this.controllerComponentTransforms.get(
+                                component)[RIGHT_CONTROLLER];
+                        }
+                    }
+                }
+
+                if (!failed && c == RIGHT_CONTROLLER) {
+                    // calculate gun angle
+                    try {
+                        Matrix4fc tip = this.getControllerComponentTransform(RIGHT_CONTROLLER,
+                            k_pch_Controller_Component_Tip);
+                        Matrix4fc hand = this.getControllerComponentTransform(RIGHT_CONTROLLER,
+                            k_pch_Controller_Component_HandGrip);
+
+                        Vector3f tipVec = tip.transformDirection(MathUtils.BACK, new Vector3f());
+                        Vector3f handVec = hand.transformDirection(MathUtils.BACK, new Vector3f());
+
+                        float dot = Math.abs(tipVec.dot(handVec));
+
+                        float angleRad = (float) Math.acos(dot);
+                        float angleDeg = Mth.RAD_TO_DEG * angleRad;
+
+                        this.gunStyle = angleDeg > 10.0F;
+                        this.gunAngle = angleDeg;
+                    } catch (Exception exception) {
+                        failed = true;
                     }
                 }
             }
