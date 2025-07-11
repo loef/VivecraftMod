@@ -35,6 +35,7 @@ public class ServerForgeEvents {
     public static void loadServerConfig(ServerStartingEvent serverStartingEvent) {
         // on the server reinit the ServerConfig here again, after the lang files got loaded, to have comments
         // some forge versions don't load the lang files correctly on the server, so manually load ours
+        // started in 1.20.6, fixed in 1.21.5
         if (!Language.getInstance().has("vivecraft.serverSettings.general")) {
             // copied from neoforge
             String langFile = String.format(Locale.ROOT, "lang/%s.json", "en_us");
