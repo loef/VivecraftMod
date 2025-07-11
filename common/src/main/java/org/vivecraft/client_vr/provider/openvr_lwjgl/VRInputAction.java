@@ -65,15 +65,17 @@ public class VRInputAction {
     }
 
     public boolean isButtonChanged() {
+        boolean changed;
         if (this.type.equals("boolean")) {
-            return this.digitalData().isChanged;
+            changed = this.digitalData().isChanged;
         } else {
             Vector3fc axis = this.getAxis3D(false);
             Vector3fc delta = this.getAxis3D(true);
-            return Math.abs(axis.x() - delta.x()) > 0.5F != Math.abs(axis.x()) > 0.5F ||
+            changed = Math.abs(axis.x() - delta.x()) > 0.5F != Math.abs(axis.x()) > 0.5F ||
                 Math.abs(axis.y() - delta.y()) > 0.5F != Math.abs(axis.y()) > 0.5F ||
                 Math.abs(axis.z() - delta.z()) > 0.5F != Math.abs(axis.z()) > 0.5F;
         }
+        return changed || (this.isEnabled() && (this.isButtonPressed() != this.keyBinding.isDown()));
     }
 
     public float getAxis1D(boolean delta) {
