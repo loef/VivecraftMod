@@ -22,7 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 
 @Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class ServerEvents {
+public class ServerForgeEvents {
     @SubscribeEvent
     public static void crashWithForgeExtension(ServerAboutToStartEvent event) {
         if (Xloader.isModLoaded("vivecraftforgeextensions")) {

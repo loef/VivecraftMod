@@ -13,7 +13,7 @@ import org.vivecraft.client_vr.ReloadListener;
 import org.vivecraft.neoforge.Vivecraft;
 
 @EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD, modid = Vivecraft.MODID)
-public class ClientEvents {
+public class ClientModEvents {
 
     @SubscribeEvent
     public static void registerConfigScreen(FMLConstructModEvent constructModEvent) {

@@ -6,7 +6,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import org.vivecraft.server.ServerUtil;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME)
-public class CommonForgeEvents {
+public class CommonGameEvents {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event) {
         ServerUtil.registerCommands(event.getDispatcher(), event.getBuildContext());
