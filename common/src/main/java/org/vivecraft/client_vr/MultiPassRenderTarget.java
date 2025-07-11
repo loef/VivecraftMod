@@ -38,10 +38,7 @@ public class MultiPassRenderTarget extends RenderTarget {
     @Override
     public void destroyBuffers() {
         // this one should be called on all RenderTargets
-        this.mainTarget.destroyBuffers();
-        for (RenderTarget renderTarget : this.vrTargets.values()) {
-            renderTarget.destroyBuffers();
-        }
+        callOnAllTargets(RenderTarget::destroyBuffers);
     }
 
     @Override
@@ -106,27 +103,37 @@ public class MultiPassRenderTarget extends RenderTarget {
 
     @Override
     public int getColorTextureId() {
-        return callOnTargetInt(RenderTarget::getColorTextureId);
+        return callOnTargetRet(RenderTarget::getColorTextureId);
     }
 
     @Override
     public int getDepthTextureId() {
-        return callOnTargetInt(RenderTarget::getDepthTextureId);
+        return callOnTargetRet(RenderTarget::getDepthTextureId);
     }
 
     private void callOnTarget(Consumer<RenderTarget> consumer) {
-        if (RenderPassType.isVanilla()) {
-            consumer.accept(this.mainTarget);
-        } else {
-            consumer.accept(this.vrTargets.get(ClientDataHolderVR.getInstance().currentPass));
+        consumer.accept(getCurrent());
+    }
+
+    private <T> T callOnTargetRet(Function<RenderTarget, T> function) {
+        return function.apply(getCurrent());
+    }
+
+    private void callOnAllTargets(Consumer<RenderTarget> consumer) {
+        consumer.accept(this.mainTarget);
+        for (RenderTarget target : this.vrTargets.values()) {
+            consumer.accept(target);
         }
     }
 
-    private int callOnTargetInt(Function<RenderTarget, Integer> function) {
+    /**
+     * @return the RenderTarget that should be rendered to now
+     */
+    private RenderTarget getCurrent() {
         if (RenderPassType.isVanilla()) {
-            return function.apply(this.mainTarget);
+            return this.mainTarget;
         } else {
-            return function.apply(this.vrTargets.get(ClientDataHolderVR.getInstance().currentPass));
+            return this.vrTargets.get(ClientDataHolderVR.getInstance().currentPass);
         }
     }
 }
