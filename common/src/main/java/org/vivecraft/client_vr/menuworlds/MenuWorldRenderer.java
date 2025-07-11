@@ -1409,8 +1409,6 @@ public class MenuWorldRenderer {
                 this.fogGreen = 0.734f;
                 this.fogBlue = 0.785f;
                 this.biomeChangedTime = -1L;
-                // why is this here?
-                RenderSystem.clearColor(this.fogRed, this.fogGreen, this.fogBlue, 0.0f);
             } else {
                 this.updateSurfaceFog();
                 this.biomeChangedTime = -1L;

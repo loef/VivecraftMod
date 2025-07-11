@@ -61,9 +61,7 @@ public class MirrorNotification {
 
             if (MIRROR_NOTIFY_CLEAR) {
                 RenderSystem.clearColor(0, 0, 0, 0);
-                RenderSystem.clear(GL11C.GL_COLOR_BUFFER_BIT | GL11C.GL_DEPTH_BUFFER_BIT);
-            } else {
-                RenderSystem.clear(GL11C.GL_DEPTH_BUFFER_BIT);
+                RenderSystem.clear(GL11C.GL_COLOR_BUFFER_BIT);
             }
 
             final int TEXT_WORDWRAP_LEN = screenX / 22;
