@@ -2,7 +2,7 @@ package org.vivecraft.data;
 
 import net.minecraft.resources.ResourceLocation;
 
-public class Modifiers {
+public class ViveModifiers {
     /**
      * id for our walk-up blocks modifier
      */

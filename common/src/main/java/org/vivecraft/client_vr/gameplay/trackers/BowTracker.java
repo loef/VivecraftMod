@@ -22,6 +22,7 @@ import org.vivecraft.client_vr.extensions.PlayerExtension;
 import org.vivecraft.client_vr.render.helpers.DebugRenderHelper;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.common.utils.MathUtils;
+import org.vivecraft.data.ViveItemTags;
 
 public class BowTracker implements ItemInUseTracker, DebugRenderTracker {
     private static final long MAX_DRAW_MILLIS = 1100L;
@@ -78,7 +79,7 @@ public class BowTracker implements ItemInUseTracker, DebugRenderTracker {
             return itemStack.getItem() == Items.BOW;
         } else {
             return itemStack.getItem().getUseAnimation(itemStack) == ItemUseAnimation.BOW && !itemStack.is(
-                org.vivecraft.data.ItemTags.VIVECRAFT_BOW_EXCLUSION);
+                ViveItemTags.VIVECRAFT_BOW_EXCLUSION);
         }
     }
 

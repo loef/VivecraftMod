@@ -25,7 +25,7 @@ import org.vivecraft.client_vr.extensions.PlayerExtension;
 import org.vivecraft.client_vr.gameplay.VRMovementStyle;
 import org.vivecraft.client_vr.render.helpers.RenderHelper;
 import org.vivecraft.common.utils.MathUtils;
-import org.vivecraft.data.BlockTags;
+import org.vivecraft.data.ViveBlockTags;
 
 import java.util.Random;
 
@@ -414,7 +414,7 @@ public class TeleportTracker implements Tracker {
             // unless ladder or vine or creative or limits off.
             if (blockState.getBlock() instanceof LadderBlock ||
                 blockState.getBlock() instanceof VineBlock ||
-                blockState.is(BlockTags.VIVECRAFT_CLIMBABLE))
+                blockState.is(ViveBlockTags.VIVECRAFT_CLIMBABLE))
             {
                 Vec3 dest = new Vec3(blockpos.getX() + 0.5D, blockpos.getY() + 0.5D, blockpos.getZ() + 0.5D);
                 Block block = this.mc.level.getBlockState(blockpos.below()).getBlock();

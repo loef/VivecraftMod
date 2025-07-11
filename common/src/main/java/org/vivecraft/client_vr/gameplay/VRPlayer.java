@@ -42,7 +42,7 @@ import org.vivecraft.client_vr.gameplay.trackers.VehicleTracker;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.common.VRServerPerms;
 import org.vivecraft.common.utils.MathUtils;
-import org.vivecraft.data.ItemTags;
+import org.vivecraft.data.ViveItemTags;
 
 public class VRPlayer {
     private final Minecraft mc = Minecraft.getInstance();
@@ -626,7 +626,7 @@ public class VRPlayer {
             itemStack.getItem() instanceof WindChargeItem ||
             // crossbows actually don't work with this; they use the head rotation to aim, which is only updated on tick
             (itemStack.getItem() instanceof CrossbowItem && CrossbowItem.isCharged(itemStack)) ||
-            itemStack.is(ItemTags.VIVECRAFT_THROW_ITEMS)
+            itemStack.is(ViveItemTags.VIVECRAFT_THROW_ITEMS)
         )
         {
             // use r_hand aim

@@ -14,7 +14,7 @@ import org.vivecraft.api.client.data.RenderPass;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRData;
 import org.vivecraft.common.utils.MathUtils;
-import org.vivecraft.data.ItemTags;
+import org.vivecraft.data.ViveItemTags;
 
 public class TelescopeTracker implements ItemInUseTracker {
     public static final ResourceLocation SCOPE_MODEL = ResourceLocation.fromNamespaceAndPath("vivecraft",
@@ -81,7 +81,8 @@ public class TelescopeTracker implements ItemInUseTracker {
      */
     public static boolean isTelescope(ItemStack itemStack) {
         return itemStack != null &&
-            (itemStack.is(Items.SPYGLASS) || isLegacyTelescope(itemStack) || itemStack.is(ItemTags.VIVECRAFT_TELESCOPE)
+            (itemStack.is(Items.SPYGLASS) || isLegacyTelescope(itemStack) ||
+                itemStack.is(ViveItemTags.VIVECRAFT_TELESCOPE)
             );
     }
 

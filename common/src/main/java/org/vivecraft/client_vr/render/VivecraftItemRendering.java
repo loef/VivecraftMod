@@ -22,7 +22,7 @@ import org.vivecraft.client_vr.gameplay.trackers.ClimbTracker;
 import org.vivecraft.client_vr.gameplay.trackers.SwingTracker;
 import org.vivecraft.client_vr.gameplay.trackers.TelescopeTracker;
 import org.vivecraft.common.utils.MathUtils;
-import org.vivecraft.data.ItemTags;
+import org.vivecraft.data.ViveItemTags;
 
 public class VivecraftItemRendering {
     private static final ClientDataHolderVR DH = ClientDataHolderVR.getInstance();
@@ -63,10 +63,10 @@ public class VivecraftItemRendering {
                     itemTransformType = VivecraftItemTransformType.BLOCK_ITEM;
                 }
             }
-        } else if (item instanceof MapItem || itemStack.is(ItemTags.VIVECRAFT_MAPS)) {
+        } else if (item instanceof MapItem || itemStack.is(ViveItemTags.VIVECRAFT_MAPS)) {
             itemTransformType = VivecraftItemTransformType.MAP;
         } else if (itemStack.getUseAnimation() == ItemUseAnimation.BOW &&
-            !itemStack.is(ItemTags.VIVECRAFT_BOW_EXCLUSION))
+            !itemStack.is(ViveItemTags.VIVECRAFT_BOW_EXCLUSION))
         {
             itemTransformType = VivecraftItemTransformType.BOW_SEATED;
 
@@ -79,25 +79,27 @@ public class VivecraftItemRendering {
             }
         } else if (itemStack.getUseAnimation() == ItemUseAnimation.TOOT_HORN) {
             itemTransformType = VivecraftItemTransformType.HORN;
-        } else if (itemStack.is(ItemTags.VIVECRAFT_ROTATED_TOOLS)) {
+        } else if (itemStack.is(ViveItemTags.VIVECRAFT_ROTATED_TOOLS)) {
             itemTransformType = VivecraftItemTransformType.ROTATED_TOOL;
-        } else if (item instanceof MaceItem || itemStack.is(ItemTags.VIVECRAFT_MACES)) {
+        } else if (item instanceof MaceItem || itemStack.is(ViveItemTags.VIVECRAFT_MACES)) {
             itemTransformType = VivecraftItemTransformType.MACE;
-        } else if (item instanceof SwordItem || itemStack.is(ItemTags.VIVECRAFT_SWORDS)) {
+        } else if (item instanceof SwordItem || itemStack.is(ViveItemTags.VIVECRAFT_SWORDS)) {
             itemTransformType = VivecraftItemTransformType.SWORD;
-        } else if (item instanceof ShieldItem || itemStack.is(ItemTags.VIVECRAFT_SHIELDS)) {
+        } else if (item instanceof ShieldItem || itemStack.is(ViveItemTags.VIVECRAFT_SHIELDS)) {
             itemTransformType = VivecraftItemTransformType.SHIELD;
-        } else if (item instanceof TridentItem || itemStack.is(ItemTags.VIVECRAFT_SPEARS)) {
+        } else if (item instanceof TridentItem || itemStack.is(ViveItemTags.VIVECRAFT_SPEARS)) {
             itemTransformType = VivecraftItemTransformType.SPEAR;
-        } else if (item instanceof CrossbowItem || itemStack.is(ItemTags.VIVECRAFT_CROSSBOWS)) {
+        } else if (item instanceof CrossbowItem || itemStack.is(ViveItemTags.VIVECRAFT_CROSSBOWS)) {
             itemTransformType = VivecraftItemTransformType.CROSSBOW;
-        } else if (item instanceof CompassItem || item == Items.CLOCK || itemStack.is(ItemTags.VIVECRAFT_COMPASSES)) {
+        } else if (item instanceof CompassItem || item == Items.CLOCK ||
+            itemStack.is(ViveItemTags.VIVECRAFT_COMPASSES))
+        {
             itemTransformType = VivecraftItemTransformType.COMPASS;
-        } else if (SwingTracker.isTool(item)) {
+        } else if (SwingTracker.isTool(itemStack)) {
             itemTransformType = VivecraftItemTransformType.TOOL;
 
             if (item instanceof FoodOnAStickItem || item instanceof FishingRodItem ||
-                itemStack.is(ItemTags.VIVECRAFT_FISHING_RODS))
+                itemStack.is(ViveItemTags.VIVECRAFT_FISHING_RODS))
             {
                 itemTransformType = VivecraftItemTransformType.TOOL_ROD;
             }
@@ -428,7 +430,7 @@ public class VivecraftItemRendering {
                 translateZ -= 0.1F;
             }
             case TOOL -> {
-                if (itemStack.getItem() instanceof ArrowItem || itemStack.is(ItemTags.VIVECRAFT_ARROWS)) {
+                if (itemStack.getItem() instanceof ArrowItem || itemStack.is(ViveItemTags.VIVECRAFT_ARROWS)) {
                     preRotation = Axis.ZP.rotationDegrees(-180.0F);
                     rotation.mul(Axis.XP.rotationDegrees(-gunAngle));
                 }

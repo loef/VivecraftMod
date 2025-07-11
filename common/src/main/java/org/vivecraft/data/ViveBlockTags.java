@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.Block;
 /**
  * holds Vivecrafts tags to identify Blocks
  */
-public class BlockTags {
+public class ViveBlockTags {
     public static final TagKey<Block> VIVECRAFT_CLIMBABLE = tag("climbable");
 
     public static final TagKey<Block> VIVECRAFT_CROPS = tag("crops");

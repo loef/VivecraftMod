@@ -8,7 +8,7 @@ import net.minecraft.world.item.Item;
 /**
  * holds Vivecrafts tags to identify Items
  */
-public class ItemTags {
+public class ViveItemTags {
     public static final TagKey<Item> VIVECRAFT_ARROWS = tag("arrows");
 
     public static final TagKey<Item> VIVECRAFT_BRUSHES = tag("brushes");

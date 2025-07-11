@@ -26,7 +26,7 @@ import org.vivecraft.client_vr.extensions.PlayerExtension;
 import org.vivecraft.client_vr.gameplay.VRPlayer;
 import org.vivecraft.client_vr.provider.ControllerType;
 import org.vivecraft.common.network.packet.c2s.ClimbingPayloadC2S;
-import org.vivecraft.data.BlockTags;
+import org.vivecraft.data.ViveBlockTags;
 import org.vivecraft.server.config.ClimbeyBlockmode;
 
 import java.util.*;
@@ -230,7 +230,7 @@ public class ClimbTracker implements Tracker {
                 boolean ok = block instanceof LadderBlock ||
                     isClimbableTrapdoor(this.mc.level, blockPos, blockState) ||
                     block instanceof VineBlock ||
-                    blockState.is(BlockTags.VIVECRAFT_CLIMBABLE);
+                    blockState.is(ViveBlockTags.VIVECRAFT_CLIMBABLE);
 
                 if (!ok) { // check other end of controllerBB.
                     BlockPos blockPos2 = BlockPos.containing(controllerPosNear);
@@ -240,7 +240,7 @@ public class ClimbTracker implements Tracker {
                     if (block2 instanceof LadderBlock ||
                         isClimbableTrapdoor(this.mc.level, blockPos2, blockState2) ||
                         block2 instanceof VineBlock ||
-                        blockState2.is(BlockTags.VIVECRAFT_CLIMBABLE))
+                        blockState2.is(ViveBlockTags.VIVECRAFT_CLIMBABLE))
                     {
                         blockPos = blockPos2;
                         blockState = blockState2;
@@ -334,7 +334,7 @@ public class ClimbTracker implements Tracker {
                         this.inBlock[c] = this.wasInBlock[c] &&
                             latchBlockState.getBlock() instanceof LadderBlock ||
                             latchBlockState.getBlock() instanceof VineBlock ||
-                            latchBlockState.is(BlockTags.VIVECRAFT_CLIMBABLE);
+                            latchBlockState.is(ViveBlockTags.VIVECRAFT_CLIMBABLE);
                     }
                 }
 

@@ -39,7 +39,7 @@ import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.client_vr.utils.external.jinfinadeck;
 import org.vivecraft.client_vr.utils.external.jkatvr;
 import org.vivecraft.common.network.packet.c2s.TeleportPayloadC2S;
-import org.vivecraft.data.Modifiers;
+import org.vivecraft.data.ViveModifiers;
 
 @Mixin(LocalPlayer.class)
 public abstract class LocalPlayerVRMixin extends LocalPlayer_PlayerVRMixin implements PlayerExtension {
@@ -186,19 +186,19 @@ public abstract class LocalPlayerVRMixin extends LocalPlayer_PlayerVRMixin imple
                 if (attributeInstance != null) {
                     if (ClientDataHolderVR.getInstance().vrSettings.walkUpBlocks) {
                         if (this.getBlockJumpFactor() == 1.0F) {
-                            if (attributeInstance.getModifier(Modifiers.WALK_UP_BLOCKS) == null) {
+                            if (attributeInstance.getModifier(ViveModifiers.WALK_UP_BLOCKS) == null) {
                                 attributeInstance.addTransientModifier(
-                                    new AttributeModifier(Modifiers.WALK_UP_BLOCKS, 0.4F,
+                                    new AttributeModifier(ViveModifiers.WALK_UP_BLOCKS, 0.4F,
                                         AttributeModifier.Operation.ADD_VALUE));
                             }
                         } else {
-                            if (attributeInstance.getModifier(Modifiers.WALK_UP_BLOCKS) != null) {
-                                attributeInstance.removeModifier(Modifiers.WALK_UP_BLOCKS);
+                            if (attributeInstance.getModifier(ViveModifiers.WALK_UP_BLOCKS) != null) {
+                                attributeInstance.removeModifier(ViveModifiers.WALK_UP_BLOCKS);
                             }
                         }
                     } else {
-                        if (attributeInstance.getModifier(Modifiers.WALK_UP_BLOCKS) != null) {
-                            attributeInstance.removeModifier(Modifiers.WALK_UP_BLOCKS);
+                        if (attributeInstance.getModifier(ViveModifiers.WALK_UP_BLOCKS) != null) {
+                            attributeInstance.removeModifier(ViveModifiers.WALK_UP_BLOCKS);
                         }
                         this.updateAutoJump((float) (this.getX() - oldX), (float) (this.getZ() - oldZ));
                     }

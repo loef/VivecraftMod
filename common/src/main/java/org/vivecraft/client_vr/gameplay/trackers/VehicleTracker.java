@@ -15,7 +15,7 @@ import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRData;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.common.utils.MathUtils;
-import org.vivecraft.data.ItemTags;
+import org.vivecraft.data.ViveItemTags;
 
 public class VehicleTracker implements Tracker {
     private float PreMount_World_Rotation;
@@ -81,7 +81,7 @@ public class VehicleTracker implements Tracker {
         } else if (entity instanceof Mob mob && mob.isControlledByLocalInstance()) {
             // pigs and striders
             int c = (player.getMainHandItem().getItem() instanceof FoodOnAStickItem ||
-                player.getMainHandItem().is(ItemTags.VIVECRAFT_FOOD_STICKS)
+                player.getMainHandItem().is(ViveItemTags.VIVECRAFT_FOOD_STICKS)
             ) ? 0 : 1;
             VRData.VRDevicePose con = dataHolder.vrPlayer.vrdata_world_pre.getController(c);
             return MathUtils.subtractToVector3f(con.getPosition(), entity.position())

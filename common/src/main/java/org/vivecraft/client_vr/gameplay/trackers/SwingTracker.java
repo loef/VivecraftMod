@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -36,8 +37,8 @@ import org.vivecraft.client_vr.render.helpers.DebugRenderHelper;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.common.utils.MathUtils;
 import org.vivecraft.common.utils.Utils;
-import org.vivecraft.data.BlockTags;
-import org.vivecraft.data.ItemTags;
+import org.vivecraft.data.ViveBlockTags;
+import org.vivecraft.data.ViveItemTags;
 import org.vivecraft.mod_compat_vr.epicfight.EpicFightHelper;
 
 import java.util.Collections;
@@ -105,10 +106,20 @@ public class SwingTracker implements DebugRenderTracker {
     }
 
     /**
-     * @param item Item to check
-     * @return if the given {@code item} is a Tool
+     * @param itemStack ItemStack to check
+     * @return if the given {@code itemStack} is a Tool
      */
-    public static boolean isTool(Item item) {
+    public static boolean isTool(ItemStack itemStack) {
+        return isToolItem(itemStack.getItem()) ||
+            itemStack.is(ViveItemTags.VIVECRAFT_TOOLS) ||
+            // also check the vanilla tags, when on a server without vivecraft
+            itemStack.is(ItemTags.PICKAXES) ||
+            itemStack.is(ItemTags.AXES) ||
+            itemStack.is(ItemTags.SHOVELS) ||
+            itemStack.is(ItemTags.HOES);
+    }
+
+    private static boolean isToolItem(Item item) {
         return item instanceof DiggerItem ||
             item instanceof ArrowItem ||
             item instanceof FishingRodItem ||
@@ -122,8 +133,7 @@ public class SwingTracker implements DebugRenderTracker {
             item == Items.STICK ||
             item == Items.DEBUG_STICK ||
             item instanceof FlintAndSteelItem ||
-            item instanceof BrushItem ||
-            item.getDefaultInstance().is(ItemTags.VIVECRAFT_TOOLS);
+            item instanceof BrushItem;
     }
 
     @Override
@@ -160,16 +170,16 @@ public class SwingTracker implements DebugRenderTracker {
                 boolean isSword = false;
 
                 if (this.dh.vrSettings.onlySwordCollision &&
-                    !(item instanceof SwordItem || itemstack.is(ItemTags.VIVECRAFT_SWORDS)))
+                    !(item instanceof SwordItem || itemstack.is(ViveItemTags.VIVECRAFT_SWORDS)))
                 {
                     // only swords can hit
                     continue;
                 }
 
-                if (!(item instanceof SwordItem || itemstack.is(ItemTags.VIVECRAFT_SWORDS)) &&
-                    !(item instanceof TridentItem || itemstack.is(ItemTags.VIVECRAFT_SPEARS)))
+                if (!(item instanceof SwordItem || itemstack.is(ViveItemTags.VIVECRAFT_SWORDS)) &&
+                    !(item instanceof TridentItem || itemstack.is(ViveItemTags.VIVECRAFT_SPEARS)))
                 {
-                    if (isTool(item)) {
+                    if (isTool(itemstack)) {
                         isTool = true;
                     }
                 } else {
@@ -329,7 +339,7 @@ public class SwingTracker implements DebugRenderTracker {
                     boolean protectedBlock = this.dh.vrSettings.realisticClimbEnabled &&
                         (blockstate.getBlock() instanceof LadderBlock ||
                             blockstate.getBlock() instanceof VineBlock ||
-                            blockstate.is(BlockTags.VIVECRAFT_CLIMBABLE)
+                            blockstate.is(ViveBlockTags.VIVECRAFT_CLIMBABLE)
                         );
 
                     if (blockHit.getType() == HitResult.Type.BLOCK && sameBlock && this.canAct[i] && !protectedBlock) {
@@ -345,13 +355,13 @@ public class SwingTracker implements DebugRenderTracker {
                             // the useItem is already in the if check, so nothing to do here
                         }
                         // roomscale hoe interaction
-                        else if (isHand && (item instanceof HoeItem || itemstack.is(ItemTags.VIVECRAFT_HOES) ||
-                            itemstack.is(ItemTags.VIVECRAFT_SCYTHES)
+                        else if (isHand && (item instanceof HoeItem || itemstack.is(ViveItemTags.VIVECRAFT_HOES) ||
+                            itemstack.is(ViveItemTags.VIVECRAFT_SCYTHES)
                         ) &&
                             (blockstate.getBlock() instanceof CropBlock ||
                                 blockstate.getBlock() instanceof StemBlock ||
                                 blockstate.getBlock() instanceof AttachedStemBlock ||
-                                blockstate.is(BlockTags.VIVECRAFT_CROPS) ||
+                                blockstate.is(ViveBlockTags.VIVECRAFT_CROPS) ||
                                 // check if the item can use the block
                                 (item.useOn(new UseOnContext(player,
                                     c == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
@@ -366,7 +376,7 @@ public class SwingTracker implements DebugRenderTracker {
                                 i == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND,
                                 blockHit) instanceof InteractionResult.Success success &&
                                 success.swingSource() == InteractionResult.SwingSource.CLIENT;
-                            if (itemstack.is(ItemTags.VIVECRAFT_SCYTHES) && !useSuccessful) {
+                            if (itemstack.is(ViveItemTags.VIVECRAFT_SCYTHES) && !useSuccessful) {
                                 // some scythes just need to be used
                                 this.mc.gameMode.useItem(player,
                                     c == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
@@ -386,7 +396,7 @@ public class SwingTracker implements DebugRenderTracker {
                         }
                         // roomscale noteblocks
                         else if (blockstate.getBlock() instanceof NoteBlock ||
-                            blockstate.is(BlockTags.VIVECRAFT_MUSIC_BLOCKS))
+                            blockstate.is(ViveBlockTags.VIVECRAFT_MUSIC_BLOCKS))
                         {
                             this.mc.gameMode.continueDestroyBlock(blockHit.getBlockPos(), blockHit.getDirection());
                         }
