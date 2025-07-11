@@ -615,7 +615,9 @@ public abstract class VRRenderer {
             RenderHelper.checkGLError("Start Init");
 
             // intel drivers have issues with opengl interop on windows so throw an error
-            if (Util.getPlatform() == Util.OS.WINDOWS && GlUtil.getRenderer().toLowerCase().contains("intel")) {
+            if (Util.getPlatform() == Util.OS.WINDOWS && GlUtil.getRenderer().toLowerCase().contains("intel") &&
+                dataholder.vrSettings.blockIntelWindows)
+            {
                 StringBuilder gpus = new StringBuilder();
                 boolean onlyIntel = true;
                 for (GraphicsCard gpu : (new SystemInfo()).getHardware().getGraphicsCards()) {

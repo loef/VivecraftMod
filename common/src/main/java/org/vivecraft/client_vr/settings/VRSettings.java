@@ -625,6 +625,8 @@ public class VRSettings {
     public boolean disableGarbageCollectorMessage = false;
     @SettingField
     public boolean selfButtSparklesInFirstPerson = false;
+    @SettingField
+    public boolean blockIntelWindows = true;
 
     // debug settings
     @SettingField
