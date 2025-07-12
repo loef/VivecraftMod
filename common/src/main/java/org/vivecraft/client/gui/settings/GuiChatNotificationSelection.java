@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import org.vivecraft.client.gui.framework.screens.GuiSelectionListScreen;
-import org.vivecraft.client.gui.widgets.SilentButton;
+import org.vivecraft.client.gui.framework.widgets.SilentButton;
 import org.vivecraft.client.utils.ClientUtils;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.settings.VRSettings;

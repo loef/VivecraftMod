@@ -17,7 +17,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.util.Mth;
 import org.apache.commons.lang3.tuple.Pair;
-import org.vivecraft.client.gui.widgets.TextOnlyButton;
 import org.vivecraft.client.utils.StringSimilarity;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.settings.VRSettings;
