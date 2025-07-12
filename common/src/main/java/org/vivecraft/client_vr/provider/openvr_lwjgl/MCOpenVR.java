@@ -399,9 +399,9 @@ public class MCOpenVR extends MCVR {
      * @throws RuntimeException when an error happens during LWJGL init, or some critical OpenVR components are missing
      */
     private void initializeOpenVR() throws RuntimeException {
-        int token = VR_InitInternal(this.errorBuffer, EVRApplicationType_VRApplication_Scene);
-
         VRSettings.LOGGER.info("Vivecraft: Connecting to OpenVR");
+
+        int token = VR_InitInternal(this.errorBuffer, EVRApplicationType_VRApplication_Scene);
         if (!this.isError()) {
             OpenVR.create(token);
         }
