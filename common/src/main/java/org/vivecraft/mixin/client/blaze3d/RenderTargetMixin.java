@@ -107,7 +107,7 @@ public abstract class RenderTargetMixin implements RenderTargetExtension {
         }
     }
 
-    @Inject(method = "createBuffers", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texImage2D(IIIIIIIILjava/nio/IntBuffer;)V"))
+    @Inject(method = "createBuffers", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texImage2D(IIIIIIIILjava/nio/IntBuffer;)V", ordinal = 1, remap = false))
     private void vivecraft$AFFiltering(CallbackInfo ci) {
         if (this.vivecraft$mipmaps && ClientDataHolderVR.getInstance().vrSettings.guiAnisotropicFiltering &&
             OpenGLHelper.supportsAnisotropicFiltering())
