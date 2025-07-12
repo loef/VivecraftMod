@@ -589,6 +589,8 @@ public class VRSettings {
     public boolean hudMaxScale = false;
     @SettingField(VrOptions.GUI_MIPMAPS)
     public boolean guiMipmaps;
+    @SettingField(VrOptions.GUI_ANISOTROPIC_FILTERING)
+    public boolean guiAnisotropicFiltering = true;
     @SettingField(VrOptions.SHOW_UPDATES)
     public boolean alwaysShowUpdates = true;
     @SettingField
@@ -1599,6 +1601,15 @@ public class VRSettings {
             void onOptionChange() {
                 if (VRState.VR_INITIALIZED) {
                     ClientDataHolderVR.getInstance().vrRenderer.reinitFrameBuffers("Gui Mips Changed");
+                }
+            }
+        },
+        GUI_ANISOTROPIC_FILTERING(false, true) { // gui rendering with anisotropic filtering
+
+            @Override
+            void onOptionChange() {
+                if (VRState.VR_INITIALIZED && ClientDataHolderVR.getInstance().vrSettings.guiMipmaps) {
+                    ClientDataHolderVR.getInstance().vrRenderer.reinitFrameBuffers("Anisotropic filtering Changed");
                 }
             }
         },

@@ -162,9 +162,7 @@ public class VRPassHelper {
 
         if (DATA_HOLDER.vrSettings.guiMipmaps) {
             // update mipmaps
-            MC.mainRenderTarget.bindRead();
-            GL30C.glGenerateMipmap(GL30C.GL_TEXTURE_2D);
-            MC.mainRenderTarget.unbindRead();
+            OpenGLHelper.genMipmaps(MC.mainRenderTarget);
         }
 
         Profiler.get().popPush("2D Keyboard");

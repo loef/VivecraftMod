@@ -4,6 +4,7 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.vivecraft.Xplat;
 import org.vivecraft.client.extensions.RenderTargetExtension;
+import org.vivecraft.client_vr.render.helpers.OpenGLHelper;
 
 /**
  * extension of a regular RenderTarget that sets Vivecraft features on creation
@@ -17,6 +18,9 @@ public class VRTextureTarget extends RenderTarget {
         boolean useStencil)
     {
         super(useDepth);
+
+        this.setClearColor(0, 0, 0, 0);
+
         this.name = name;
         RenderSystem.assertOnRenderThreadOrInit();
         ((RenderTargetExtension) this).vivecraft$setTexId(texId);
@@ -33,7 +37,10 @@ public class VRTextureTarget extends RenderTarget {
         }
         this.resize(width, height);
 
-        this.setClearColor(0, 0, 0, 0);
+        if (mipmaps) {
+            // generate mipmaps so they are initialized
+            OpenGLHelper.genMipmaps(this);
+        }
     }
 
     @Override

@@ -10,9 +10,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.vivecraft.client.extensions.RenderTargetExtension;
 import org.vivecraft.client_vr.ClientDataHolderVR;
+import org.vivecraft.client_vr.render.helpers.OpenGLHelper;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.client_xr.render_pass.RenderPassType;
 
@@ -101,6 +104,15 @@ public abstract class RenderTargetMixin implements RenderTargetExtension {
             return attachment == GL11.GL_LINEAR ? GL11.GL_LINEAR_MIPMAP_LINEAR : GL11.GL_NEAREST_MIPMAP_NEAREST;
         } else {
             return attachment;
+        }
+    }
+
+    @Inject(method = "createBuffers", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texImage2D(IIIIIIIILjava/nio/IntBuffer;)V"))
+    private void vivecraft$AFFiltering(CallbackInfo ci) {
+        if (this.vivecraft$mipmaps && ClientDataHolderVR.getInstance().vrSettings.guiAnisotropicFiltering &&
+            OpenGLHelper.supportsAnisotropicFiltering())
+        {
+            OpenGLHelper.enableAnisotropicFiltering();
         }
     }
 

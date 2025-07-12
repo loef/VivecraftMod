@@ -292,9 +292,7 @@ public class RenderHelper {
 
         if (DATA_HOLDER.vrSettings.guiMipmaps) {
             // update mipmaps for Gui layer
-            MC.mainRenderTarget.bindRead();
-            GL30C.glGenerateMipmap(GL30C.GL_TEXTURE_2D);
-            MC.mainRenderTarget.unbindRead();
+            OpenGLHelper.genMipmaps(MC.mainRenderTarget);
         }
     }
 
