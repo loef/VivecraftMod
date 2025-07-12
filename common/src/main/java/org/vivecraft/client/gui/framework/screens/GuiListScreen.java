@@ -95,7 +95,7 @@ public abstract class GuiListScreen extends Screen {
             this.reinit = false;
         }
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFFFF);
 
         // render custom tooltip
         SettingsList.BaseEntry entry = null;

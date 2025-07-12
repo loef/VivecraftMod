@@ -20,7 +20,7 @@ public class TextOnlyButton extends Button {
         int textWidth = Minecraft.getInstance().font.width(this.getMessage());
         int textY = this.getY() + this.getHeight() / 2 - Minecraft.getInstance().font.lineHeight / 2 + 2;
 
-        int color = !this.active ? 0xA0A0A0 : (this.isHoveredOrFocused() ? 0x55FF55 : 0xFFFFFF);
+        int color = !this.active ? 0xFFA0A0A0 : (this.isHoveredOrFocused() ? 0xFF55FF55 : 0xFFFFFFFF);
 
         if (textWidth < this.getWidth()) {
             guiGraphics.drawString(Minecraft.getInstance().font, this.getMessage(), this.getX(), textY, color);

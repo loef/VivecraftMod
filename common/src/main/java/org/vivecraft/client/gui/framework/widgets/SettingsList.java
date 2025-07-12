@@ -560,7 +560,7 @@ public class SettingsList extends ContainerObjectSelectionList<SettingsList.Base
         }
 
         protected int textColor() {
-            return this.active ? 0xFFFFFF : 0xA0A0A0;
+            return this.active ? 0xFFFFFFFF : 0xFFA0A0A0;
         }
 
         public boolean isActive() {
