@@ -21,7 +21,7 @@ Mod compatibility is important to us. If you find any issues, don't be afraid to
 - [x] Sodium support
 - [X] Iris support
 - [X] In game VR switching
-- [ ] API
+- [X] API, details [here](https://github.com/Vivecraft/VivecraftMod/wiki/Mod-API)
 - [ ] OpenXR support
 
 [Vivecraft Discord server](https://discord.gg/2x3QCk8qa9)\
