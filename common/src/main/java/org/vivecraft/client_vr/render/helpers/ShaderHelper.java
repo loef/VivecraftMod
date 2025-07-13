@@ -12,7 +12,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -322,8 +321,8 @@ public class ShaderHelper {
             MC.mainRenderTarget.width,
             MC.mainRenderTarget.height);
 
-        Vec3 camPlayer = DATA_HOLDER.vrPlayer.vrdata_room_pre.getHeadPivot()
-            .subtract(DATA_HOLDER.vrPlayer.vrdata_room_pre.getEye(RenderPass.THIRD).getPosition());
+        Vector3f camPlayer = DATA_HOLDER.vrPlayer.vrdata_room_pre.getHeadPivotF()
+            .sub(DATA_HOLDER.vrPlayer.vrdata_room_pre.getEye(RenderPass.THIRD).getPositionF());
 
         // transpose, because camera rotations are transposed
         Matrix4f viewMatrix = DATA_HOLDER.vrPlayer.vrdata_room_pre.getEye(RenderPass.THIRD).getMatrix().transpose();
@@ -334,8 +333,7 @@ public class ShaderHelper {
             ((GameRendererExtension) MC.gameRenderer).vivecraft$getThirdPassProjectionMatrix());
         VRShaders.MIXED_REALITY_VIEW_MATRIX_UNIFORM.set(viewMatrix);
 
-        VRShaders.MIXED_REALITY_HMD_VIEW_POSITION_UNIFORM.set((float) camPlayer.x, (float) camPlayer.y,
-            (float) camPlayer.z);
+        VRShaders.MIXED_REALITY_HMD_VIEW_POSITION_UNIFORM.set(camPlayer.x, camPlayer.y, camPlayer.z);
         VRShaders.MIXED_REALITY_HMD_PLANE_NORMAL_UNIFORM.set(-cameraLook.x, 0.0F, -cameraLook.z);
 
         boolean alphaMask =

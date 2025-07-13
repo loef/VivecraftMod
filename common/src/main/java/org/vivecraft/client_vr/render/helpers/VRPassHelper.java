@@ -11,7 +11,6 @@ import net.minecraft.util.profiling.Profiler;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
 import org.lwjgl.opengl.GL13C;
-import org.lwjgl.opengl.GL30C;
 import org.vivecraft.api.client.data.RenderPass;
 import org.vivecraft.client.utils.ClientUtils;
 import org.vivecraft.client_vr.ClientDataHolderVR;
