@@ -1222,7 +1222,9 @@ public abstract class MCVR {
         GuiHandler.processBindingsGui();
         RadialHandler.processBindings();
         KeyboardHandler.processBindings();
-        this.dh.interactTracker.processBindings();
+        if (!this.mc.isPaused() && this.dh.interactTracker.isActive(this.mc.player)) {
+            this.dh.interactTracker.processBindings();
+        }
     }
 
     /**
