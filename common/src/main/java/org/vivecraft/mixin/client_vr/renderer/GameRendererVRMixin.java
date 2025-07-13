@@ -24,6 +24,7 @@ import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.Triple;
@@ -144,17 +145,25 @@ public abstract class GameRendererVRMixin
                 return;
             }
 
+            AABB originalBB = this.minecraft.getCameraEntity().getBoundingBox();
             // set the entity position and view to the controller
             this.vivecraft$cacheRVEPos(this.minecraft.getCameraEntity());
             this.vivecraft$setupRVEAtDevice(vivecraft$DATA_HOLDER.vrPlayer.vrdata_world_render.getAim());
-        }
+            // move the bounding box as well, this is used for entity hits
+            this.minecraft.getCameraEntity().setBoundingBox(originalBB.move(
+                this.minecraft.getCameraEntity().getX() - this.vivecraft$rveX,
+                this.minecraft.getCameraEntity().getY() - this.vivecraft$rveY,
+                this.minecraft.getCameraEntity().getZ() - this.vivecraft$rveZ));
 
-        // call the vanilla method
-        original.call(partialTick);
+            // call the vanilla method
+            original.call(partialTick);
 
-        if (VRState.VR_RUNNING) {
             // restore entity
             this.vivecraft$restoreRVEPos(this.minecraft.getCameraEntity());
+            this.minecraft.getCameraEntity().setBoundingBox(originalBB);
+        } else {
+            // call the vanilla method
+            original.call(partialTick);
         }
     }
 
