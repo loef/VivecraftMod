@@ -629,7 +629,8 @@ public class VREffectsHelper {
         // mainly an issue with iris and the crumbling effect/nausea effect
         MC.renderBuffers().bufferSource().endBatch();
 
-        RenderTarget original = MC.getMainRenderTarget();
+        // remember the original buffer
+        RenderTarget mainTarget = MC.mainRenderTarget;
 
         Profiler.get().popPush("VR");
         renderCrosshairAtDepth(!DATA_HOLDER.vrSettings.useCrosshairOcclusion);
@@ -675,7 +676,7 @@ public class VREffectsHelper {
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderColor(1, 1, 1, 1);
         // rebind the original buffer
-        MC.mainRenderTarget = original;
+        MC.mainRenderTarget = mainTarget;
         MC.getMainRenderTarget().bindWrite(true);
     }
 
