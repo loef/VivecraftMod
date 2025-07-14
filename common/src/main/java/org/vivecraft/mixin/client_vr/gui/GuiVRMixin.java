@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.HumanoidArm;
@@ -132,7 +131,7 @@ public abstract class GuiVRMixin implements GuiExtension {
             int middle = guiGraphics.guiWidth() / 2;
             guiGraphics.blitSprite(RenderType::guiTextured, HOTBAR_SELECTION_SPRITE,
                 middle - 91 - 1 + ClientDataHolderVR.getInstance().hotbarModule.hotbar * 20,
-                guiGraphics.guiHeight() - 22 - 1, 24, 23, ARGB.color(0, 255, 0));
+                guiGraphics.guiHeight() - 22 - 1, 24, 23, 0xFF00FF00);
         }
     }
 
@@ -171,7 +170,7 @@ public abstract class GuiVRMixin implements GuiExtension {
                 ClientDataHolderVR.getInstance().interactTracker.isActive(this.minecraft.player);
 
         if (changeColor) {
-            instance.blitSprite(renderTypeGetter, sprite, x, y, width, height, ARGB.color(0, 0, 255));
+            instance.blitSprite(renderTypeGetter, sprite, x, y, width, height, 0xFF0000FF);
         } else {
             original.call(instance, renderTypeGetter, sprite, x, y, width, height);
         }
