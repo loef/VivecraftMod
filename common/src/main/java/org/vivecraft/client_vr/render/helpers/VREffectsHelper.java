@@ -629,6 +629,8 @@ public class VREffectsHelper {
         // mainly an issue with iris and the crumbling effect/nausea effect
         MC.renderBuffers().bufferSource().endBatch();
 
+        RenderTarget original = MC.getMainRenderTarget();
+
         Profiler.get().popPush("VR");
         renderCrosshairAtDepth(!DATA_HOLDER.vrSettings.useCrosshairOcclusion);
         DebugRenderHelper.renderDebug(partialTick);
@@ -638,6 +640,7 @@ public class VREffectsHelper {
         extTargets.vivecraft$getOccluded().get().clear();
         extTargets.vivecraft$getOccluded().get().copyDepthFrom(MC.getMainRenderTarget());
         extTargets.vivecraft$getOccluded().get().bindWrite(false);
+        MC.mainRenderTarget = extTargets.vivecraft$getOccluded().get();
 
         if (shouldOccludeGui()) {
             renderGuiAndShadow(partialTick, false, false);
@@ -646,6 +649,7 @@ public class VREffectsHelper {
         // switch to VR UnOccluded buffer, no depth copy
         extTargets.vivecraft$getUnoccluded().get().clear();
         extTargets.vivecraft$getUnoccluded().get().bindWrite(false);
+        MC.mainRenderTarget = extTargets.vivecraft$getUnoccluded().get();
 
         if (!shouldOccludeGui()) {
             renderGuiAndShadow(partialTick, false, false);
@@ -663,6 +667,7 @@ public class VREffectsHelper {
         extTargets.vivecraft$getHands().get().clear();
         extTargets.vivecraft$getHands().get().copyDepthFrom(MC.getMainRenderTarget());
         extTargets.vivecraft$getHands().get().bindWrite(false);
+        MC.mainRenderTarget = extTargets.vivecraft$getHands().get();
 
         VRArmHelper.renderVRHands(partialTick, renderHands && !DATA_HOLDER.menuHandMain,
             renderHands && !DATA_HOLDER.menuHandOff, false, false);
@@ -670,6 +675,7 @@ public class VREffectsHelper {
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderColor(1, 1, 1, 1);
         // rebind the original buffer
+        MC.mainRenderTarget = original;
         MC.getMainRenderTarget().bindWrite(true);
     }
 
