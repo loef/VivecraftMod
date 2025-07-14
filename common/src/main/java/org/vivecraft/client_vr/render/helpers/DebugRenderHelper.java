@@ -589,55 +589,53 @@ public class DebugRenderHelper {
 
     public static void renderAABB(AABB aabb, Vector3fc color) {
         RenderSystem.setShader(CoreShaders.POSITION_COLOR);
-        RenderSystem.setShaderTexture(0, RenderHelper.WHITE_TEXTURE);
-
         BufferBuilder bufferBuilder = Tesselator.getInstance()
             .begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.minY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.minY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.minY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 0.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 0.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 0.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 0.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 0.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 0.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.minY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
 
+        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.minY, (float) aabb.minZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.minZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.maxZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.minY, (float) aabb.maxZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.minY, (float) aabb.minZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.minZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.minZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.maxZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.maxZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.minZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.minZ)
+            .setColor(color.x(), color.y(), color.z(), 0.0F);
+        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.minZ)
+            .setColor(color.x(), color.y(), color.z(), 0.0F);
+        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.minZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.minZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.minZ)
+            .setColor(color.x(), color.y(), color.z(), 0.0F);
+        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.maxZ)
+            .setColor(color.x(), color.y(), color.z(), 0.0F);
+        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.maxZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.maxZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.maxZ)
+            .setColor(color.x(), color.y(), color.z(), 0.0F);
+        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.maxZ)
+            .setColor(color.x(), color.y(), color.z(), 0.0F);
+        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.maxZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.minY, (float) aabb.maxZ)
+            .setColor(color.x(), color.y(), color.z(), 1.0F);
 
         BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
     }

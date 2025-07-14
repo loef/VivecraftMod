@@ -111,7 +111,7 @@ public abstract class LivingEntityMixin extends Entity {
      * part of {@link #vivecraft$roomscaleShieldBlockingItem}
      */
     @ModifyReturnValue(method = "isDamageSourceBlocked", at = @At(value = "RETURN", ordinal = 0))
-    protected boolean vivecraft$roomscaleShieldIsBlocked(
+    private boolean vivecraft$roomscaleShieldIsBlocked(
         boolean blocked, @Share("roomscaleBlocked") LocalBooleanRef roomscaleBlocked)
     {
         return blocked || roomscaleBlocked.get();
