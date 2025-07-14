@@ -232,7 +232,7 @@
   "vivecraft.options.MIXED_REALITY_KEY_COLOR.tooltip": "The color drawn to the \"transparent\" areas of the mixed reality view. Other colors in-game will be prevented from matching this so it doesn't cause weirdness.",
   "vivecraft.options.MIXED_REALITY_RENDER_HANDS.tooltip": "Render hands on the mixed reality view. Only toggles rendering of the actual hand models, items will still be rendered.",
   "vivecraft.options.MIXED_REALITY_UNITY_LIKE.tooltip": "Choose between Unity-style 4-pane layout, or 2-pane side-by-side.",
-  "vivecraft.options.MIXED_REALITY_UNDISTORTED.tooltip": "Include an undistorted view in 4-pane layout Requires an extra render pass. Otherwise the HMD view will be used.",
+  "vivecraft.options.MIXED_REALITY_UNDISTORTED.tooltip": "Include an undistorted view in 4-pane layout. Requires an extra render pass. Otherwise the HMD view will be used.",
   "vivecraft.options.MIXED_REALITY_ALPHA_MASK.tooltip": "In Unity layout, if yes, will draw a grayscale alpha mask to the upper-right quadrant (like Unity) for use in masking the foreground layer. Otherwise, foreground will be drawn with key color for use with color key effect.",
   "vivecraft.options.MIXED_REALITY_FOV.tooltip": "The FOV used for the mixed reality mirror mode.",
   "vivecraft.options.WALK_UP_BLOCKS.tooltip": "Allows you to set the ability to walk up blocks without having to jump. Hotkey: RCtrl+B\n§cWARNING: May trigger anti-cheat warnings if on a multiplayer server!!\n  OFF: (Default) You will have to jump up blocks.\n  ON: You can walk up single blocks. May reduce locomotion induced simulator sickness for some.",
