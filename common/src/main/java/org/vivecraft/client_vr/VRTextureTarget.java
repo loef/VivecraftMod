@@ -4,7 +4,7 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.vivecraft.Xplat;
 import org.vivecraft.client.extensions.RenderTargetExtension;
-import org.vivecraft.client_vr.render.helpers.OpenGLHelper;
+import org.vivecraft.client_vr.render.helpers.opengl.OpenGLHelper;
 
 /**
  * extension of a regular RenderTarget that sets Vivecraft features on creation

@@ -1,4 +1,4 @@
-package org.vivecraft.client_vr.render.helpers;
+package org.vivecraft.client_vr.render.helpers.opengl;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
