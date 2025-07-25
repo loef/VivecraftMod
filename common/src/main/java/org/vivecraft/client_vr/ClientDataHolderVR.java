@@ -139,7 +139,7 @@ public class ClientDataHolderVR {
         this.hapticTracker = createTracker(HapticTracker::new);
 
         // create interact modules
-        this.hotbarModule = new InteractiveHotbarModule();
+        this.hotbarModule = new InteractiveHotbarModule(Minecraft.getInstance(), this);
         this.bowModule = new BowModule(this);
         this.thirdCamModule = new ThirdPersonCameraModule(this);
         this.screenCamModule = new ScreenshotCameraModule(this);

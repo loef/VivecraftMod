@@ -108,11 +108,13 @@ public class GuiHandler {
     public static Matrix4f GUI_ROTATION_ROOM = null;
 
     public static Vec3 GUI_POS_WORLD = Vec3.ZERO;
-    public static Vector3f GUI_OFFSET_WORLD = new Vector3f();
+    public static Vector3f GUI_OFFSET_LOCAL = new Vector3f();
     public static Matrix4f GUI_ROTATION_WORLD = new Matrix4f();
 
     public static Matrix4f GUI_ROTATION_PLAYER_MODEL = new Matrix4f();
     public static Vec3 GUI_POS_PLAYER_MODEL = Vec3.ZERO;
+
+    public static boolean HUD_POPUP;
 
     // for GUI scale override
     public static int GUI_WIDTH = 1280;
@@ -574,7 +576,7 @@ public class GuiHandler {
                         guipos = RenderHelper.getControllerRenderPos(1);
                     }
 
-                    DH.vr.hudPopup = true;
+                    HUD_POPUP = true;
 
                     if (DH.vrSettings.vrHudLockMode == VRSettings.HUDLock.HAND) {
                         // hud on hand
@@ -689,7 +691,7 @@ public class GuiHandler {
         GUI_SCALE_APPLIED = thescale;
         GUI_POS_WORLD = guipos;
         GUI_ROTATION_WORLD.set(guirot);
-        GUI_OFFSET_WORLD.set(guilocal);
+        GUI_OFFSET_LOCAL.set(guilocal);
 
         Profiler.get().pop();
 

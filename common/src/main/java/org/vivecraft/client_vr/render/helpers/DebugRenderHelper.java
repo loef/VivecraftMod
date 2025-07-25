@@ -12,6 +12,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joml.*;
 import org.vivecraft.api.client.data.RenderPass;
@@ -356,6 +357,36 @@ public class DebugRenderHelper {
     }
 
     /**
+     * renders a camera relative multi segment line
+     *
+     * @param points list of points the line should follow, at least 2, boolean of the pair indicates a line split
+     * @param color  color of the line
+     */
+    public static void renderLine(List<Pair<Vector3fc, Boolean>> points, Vector3fc color) {
+        RenderSystem.setShader(CoreShaders.POSITION_COLOR);
+        BufferBuilder bufferBuilder = Tesselator.getInstance()
+            .begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+
+        Pair<Vector3fc, Boolean> prev = null;
+
+        for (Pair<Vector3fc, Boolean> point : points) {
+            if (point.getRight() && prev != null) {
+                // reset line
+                bufferBuilder.addVertex(prev.getLeft().x(), prev.getLeft().y(), prev.getLeft().z())
+                    .setColor(color.x(), color.y(), color.z(), 0.0F);
+                bufferBuilder.addVertex(point.getLeft().x(), point.getLeft().y(), point.getLeft().z())
+                    .setColor(color.x(), color.y(), color.z(), 0.0F);
+            }
+
+            bufferBuilder.addVertex(point.getLeft().x(), point.getLeft().y(), point.getLeft().z())
+                .setColor(color.x(), color.y(), color.z(), 1.0F);
+            prev = point;
+        }
+
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+    }
+
+    /**
      * renders a camera relative line, with a list of world space positions, and a camera position
      *
      * @param color  color of the line
@@ -552,7 +583,7 @@ public class DebugRenderHelper {
     }
 
     /**
-     * Renders a sphere made out of 4 circles, a camera facing one and 3 axis aligned ones
+     * Renders a cone made out of a circle and 4 lines
      *
      * @param tip    tip position of the cone, world camera relative
      * @param dir    direction the cone base points at, world space
@@ -587,56 +618,90 @@ public class DebugRenderHelper {
         BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
     }
 
-    public static void renderAABB(AABB aabb, Vector3fc color) {
+    /**
+     * Renders a cylinder made out of 2 circles and 4 lines
+     *
+     * @param bottom bottom position of the cylinder, world camera relative
+     * @param topDir vector from the bottom center to the top center, world space
+     * @param radius radius of the cylinder
+     * @param color  sphere color
+     */
+    public static void renderCylinder(Vector3fc bottom, Vector3fc topDir, float radius, Vector3fc color) {
         RenderSystem.setShader(CoreShaders.POSITION_COLOR);
         BufferBuilder bufferBuilder = Tesselator.getInstance()
             .begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
 
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.minY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.minY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.minY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 0.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 0.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.minZ)
-            .setColor(color.x(), color.y(), color.z(), 0.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 0.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.maxY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.maxY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 0.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 0.0F);
-        bufferBuilder.addVertex((float) aabb.maxX, (float) aabb.minY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
-        bufferBuilder.addVertex((float) aabb.minX, (float) aabb.minY, (float) aabb.maxZ)
-            .setColor(color.x(), color.y(), color.z(), 1.0F);
+        Vector3f dir = topDir.normalize(new Vector3f());
+
+        addCircle(bufferBuilder, bottom, dir, radius, color);
+        addCircle(bufferBuilder, bottom.add(topDir, new Vector3f()), dir, radius, color);
+
+        Vector3f offset = MathUtils.getPerpendicularVec(topDir).mul(radius);
+        for (int i = 0; i < 4; i++) {
+            Vector3f bot = bottom.add(offset, new Vector3f());
+            Vector3f top = bot.add(topDir, new Vector3f());
+
+            bufferBuilder.addVertex(bot.x(), bot.y(), bot.z())
+                .setColor(color.x(), color.y(), color.z(), 0.0F);
+            bufferBuilder.addVertex(bot.x(), bot.y(), bot.z())
+                .setColor(color.x(), color.y(), color.z(), 1.0F);
+            bufferBuilder.addVertex(top.x(), top.y(), top.z())
+                .setColor(color.x(), color.y(), color.z(), 1.0F);
+            bufferBuilder.addVertex(top.x(), top.y(), top.z())
+                .setColor(color.x(), color.y(), color.z(), 0.0F);
+            offset.rotateAxis(Mth.HALF_PI, dir.x(), dir.y(), dir.z());
+        }
 
         BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+    }
+
+    /**
+     * renders the outline of the given camera relative AABB
+     *
+     * @param aabb  AABB to render
+     * @param color color to render the AABB in
+     */
+    public static void renderAABB(AABB aabb, Vector3fc color) {
+        renderCubeOutline(
+            new Vector3f((float) aabb.minX, (float) aabb.minY, (float) aabb.minZ),
+            new Vector3f((float) aabb.minX, (float) aabb.maxY, (float) aabb.minZ),
+            new Vector3f((float) aabb.minX, (float) aabb.maxY, (float) aabb.maxZ),
+            new Vector3f((float) aabb.minX, (float) aabb.minY, (float) aabb.maxZ),
+            new Vector3f((float) aabb.maxX, (float) aabb.minY, (float) aabb.minZ),
+            new Vector3f((float) aabb.maxX, (float) aabb.maxY, (float) aabb.minZ),
+            new Vector3f((float) aabb.maxX, (float) aabb.maxY, (float) aabb.maxZ),
+            new Vector3f((float) aabb.maxX, (float) aabb.minY, (float) aabb.maxZ),
+            color);
+    }
+
+    /**
+     * renders the outline of the cube, defined by the 8 camera relative corner points.
+     * corner points are expected to be in the order of v0-v3 being one side in clockwise order, and v4-v7 being the other
+     * side in clockwise order
+     *
+     * @param color color to render the cube in
+     */
+    public static void renderCubeOutline(
+        Vector3fc v0, Vector3fc v1, Vector3fc v2, Vector3fc v3, Vector3fc v4, Vector3fc v5, Vector3fc v6, Vector3fc v7,
+        Vector3fc color)
+    {
+        renderLine(
+            List.of(Pair.of(v0, false),
+                Pair.of(v1, false),
+                Pair.of(v2, false),
+                Pair.of(v3, false),
+                Pair.of(v0, false),
+                Pair.of(v4, false),
+                Pair.of(v5, false),
+                Pair.of(v6, false),
+                Pair.of(v7, false),
+                Pair.of(v4, false),
+                Pair.of(v1, true),
+                Pair.of(v5, false),
+                Pair.of(v2, true),
+                Pair.of(v6, false),
+                Pair.of(v3, true),
+                Pair.of(v7, false)),
+            color);
     }
 }

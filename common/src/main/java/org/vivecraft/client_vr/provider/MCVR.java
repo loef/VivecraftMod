@@ -12,7 +12,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.TorchBlock;
-import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joml.*;
 import org.lwjgl.glfw.GLFW;
@@ -121,7 +120,6 @@ public abstract class MCVR {
     public float seatedRot;
     public float aimPitch = 0.0F;
     //
-    public boolean hudPopup = true;
     protected int moveModeSwitchCount = 0;
     public boolean isWalkingAbout;
     protected boolean isFreeRotate;
@@ -499,90 +497,6 @@ public abstract class MCVR {
                     ScrollWheelHandler.getNextScrollWheelSelection(dir, this.mc.player.getInventory().selected,
                         Inventory.getSelectionSize()));
             }
-        }
-    }
-
-    /**
-     * processes the interactive hotbar
-     */
-    protected void processHotbar() {
-        int previousSlot = this.dh.hotbarModule.hotbar;
-        this.dh.hotbarModule.hotbar = -1;
-
-        if (this.mc.player == null) return;
-        // this shouldn't happen, it's final
-        if (this.mc.player.getInventory() == null) return;
-        if (this.dh.climbTracker.isGrabbingLadder() && ClimbTracker.isClaws(this.mc.player.getMainHandItem())) return;
-        if (!this.dh.interactTracker.isActive(this.mc.player)) return;
-        if (GuiHandler.GUI_POS_WORLD == Vec3.ZERO) return;
-
-        Vector3fc main = this.getAimSource(MAIN_CONTROLLER);
-
-        // TODO this is one frame behind, does it matter?
-
-        Vector3f tempV = new Vector3f();
-        VRData worldData = this.dh.vrPlayer.getVRDataWorld();
-        Vector3f guiPos = MathUtils.subtractToVector3f(GuiHandler.GUI_POS_WORLD, worldData.origin);
-
-        float scale =
-            GuiHandler.GUI_SCALE_APPLIED * (float) this.mc.getWindow().getGuiScale() / GuiHandler.GUI_SCALE_FACTOR_MAX;
-        // offset from center to the left of the hotbar
-        GuiHandler.GUI_OFFSET_WORLD.add(-0.32F * scale, -0.38F * GuiHandler.GUI_SCALE_APPLIED, 0, tempV);
-
-        Vector3f barStart = guiPos.add(GuiHandler.GUI_ROTATION_WORLD.transformDirection(tempV), new Vector3f());
-        Vector3f barEnd = barStart.add(
-            GuiHandler.GUI_ROTATION_WORLD.transformDirection(MathUtils.LEFT, tempV).mul(0.64F * scale), new Vector3f());
-
-        barStart.div(worldData.worldScale);
-        barEnd.div(worldData.worldScale);
-
-        barStart.rotateY(-worldData.rotation_radians);
-        barEnd.rotateY(-worldData.rotation_radians);
-
-        Vector3fc barLine = barStart.sub(barEnd, new Vector3f());
-        Vector3fc handToBar = barStart.sub(main, new Vector3f());
-
-        // check if the hand is close enough
-        float dist = handToBar.cross(barLine, new Vector3f()).length() / barLine.length();
-        if (dist > 0.06) return;
-
-        // check that the controller is to the right of the offhand slot, and how far it's to the right
-        float fact = handToBar.dot(barLine) / barLine.lengthSquared();
-        if (fact < -1) return;
-
-        // get the closest point from the hand to the hotbar
-        Vector3f point = barLine.mul(fact, new Vector3f()).sub(handToBar);
-        // subtract and store in point
-        main.sub(point, point);
-
-        float barSize = barLine.length();
-        float ilen = barStart.distance(point);
-        if (fact < 0) {
-            ilen *= -1;
-        }
-        float pos = ilen / barSize * 9;
-
-        // actual slot that is selected
-        int box = (int) Math.floor(pos);
-
-        if (box > 8) {
-            if (this.dh.vrSettings.reverseHands && pos >= 9.5 && pos <= 10.5) {
-                box = 9;
-            } else {
-                return;
-            }
-        } else if (box < 0) {
-            if (!this.dh.vrSettings.reverseHands && pos <= -0.5 && pos >= -1.5) {
-                box = 9;
-            } else {
-                return;
-            }
-        }
-
-        // all that maths for this.
-        this.dh.hotbarModule.hotbar = box;
-        if (previousSlot != this.dh.hotbarModule.hotbar) {
-            triggerHapticPulse(0, 750);
         }
     }
 

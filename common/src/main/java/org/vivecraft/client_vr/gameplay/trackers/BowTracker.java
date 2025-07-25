@@ -285,13 +285,14 @@ public class BowTracker implements ItemInUseTracker, DebugRenderTracker {
             DebugRenderHelper.renderSphere(stringPos, dist,
                 isNotched() ? MathUtils.GREEN : MathUtils.RED);
             Vector3f bowDir = bowHandPose.getCustomVector(MathUtils.DOWN);
-            DebugRenderHelper.renderCone(bowDir.mul(-dist, new Vector3f()).add(stringPos), bowDir, 20.F, 0.25F,
-                isNotched() ? MathUtils.GREEN : MathUtils.RED);
+            DebugRenderHelper.renderCone(bowDir.mul(-dist, new Vector3f()).add(stringPos), bowDir, 20.F,
+                0.25F * world.worldScale, isNotched() ? MathUtils.GREEN : MathUtils.RED);
 
             // arrow point dir
             DebugRenderHelper.renderLine(isNotched() ? MathUtils.GREEN : MathUtils.RED,
                 MathUtils.subtractToVector3f(arrowPose.getPosition(), cam),
-                MathUtils.subtractToVector3f(arrowPose.getPosition(), cam).add(arrowPose.getDirection()));
+                MathUtils.subtractToVector3f(arrowPose.getPosition(), cam)
+                    .add(arrowPose.getDirection().mul(world.worldScale)));
         }
     }
 }

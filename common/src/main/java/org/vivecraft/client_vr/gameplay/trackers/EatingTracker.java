@@ -151,9 +151,11 @@ public class EatingTracker implements ItemInUseTracker, DebugRenderTracker {
             if (this.foodPos[c] != null) {
                 Vector3fc food = MathUtils.subtractToVector3f(VRPlayer.roomToWorldPos(this.foodPos[c], world), cam);
                 // food pos
-                DebugRenderHelper.renderCube(food, 0.05F, this.eating[c] ? MathUtils.GREEN : MathUtils.RED);
+                DebugRenderHelper.renderCube(food, 0.05F * world.worldScale,
+                    this.eating[c] ? MathUtils.GREEN : MathUtils.RED);
                 // food distance threshold
-                DebugRenderHelper.renderSphere(food, THRESHOLD, this.eating[c] ? MathUtils.GREEN : MathUtils.RED);
+                DebugRenderHelper.renderSphere(food, THRESHOLD * world.worldScale,
+                    this.eating[c] ? MathUtils.GREEN : MathUtils.RED);
             }
         }
     }

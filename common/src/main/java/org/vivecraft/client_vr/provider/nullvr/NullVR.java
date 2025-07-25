@@ -180,15 +180,6 @@ public class NullVR extends MCVR {
                 }
             }
 
-            if (!this.dh.vrSettings.seated) {
-                if (this.mc.screen == null && this.dh.vrSettings.vrTouchHotbar) {
-                    Profiler.get().popPush("touchHotbar");
-                    if (this.dh.vrSettings.vrHudLockMode != VRSettings.HUDLock.HEAD && this.hudPopup) {
-                        this.processHotbar();
-                    }
-                }
-            }
-
             Profiler.get().popPush("hmdSampling");
             this.hmdSampling();
 
