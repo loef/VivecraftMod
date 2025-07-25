@@ -92,8 +92,8 @@ public class SwingTracker implements DebugRenderTracker {
             return false;
         } else if (this.dh.vrSettings.weaponCollision == VRSettings.WeaponCollision.OFF) {
             return false;
-        } else if (this.dh.vrSettings.weaponCollision == VRSettings.WeaponCollision.AUTO) {
-            return !player.isCreative();
+        } else if (this.dh.vrSettings.weaponCollision == VRSettings.WeaponCollision.AUTO && player.isCreative()) {
+            return false;
         } else if (this.dh.vrSettings.seated) {
             return false;
         } else if (this.dh.vrSettings.vrFreeMoveMode == VRSettings.FreeMove.RUN_IN_PLACE && player.zza > 0.0F) {
