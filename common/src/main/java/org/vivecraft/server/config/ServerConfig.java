@@ -11,6 +11,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import org.vivecraft.Xloader;
+import org.vivecraft.common.network.packet.s2c.AttackWhileBlockingPayloadS2C;
+import org.vivecraft.common.network.packet.s2c.CrawlPayloadS2C;
+import org.vivecraft.common.network.packet.s2c.DualWieldingPayloadS2C;
+import org.vivecraft.common.network.packet.s2c.TeleportPayloadS2C;
 import org.vivecraft.server.ServerNetworking;
 
 import java.util.Arrays;
@@ -154,13 +158,16 @@ public class ServerConfig {
             .defineInList("r", Arrays.asList("r", "b", "a"));
         VR_ONLY = BUILDER
             .push("vr_only")
-            .define(false);
+            .define(false)
+            .setOnUpdate(ServerNetworking::updateViveVROnly);
         VIVE_ONLY = BUILDER
             .push("vive_only")
-            .define(false);
+            .define(false)
+            .setOnUpdate(ServerNetworking::updateViveVROnly);
         ALLOW_OP = BUILDER
             .push("allow_op")
-            .define(true);
+            .define(true)
+            .setOnUpdate(ServerNetworking::updateViveVROnly);
         MESSAGE_KICK_DELAY = BUILDER
             .push("messageAndKickDelay")
             .defineInRange(10.0, 0.0, 100.0);
@@ -242,7 +249,8 @@ public class ServerConfig {
             .defineInRange(1.75, 0.1, 10.0);
         DUAL_WIELDING = BUILDER
             .push("dualWielding")
-            .define(true);
+            .define(true)
+            .setPacketFunction(v -> new DualWieldingPayloadS2C(DUAL_WIELDING.get()));
         BOOTS_ARMOR_DAMAGE = BUILDER
             .push("bootsArmorDamage")
             .defineInRange(0.0, 0.0, 5.0);
@@ -257,7 +265,8 @@ public class ServerConfig {
             .define(true);
         ALLOW_ATTACKS_WHILE_BLOCKING = BUILDER
             .push("allowAttacksWhileBlocking")
-            .define(true);
+            .define(true)
+            .setPacketFunction(v -> new AttackWhileBlockingPayloadS2C(ALLOW_ATTACKS_WHILE_BLOCKING.get()));
 
         BUILDER
             .push("bow");
@@ -308,10 +317,12 @@ public class ServerConfig {
             .push("climbey");
         CLIMBEY_ENABLED = BUILDER
             .push("enabled")
-            .define(true);
+            .define(true)
+            .setPacketFunction(v -> ServerNetworking.getClimbeyServerPayload());
         CLIMBEY_BLOCKMODE = BUILDER
             .push("blockmode")
-            .defineEnum(ClimbeyBlockmode.DISABLED, ClimbeyBlockmode.class);
+            .defineEnum(ClimbeyBlockmode.DISABLED, ClimbeyBlockmode.class)
+            .setPacketFunction(v -> ServerNetworking.getClimbeyServerPayload());
         CLIMBEY_BLOCKLIST = BUILDER
             .push("blocklist")
             .defineList(Arrays.asList("white_wool", "dirt", "grass_block"), (s) -> {
@@ -332,7 +343,8 @@ public class ServerConfig {
                 }
                 // return true or the whole list would be reset
                 return true;
-            });
+            })
+            .setPacketFunction(v -> ServerNetworking.getClimbeyServerPayload());
         // end climbey
         BUILDER.pop();
 
@@ -340,7 +352,8 @@ public class ServerConfig {
             .push("crawling");
         CRAWLING_ENABLED = BUILDER
             .push("enabled")
-            .define(true);
+            .define(true)
+            .setPacketFunction(v -> new CrawlPayloadS2C(ServerConfig.CRAWLING_ENABLED.get(), v.networkVersion));
         // end crawling
         BUILDER.pop();
 
@@ -348,19 +361,24 @@ public class ServerConfig {
             .push("teleport");
         TELEPORT_ENABLED = BUILDER
             .push("enabled")
-            .define(true);
+            .define(true)
+            .setPacketFunction(v -> new TeleportPayloadS2C(ServerConfig.TELEPORT_ENABLED.get(), v.networkVersion));
         TELEPORT_LIMITED_SURVIVAL = BUILDER
             .push("limitedSurvival")
-            .define(false);
+            .define(false)
+            .setPacketFunction(v -> ServerNetworking.getSurvivalTeleportOverridePayload());
         TELEPORT_UP_LIMIT = BUILDER
             .push("upLimit")
-            .defineInRange(4, 1, 16);
+            .defineInRange(4, 1, 16)
+            .setPacketFunction(v -> ServerNetworking.getSurvivalTeleportOverridePayload());
         TELEPORT_DOWN_LIMIT = BUILDER
             .push("downLimit")
-            .defineInRange(4, 1, 16);
+            .defineInRange(4, 1, 16)
+            .setPacketFunction(v -> ServerNetworking.getSurvivalTeleportOverridePayload());
         TELEPORT_HORIZONTAL_LIMIT = BUILDER
             .push("horizontalLimit")
-            .defineInRange(16, 1, 32);
+            .defineInRange(16, 1, 32)
+            .setPacketFunction(v -> ServerNetworking.getSurvivalTeleportOverridePayload());
         // end teleport
         BUILDER.pop();
 
@@ -368,13 +386,16 @@ public class ServerConfig {
             .push("worldScale");
         WORLDSCALE_LIMITED = BUILDER
             .push("limitRange")
-            .define(false);
+            .define(false)
+            .setPacketFunction(v -> ServerNetworking.getWorldScaleOverridePayload());
         WORLDSCALE_MIN = BUILDER
             .push("min")
-            .defineInRange(0.5, 0.1, 100.0);
+            .defineInRange(0.5, 0.1, 100.0)
+            .setPacketFunction(v -> ServerNetworking.getWorldScaleOverridePayload());
         WORLDSCALE_MAX = BUILDER
             .push("max")
-            .defineInRange(2.0, 0.1, 100.0);
+            .defineInRange(2.0, 0.1, 100.0)
+            .setPacketFunction(v -> ServerNetworking.getWorldScaleOverridePayload());
         // end worldScale
         BUILDER.pop();
 
@@ -382,10 +403,12 @@ public class ServerConfig {
             .push("settingOverrides");
         FORCE_THIRD_PERSON_ITEMS = BUILDER
             .push("thirdPersonItems")
-            .define(false);
+            .define(false)
+            .setPacketFunction(v -> ServerNetworking.getThirdPersonItemsOverridePayload());
         FORCE_THIRD_PERSON_ITEMS_CUSTOM = BUILDER
             .push("thirdPersonItemsCustom")
-            .define(false);
+            .define(false)
+            .setPacketFunction(v -> ServerNetworking.getThirdPersonItemsCustomOverridePayload());
         // end settingOverrides
         BUILDER.pop();
 
@@ -393,7 +416,8 @@ public class ServerConfig {
             .push("vrSwitching");
         VR_SWITCHING_ENABLED = BUILDER
             .push("enabled")
-            .define(true);
+            .define(true)
+            .setPacketFunction(v -> ServerNetworking.getVRSwitchingPayload());
         // end vrSwitching
         BUILDER.pop();
 

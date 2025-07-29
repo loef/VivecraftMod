@@ -252,7 +252,7 @@ public class NullVR extends MCVR {
 
     @Override
     public List<Long> getOrigins(VRInputAction action) {
-        return null;
+        return List.of();
     }
 
     @Override

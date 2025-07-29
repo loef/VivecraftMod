@@ -656,6 +656,7 @@
   "vivecraft.messages.nondefaultvrchanges": "§a[Vivecraft]§r Dieser Server hat einige Gameplayeinstellungen geänderter. %s",
   "vivecraft.messages.nondefaultvrchanges.title": "Geänderte Gameplayeinstellungen",
   "vivecraft.messages.connectingtoruntime": "Verbinde mit der VR Laufzeit",
+  "vivecraft.messages.noteleport": "Dieser Server hat das Teleportieren explizit deaktiviert. Der eingeschränkte Bewegungsmodus (Fallback auf freie Bewegung) wurde aktiviert.",
 
   "vivecraft.messages.tracker.waist": "Taille",
   "vivecraft.messages.tracker.rightFoot": "Rechter Fuß",

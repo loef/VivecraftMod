@@ -19,6 +19,7 @@ import org.vivecraft.api.client.data.CloseKeyboardContext;
 import org.vivecraft.api.client.data.RenderPass;
 import org.vivecraft.api.data.VRBodyPart;
 import org.vivecraft.client.VivecraftVRMod;
+import org.vivecraft.client.network.ClientNetworking;
 import org.vivecraft.client.utils.ClientUtils;
 import org.vivecraft.client.utils.LangHelper;
 import org.vivecraft.client_vr.ClientDataHolderVR;
@@ -197,6 +198,7 @@ public abstract class MCVR {
      */
     public void destroy() {
         this.oscTrackers.stop();
+        ME = null;
     }
 
     /**
@@ -757,7 +759,9 @@ public abstract class MCVR {
 
         // allow movement switching with long pressing pick block
         if (this.mc.options.keyPickItem.isDown() || toggleMovementPressed) {
-            if (++this.moveModeSwitchCount == 80 || toggleMovementPressed) {
+            if ((++this.moveModeSwitchCount == 80 || toggleMovementPressed) &&
+                ClientNetworking.SERVER_ALLOWS_DIRECT_TELEPORT)
+            {
                 if (this.dh.vrSettings.seated) {
                     this.dh.vrSettings.seatedFreeMove = !this.dh.vrSettings.seatedFreeMove;
                     ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.movementmodeswitch",

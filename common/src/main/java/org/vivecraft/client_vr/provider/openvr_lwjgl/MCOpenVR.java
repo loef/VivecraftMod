@@ -1044,7 +1044,7 @@ public class MCOpenVR extends MCVR {
     }
 
     /**
-     * checks if hte given path contains any non ASCII character, because steamvr refuses to support those
+     * checks if the given path contains any non ASCII character, because steamvr refuses to support those
      *
      * @param path        path to check
      * @param knownError  String of an error that should be shown to the user when this fails

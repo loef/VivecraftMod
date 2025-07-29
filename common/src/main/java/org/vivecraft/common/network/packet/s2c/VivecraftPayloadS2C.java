@@ -40,10 +40,10 @@ public interface VivecraftPayloadS2C extends VivecraftPayload {
                 case VERSION -> VersionPayloadS2C.read(buffer);
                 case REQUESTDATA -> new RequestDataPayloadS2C();
                 case UBERPACKET -> UberPacketPayloadS2C.read(buffer);
-                case TELEPORT -> new TeleportPayloadS2C();
+                case TELEPORT -> TeleportPayloadS2C.read(buffer);
                 case CLIMBING -> ClimbingPayloadS2C.read(buffer);
                 case SETTING_OVERRIDE -> SettingOverridePayloadS2C.read(buffer);
-                case CRAWL -> new CrawlPayloadS2C();
+                case CRAWL -> CrawlPayloadS2C.read(buffer);
                 case NETWORK_VERSION -> NetworkVersionPayloadS2C.read(buffer);
                 case VR_SWITCHING -> VRSwitchingPayloadS2C.read(buffer);
                 case IS_VR_ACTIVE -> VRActivePayloadS2C.read(buffer);

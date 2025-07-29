@@ -24,9 +24,11 @@ public class CommonNetworkHelper {
     public static final int NETWORK_VERSION_SERVER_VR_CHANGES = 5;
     // adds packets to send/receive damage directions
     public static final int NETWORK_VERSION_DAMAGE_DIRECTION = 6;
+    // adds features to toggle settings after initial connection
+    public static final int NETWORK_VERSION_OPTION_TOGGLE = 7;
 
     // maximum supported network version
-    public static final int MAX_SUPPORTED_NETWORK_VERSION = NETWORK_VERSION_DAMAGE_DIRECTION;
+    public static final int MAX_SUPPORTED_NETWORK_VERSION = NETWORK_VERSION_OPTION_TOGGLE;
     // minimum supported network version
     public static final int MIN_SUPPORTED_NETWORK_VERSION = 0;
 

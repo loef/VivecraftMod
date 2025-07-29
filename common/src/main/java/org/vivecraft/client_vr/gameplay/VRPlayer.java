@@ -757,7 +757,8 @@ public class VRPlayer {
      * However, when free move is forced in standing mode, teleport is outright disabled.
      */
     public boolean isTeleportEnabled() {
-        boolean enabled = !VRServerPerms.INSTANCE.noTeleportClient || this.teleportOverride;
+        boolean enabled = (!VRServerPerms.INSTANCE.noTeleportClient || this.teleportOverride) &&
+            ClientNetworking.SERVER_ALLOWS_DIRECT_TELEPORT;
 
         if (this.dh.vrSettings.seated) {
             return enabled;

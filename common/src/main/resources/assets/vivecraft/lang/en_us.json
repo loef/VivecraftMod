@@ -658,6 +658,7 @@
   "vivecraft.messages.nondefaultvrchanges": "§a[Vivecraft]§r This server has some gameplay settings set to non-default values. %s",
   "vivecraft.messages.nondefaultvrchanges.title": "Non-Default Gameplay Settings",
   "vivecraft.messages.connectingtoruntime": "Connecting to the VR Runtime",
+  "vivecraft.messages.noteleport": "This server has teleporting explicitly disabled. Restricted movement mode (fallback to free move) has been enabled.",
 
   "vivecraft.messages.tracker.waist": "Waist",
   "vivecraft.messages.tracker.rightFoot": "Right Foot",

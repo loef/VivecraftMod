@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.network.chat.Component;
 import org.vivecraft.client.gui.framework.screens.GuiStringListEditorScreen;
+import org.vivecraft.server.ServerNetworking;
 
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -38,7 +39,10 @@ public class WidgetBuilder {
         return () -> CycleButton
             .onOffBuilder(booleanValue.get())
             .displayOnlyValue()
-            .create(0, 0, width, height, Component.empty(), (button, bool) -> booleanValue.set(bool));
+            .create(0, 0, width, height, Component.empty(), (button, bool) -> {
+                booleanValue.set(bool);
+                updateSettingsSinglePlayer(booleanValue);
+            });
     }
 
     /**
@@ -96,7 +100,10 @@ public class WidgetBuilder {
             .withValues(values.toArray())
             .withInitialValue(configValue.get())
             .displayOnlyValue()
-            .create(0, 0, width, height, Component.empty(), (button, newValue) -> configValue.set((T) newValue));
+            .create(0, 0, width, height, Component.empty(), (button, newValue) -> {
+                configValue.set((T) newValue);
+                updateSettingsSinglePlayer(configValue);
+            });
     }
 
     /**
@@ -121,6 +128,7 @@ public class WidgetBuilder {
             @Override
             protected void applyValue() {
                 numberValue.fromNormalized(this.value);
+                updateSettingsSinglePlayer(numberValue);
             }
         };
     }
@@ -142,12 +150,23 @@ public class WidgetBuilder {
             return () -> Button.builder(Component.translatable("vivecraft.options.editlist"),
                     button -> Minecraft.getInstance().setScreen(new GuiStringListEditorScreen(
                         Component.translatable("vivecraft.serverSettings." + listValue.getPath()),
-                        Minecraft.getInstance().screen, false, stringValue::get, stringValue::reset, stringValue::set)))
+                        Minecraft.getInstance().screen, false, stringValue::get, stringValue::reset, list -> {
+                        stringValue.set(list);
+                        updateSettingsSinglePlayer(stringValue);
+                    })))
                 .size(width, height)
                 .build();
         } else {
             // TODO handle other types than String
             throw new RuntimeException("Unsupported listvalue type: " + first.getClass().getName());
+        }
+    }
+
+    private static void updateSettingsSinglePlayer(ConfigBuilder.ConfigValue<?> configValue) {
+        // send update to players if we are hosting a singleplayer server
+        if (Minecraft.getInstance().hasSingleplayerServer()) {
+            configValue.onUpdate(Minecraft.getInstance().getSingleplayerServer());
+            ServerNetworking.sendUpdatePacketToAll(Minecraft.getInstance().getSingleplayerServer(), configValue);
         }
     }
 }

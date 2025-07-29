@@ -21,6 +21,7 @@ import org.vivecraft.client.utils.StringSimilarity;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.common.utils.TooltipUtil;
+import org.vivecraft.server.ServerNetworking;
 import org.vivecraft.server.config.ConfigBuilder;
 
 import javax.annotation.Nullable;
@@ -380,6 +381,11 @@ public class SettingsList extends ContainerObjectSelectionList<SettingsList.Base
                 () -> !configValue.isDefault(),
                 () -> {
                     configValue.reset();
+                    if (Minecraft.getInstance().hasSingleplayerServer()) {
+                        configValue.onUpdate(Minecraft.getInstance().getSingleplayerServer());
+                        ServerNetworking.sendUpdatePacketToAll(Minecraft.getInstance().getSingleplayerServer(),
+                            configValue);
+                    }
                     return configValue.getWidget(VALUE_BUTTON_WIDTH, 20).get();
                 });
         }
@@ -502,7 +508,7 @@ public class SettingsList extends ContainerObjectSelectionList<SettingsList.Base
 
             this.valueWidget.setX(left + width - VALUE_BUTTON_WIDTH);
             this.valueWidget.setY(top);
-            this.valueWidget.active = this.widgetActive.getAsBoolean();
+            this.valueWidget.active = this.widgetActive.getAsBoolean() && this.isActive();
             this.valueWidget.render(guiGraphics, mouseX, mouseY, partialTick);
         }
 

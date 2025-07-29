@@ -23,5 +23,6 @@ public enum PayloadIdentifier {
     DUAL_WIELDING,
     HAPTIC,
     SERVER_VR_CHANGES,
-    DAMAGE_DIRECTION
+    DAMAGE_DIRECTION,
+    ATTACK_WHILE_BLOCKING
 }

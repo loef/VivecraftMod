@@ -9,6 +9,7 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
+import org.vivecraft.client.network.ClientNetworking;
 import org.vivecraft.client.utils.ClientUtils;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.MethodHolder;
@@ -69,7 +70,7 @@ public class VRHotkeys {
                     }
 
                     // for testing restricted client mode
-                    if (key == GLFW.GLFW_KEY_R) {
+                    if (key == GLFW.GLFW_KEY_R && ClientNetworking.SERVER_ALLOWS_DIRECT_TELEPORT) {
                         if (dataHolder.vrPlayer.isTeleportOverridden()) {
                             dataHolder.vrPlayer.setTeleportOverride(false);
                             ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.teleportdisabled"));

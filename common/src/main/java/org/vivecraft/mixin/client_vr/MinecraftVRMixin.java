@@ -537,6 +537,19 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
                     ClientNetworking.SERVER_VR_CHANGES_LIST = null;
                     ClientNetworking.DISPLAYED_VR_CHANGES = true;
                 }
+
+                // no teleport message
+                if (ClientNetworking.SHOW_NO_TELEPORT_MESSAGE) {
+                    MCVR vr = dataHolder.vr;
+                    // only if the player is using teleports
+                    if (!vr.getOrigins(vr.getInputAction(VivecraftVRMod.INSTANCE.keyTeleport)).isEmpty() ||
+                        !vr.getOrigins(vr.getInputAction(VivecraftVRMod.INSTANCE.keyTeleportFallback)).isEmpty() ||
+                        (dataHolder.vrSettings.seated && !dataHolder.vrSettings.seatedFreeMove))
+                    {
+                        ClientUtils.addChatMessage(Component.translatable("vivecraft.messages.noteleport"));
+                        ClientNetworking.SHOW_NO_TELEPORT_MESSAGE = false;
+                    }
+                }
             }
         }
 

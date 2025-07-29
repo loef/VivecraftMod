@@ -39,6 +39,7 @@ public class ClientNetworking {
     public static boolean DISPLAYED_HEAD_AIM_WARNING = false;
     public static boolean DISPLAYED_VR_CHANGES = false;
     public static boolean ABLE_TO_DISPLAY_CHAT_WARNINGS = false;
+    public static boolean SHOW_NO_TELEPORT_MESSAGE = false;
 
     public static int CHAT_WARNING_TIMER = -1;
     public static boolean TELEPORT_WARNING = false;
@@ -50,10 +51,12 @@ public class ClientNetworking {
 
     public static boolean SERVER_WANTS_DATA = false;
     public static boolean SERVER_SUPPORTS_DIRECT_TELEPORT = false;
+    public static boolean SERVER_ALLOWS_DIRECT_TELEPORT = true;
     public static boolean SERVER_ALLOWS_CLIMBEY = false;
     public static boolean SERVER_ALLOWS_CRAWLING = false;
     public static boolean SERVER_ALLOWS_VR_SWITCHING = false;
     public static boolean SERVER_ALLOWS_DUAL_WIELDING = false;
+    public static boolean SERVER_ALLOWS_ATTACKING_WHILE_BLOCKING = false;
 
     public static Map<String, String> SERVER_VR_CHANGES_LIST;
 
@@ -78,10 +81,12 @@ public class ClientNetworking {
         SERVER_HAS_VIVECRAFT = false;
         SERVER_WANTS_DATA = false;
         SERVER_SUPPORTS_DIRECT_TELEPORT = false;
+        SERVER_ALLOWS_DIRECT_TELEPORT = true;
         SERVER_ALLOWS_CLIMBEY = false;
         SERVER_ALLOWS_CRAWLING = false;
         SERVER_ALLOWS_VR_SWITCHING = false;
         SERVER_ALLOWS_DUAL_WIELDING = false;
+        SERVER_ALLOWS_ATTACKING_WHILE_BLOCKING = false;
         USED_NETWORK_VERSION = CommonNetworkHelper.NETWORK_VERSION_LEGACY;
         LAST_SENT_BODY_PART = VRBodyPart.MAIN_HAND;
         IS_LAST_BODY_PART_AIM = false;
@@ -106,6 +111,7 @@ public class ClientNetworking {
         DISPLAYED_HEAD_AIM_WARNING = false;
         DISPLAYED_VR_CHANGES = false;
         SERVER_VR_CHANGES_LIST = null;
+        SHOW_NO_TELEPORT_MESSAGE = false;
     }
 
     public static void sendVersionInfo() {
@@ -339,20 +345,36 @@ public class ClientNetworking {
                     }
                 }
             }
-            case TELEPORT -> SERVER_SUPPORTS_DIRECT_TELEPORT = true;
+            case TELEPORT -> {
+                SERVER_SUPPORTS_DIRECT_TELEPORT = true;
+                SERVER_ALLOWS_DIRECT_TELEPORT = ((TeleportPayloadS2C) s2cPayload).allowed();
+                if (!SERVER_ALLOWS_DIRECT_TELEPORT && VRState.VR_INITIALIZED) {
+                    dataholder.vrPlayer.setTeleportOverride(false);
+                    SHOW_NO_TELEPORT_MESSAGE = true;
+                }
+            }
             case UBERPACKET -> {
                 UberPacketPayloadS2C packet = (UberPacketPayloadS2C) s2cPayload;
                 ClientVRPlayers.getInstance()
                     .update(packet.playerID(), packet.state(), packet.worldScale(), packet.heightScale());
             }
             case SETTING_OVERRIDE -> {
-                for (Map.Entry<String, String> override : ((SettingOverridePayloadS2C) s2cPayload).overrides()
-                    .entrySet()) {
+                SettingOverridePayloadS2C overridePayload = (SettingOverridePayloadS2C) s2cPayload;
+                for (Map.Entry<String, String> override : overridePayload.overrides().entrySet()) {
                     String[] split = override.getKey().split("\\.", 2);
 
                     if (dataholder.vrSettings.overrides.hasSetting(split[0])) {
                         VRSettings.ServerOverrides.Setting setting = dataholder.vrSettings.overrides.getSetting(
                             split[0]);
+                        if (overridePayload.clear()) {
+                            setting.resetValue();
+                            if (setting.isFloat()) {
+                                setting.resetValueMin();
+                                setting.resetValueMax();
+                            }
+                            VRSettings.LOGGER.info("Vivecraft: Server setting override cleared: {}", override.getKey());
+                            continue;
+                        }
 
                         try {
                             if (split.length > 1) {
@@ -382,6 +404,12 @@ public class ClientNetworking {
                             VRSettings.LOGGER.error("Vivecraft: error parsing server setting override: ", exception);
                         }
                     }
+                }
+                if (Minecraft.getInstance().screen != null) {
+                    // reinit screen, since overrides affect some option availability
+                    Minecraft.getInstance().screen.init(Minecraft.getInstance(),
+                        Minecraft.getInstance().getWindow().getGuiScaledWidth(),
+                        Minecraft.getInstance().getWindow().getGuiScaledHeight());
                 }
             }
             case CRAWL -> SERVER_ALLOWS_CRAWLING = true;
@@ -415,6 +443,8 @@ public class ClientNetworking {
             }
             case DAMAGE_DIRECTION ->
                 dataholder.hapticTracker.setLastHitDirection(((DamageDirectionPayloadS2C) s2cPayload).damageDir());
+            case ATTACK_WHILE_BLOCKING ->
+                SERVER_ALLOWS_ATTACKING_WHILE_BLOCKING = ((AttackWhileBlockingPayloadS2C) s2cPayload).allowed();
         }
     }
 }
