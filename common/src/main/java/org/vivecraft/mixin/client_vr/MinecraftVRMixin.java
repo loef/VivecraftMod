@@ -196,8 +196,8 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
             VRState.initializeVR();
         } else if (VRState.VR_INITIALIZED) {
             // turn off VR if it was on before
-            vivecraft$switchVRState(false);
             VRState.destroyVR(true);
+            vivecraft$switchVRState(false);
         }
         if (!VRState.VR_INITIALIZED) {
             return;
@@ -274,8 +274,8 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
                 RenderHelper.checkGLError("post render setup");
             } catch (Exception e) {
                 // something went wrong, disable VR
-                vivecraft$switchVRState(false);
                 VRState.destroyVR(true);
+                vivecraft$switchVRState(false);
                 VRSettings.LOGGER.error("Vivecraft: setupRenderConfiguration failed:", e);
                 if (e instanceof RenderConfigException renderConfigException) {
                     setScreen(new ErrorScreen(renderConfigException.title, renderConfigException.error));
@@ -818,6 +818,7 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
             }
         } else {
             // VR got disabled
+            RenderPassManager.setVanillaRenderPass();
             // reset gui
             GuiHandler.GUI_POS_ROOM = null;
             GuiHandler.GUI_ROTATION_ROOM = null;
