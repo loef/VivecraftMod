@@ -456,13 +456,12 @@ public abstract class VRRenderer {
 
     /**
      * method to tell the vrRenderer, that render buffers changed
-     * when shaders are active a simple resize is called, without shaders they are completely reinitialized
+     * when all framebuffers are initialized a simple resize is called, else they are completely reinitialized
      *
      * @param cause cause that gets logged
      */
-    public void reinitWithoutShaders(String cause) {
-        if (ShadersHelper.isShaderActive()) {
-            // shaders have all passes created, only need a resize
+    public void reinitFrameBuffersMaybe(String cause) {
+        if (this.allFramebuffersInitialized()) {
             this.resizeFrameBuffers(cause);
         } else {
             this.reinitFrameBuffers(cause);
@@ -495,6 +494,15 @@ public abstract class VRRenderer {
     }
 
     /**
+     * @return if all framebuffers should be available
+     */
+    private boolean allFramebuffersInitialized() {
+        // shaders have all passes created, only need a resize
+        // full reload as well, to minimize reloads when changing settings
+        return ShadersHelper.isShaderActive() || ClientDataHolderVR.getInstance().vrSettings.fullReloadOnInit;
+    }
+
+    /**
      * sets up rendering, and makes sure all buffers are generated and sized correctly
      *
      * @throws RenderConfigException in case something failed to initialize or the gpu vendor is unsupported
@@ -511,12 +519,12 @@ public abstract class VRRenderer {
         }
 
         if (this.lastMirror != dataholder.vrSettings.displayMirrorMode) {
-            this.reinitWithoutShaders("Mirror Changed");
+            this.reinitFrameBuffersMaybe("Mirror Changed");
             this.lastMirror = dataholder.vrSettings.displayMirrorMode;
         }
 
-        if ((this.framebufferMR == null || this.framebufferUndistorted == null) && ShadersHelper.isShaderActive()) {
-            this.reinitFrameBuffers("Shaders on, but some buffers not initialized");
+        if ((this.framebufferMR == null || this.framebufferUndistorted == null) && this.allFramebuffersInitialized()) {
+            this.reinitFrameBuffers("All buffers needed, but some buffers not initialized");
         }
         if (minecraft.options.graphicsMode().get() != this.previousGraphics) {
             this.previousGraphics = minecraft.options.graphicsMode().get();
@@ -710,7 +718,7 @@ public abstract class VRRenderer {
                 list.stream().map(Enum::toString).collect(Collectors.joining(", ")));
 
             // make sure these are valid, even when not needed
-            if (list.contains(RenderPass.THIRD) || ShadersHelper.isShaderActive()) {
+            if (list.contains(RenderPass.THIRD) || this.allFramebuffersInitialized()) {
                 this.framebufferMR = new VRTextureTarget("Mixed Reality Render",
                     Math.max(1, this.mirrorFBWidth),
                     Math.max(1, this.mirrorFBHeight),
@@ -720,7 +728,7 @@ public abstract class VRRenderer {
                 RenderHelper.checkGLError("Mixed reality framebuffer setup");
             }
 
-            if (list.contains(RenderPass.CENTER) || ShadersHelper.isShaderActive()) {
+            if (list.contains(RenderPass.CENTER) || this.allFramebuffersInitialized()) {
                 this.framebufferUndistorted = new VRTextureTarget("Undistorted View Render",
                     Math.max(1, this.mirrorFBWidth),
                     Math.max(1, this.mirrorFBHeight),
@@ -866,8 +874,13 @@ public abstract class VRRenderer {
                 String.format("%.1f", windowPixels / 1000000.0F),
                 String.format("%.1f", pixelsPerFrame / 1000000.0F));
 
-            // regenerates the outline target to have every pass in it
-            minecraft.levelRenderer.onResourceManagerReload(minecraft.getResourceManager());
+            if (ClientDataHolderVR.getInstance().vrSettings.fullReloadOnInit) {
+                // do a full reload
+                minecraft.reloadResourcePacks();
+            } else {
+                // regenerates the outline target to have every pass in it
+                minecraft.levelRenderer.onResourceManagerReload(minecraft.getResourceManager());
+            }
 
             ShadersHelper.maybeReloadShaders();
 

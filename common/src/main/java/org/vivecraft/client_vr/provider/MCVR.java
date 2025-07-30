@@ -936,7 +936,7 @@ public abstract class MCVR {
             } else if (this.dh.vrSettings.displayMirrorMode == VRSettings.MirrorMode.FIRST_PERSON) {
                 this.dh.vrSettings.displayMirrorMode = VRSettings.MirrorMode.THIRD_PERSON;
             }
-            this.dh.vrRenderer.reinitWithoutShaders("Mirror Setting Changed");
+            this.dh.vrRenderer.reinitFrameBuffersMaybe("Mirror Setting Changed");
         }
 
         // start third person cam movement

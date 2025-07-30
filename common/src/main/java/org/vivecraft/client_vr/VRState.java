@@ -179,8 +179,14 @@ public class VRState {
                 ShadersHelper.maybeReloadShaders();
             }
 
-            // this reloads any PostChain, at least in vanilla
-            Minecraft.getInstance().levelRenderer.onResourceManagerReload(Minecraft.getInstance().getResourceManager());
+            if (ClientDataHolderVR.getInstance().vrSettings.fullReloadOnInit) {
+                // do a full reload
+                Minecraft.getInstance().reloadResourcePacks();
+            } else {
+                // regenerates the outline target
+                Minecraft.getInstance().levelRenderer.onResourceManagerReload(
+                    Minecraft.getInstance().getResourceManager());
+            }
         }
         VRClientAPIImpl.INSTANCE.clearPoseHistory();
     }

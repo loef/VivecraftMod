@@ -89,7 +89,7 @@ public abstract class LevelRendererVRMixin implements ResourceManagerReloadListe
     @Inject(method = "onResourceManagerReload", at = @At("TAIL"))
     private void vivecraft$reinitVR(ResourceManager resourceManager, CallbackInfo ci) {
         if (VRState.VR_INITIALIZED) {
-            ClientDataHolderVR.getInstance().vrRenderer.reinitFrameBuffers("Resource Reload");
+            ClientDataHolderVR.getInstance().vrRenderer.reinitFrameBuffersMaybe("Resource Reload");
         }
     }
 

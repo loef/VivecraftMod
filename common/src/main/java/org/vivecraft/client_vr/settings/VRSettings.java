@@ -621,6 +621,8 @@ public class VRSettings {
     public boolean vrSettingsButtonPositionLeft = true;
     @SettingField(VrOptions.MODIFY_PAUSE_MENU)
     public boolean modifyPauseMenu = true;
+    @SettingField(VrOptions.FULL_RELOAD_ON_INIT)
+    public boolean fullReloadOnInit = false;
     @SettingField(VrOptions.SEARCH_TYPE)
     public boolean useFuzzySearch = true;
     @SettingField
@@ -1641,6 +1643,7 @@ public class VRSettings {
         VR_SETTINGS_BUTTON_POSITION(false, true, "vivecraft.options.left",
             "vivecraft.options.right"), // setting button position
         MODIFY_PAUSE_MENU(false, true), // if the pause menu should be altered
+        FULL_RELOAD_ON_INIT(false, true), // causes a full resource reload on reinit
         SEARCH_TYPE(false, true, "vivecraft.options.searchtype.fuzzy", "vivecraft.options.searchtype.exact"),
         // HMD/render
         FSAA(false, true) { // Lanczos Scaler
@@ -1680,7 +1683,7 @@ public class VRSettings {
             @Override
             void onOptionChange() {
                 if (VRState.VR_INITIALIZED) {
-                    ClientDataHolderVR.getInstance().vrRenderer.reinitWithoutShaders("Mirror Setting Changed");
+                    ClientDataHolderVR.getInstance().vrRenderer.reinitFrameBuffersMaybe("Mirror Setting Changed");
                 }
             }
         },
@@ -1745,7 +1748,7 @@ public class VRSettings {
             void onOptionChange() {
                 // reinit, because of maybe new first person pass
                 if (VRState.VR_INITIALIZED) {
-                    ClientDataHolderVR.getInstance().vrRenderer.reinitWithoutShaders("MR Setting Changed");
+                    ClientDataHolderVR.getInstance().vrRenderer.reinitFrameBuffersMaybe("MR Setting Changed");
                 }
             }
         },
@@ -1755,7 +1758,7 @@ public class VRSettings {
             void onOptionChange() {
                 // reinit, because of maybe new first person pass
                 if (VRState.VR_INITIALIZED) {
-                    ClientDataHolderVR.getInstance().vrRenderer.reinitWithoutShaders("MR Setting Changed");
+                    ClientDataHolderVR.getInstance().vrRenderer.reinitFrameBuffersMaybe("MR Setting Changed");
                 }
             }
         },
