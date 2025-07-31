@@ -643,8 +643,12 @@ public class VREffectsHelper {
         extTargets.vivecraft$getOccluded().get().bindWrite(false);
         MC.mainRenderTarget = extTargets.vivecraft$getOccluded().get();
 
+        boolean renderHands = VRArmHelper.shouldRenderHands();
+
         if (shouldOccludeGui()) {
             renderGuiAndShadow(partialTick, false, false);
+            VRArmHelper.renderVRHands(partialTick, renderHands && DATA_HOLDER.menuHandMain,
+                renderHands && DATA_HOLDER.menuHandOff, true, true);
         }
 
         // switch to VR UnOccluded buffer, no depth copy
@@ -660,9 +664,10 @@ public class VREffectsHelper {
         VRWidgetHelper.renderVRThirdPersonCamWidget();
         VRWidgetHelper.renderVRHandheldCameraWidget();
 
-        boolean renderHands = VRArmHelper.shouldRenderHands();
-        VRArmHelper.renderVRHands(partialTick, renderHands && DATA_HOLDER.menuHandMain,
-            renderHands && DATA_HOLDER.menuHandOff, true, true);
+        if (!shouldOccludeGui()) {
+            VRArmHelper.renderVRHands(partialTick, renderHands && DATA_HOLDER.menuHandMain,
+                renderHands && DATA_HOLDER.menuHandOff, true, true);
+        }
 
         // switch to VR hands buffer
         extTargets.vivecraft$getHands().get().clear();
