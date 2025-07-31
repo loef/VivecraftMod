@@ -150,6 +150,11 @@ public class SettingsList extends ContainerObjectSelectionList<SettingsList.Base
             hoveredItem < this.getItemCount() ? this.children().get(hoveredItem) : null;
     }
 
+    public boolean isEntryVisible(SettingsList.BaseEntry entry) {
+        int index = this.children().indexOf(entry);
+        return this.getRowTop(index) < this.getBottom() && this.getRowBottom(index) > this.getY();
+    }
+
     @Override
     protected int scrollBarX() {
         return this.getRowRight() + 2;

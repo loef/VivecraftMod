@@ -105,7 +105,7 @@ public abstract class GuiListScreen extends Screen {
         } else if (this.list.getHovered() != null) {
             entry = this.list.getHovered();
         }
-        if (entry != null && this.deferredTooltipRendering == null) {
+        if (entry != null && this.list.isEntryVisible(entry) && this.deferredTooltipRendering == null) {
             TooltipRenderer.renderTooltip(guiGraphics, entry.getTooltip(),
                 this.width / 2, this.list.getRowTop(this.list.children().indexOf(entry)), this.list.getItemHeight());
         }
