@@ -34,10 +34,10 @@ public abstract class ResourceLoadStateTrackerMixin {
                 ClientDataHolderVR.getInstance().vrSettings.vrEnabled = false;
                 ClientDataHolderVR.getInstance().vrSettings.saveOptions();
             }
-        }
 
-        // register api trackers/interacts
-        VRClientAPIImpl.INSTANCE.processRegistrationEvent();
+            // register api trackers/interacts
+            VRClientAPIImpl.INSTANCE.processRegistrationEvent();
+        }
     }
 
     @Inject(method = "startReload", at = @At("HEAD"))
