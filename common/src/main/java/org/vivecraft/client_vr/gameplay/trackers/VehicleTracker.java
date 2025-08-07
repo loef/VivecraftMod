@@ -72,32 +72,46 @@ public class VehicleTracker implements Tracker {
 
         if (entity instanceof AbstractHorse || entity instanceof AbstractBoat) {
             if (player.zza > 0) {
-                if (dataHolder.vrSettings.vrFreeMoveMode == VRSettings.FreeMove.HMD) {
-                    return dataHolder.vrPlayer.vrdata_world_pre.hmd.getDirection();
-                } else {
-                    return dataHolder.vrPlayer.vrdata_world_pre.getController(0).getDirection();
-                }
+                return getFreeMoveDirection();
             }
-        } else if (entity instanceof Mob mob && mob.isControlledByLocalInstance()) {
-            // pigs and striders
-            int c = (player.getMainHandItem().getItem() instanceof FoodOnAStickItem ||
-                player.getMainHandItem().is(ViveItemTags.VIVECRAFT_FOOD_STICKS)
-            ) ? 0 : 1;
-            VRData.VRDevicePose con = dataHolder.vrPlayer.vrdata_world_pre.getController(c);
-            return MathUtils.subtractToVector3f(con.getPosition(), entity.position())
-                .add(con.getDirection().mul(0.3F))
-                .normalize();
         } else if (entity != null && entity.isControlledByLocalInstance()) {
-            // for other entities always set it, for mod compatibility
-            if (dataHolder.vrSettings.vrFreeMoveMode == VRSettings.FreeMove.HMD) {
-                return dataHolder.vrPlayer.vrdata_world_pre.hmd.getDirection();
+            int c = getControllerWithFoodStick(player);
+            if (entity instanceof Mob && c != -1) {
+                // pigs and striders
+                VRData.VRDevicePose con = dataHolder.vrPlayer.vrdata_world_pre.getController(c);
+                return MathUtils.subtractToVector3f(con.getPosition(), entity.position())
+                    .add(con.getDirection().mul(0.3F))
+                    .normalize();
             } else {
-                return dataHolder.vrPlayer.vrdata_world_pre.getController(0).getDirection();
+                // for other entities always set it, for mod compatibility
+                return getFreeMoveDirection();
             }
         }
 
         // ignore other vehicles
         return null;
+    }
+
+    private static Vector3f getFreeMoveDirection() {
+        if (ClientDataHolderVR.getInstance().vrSettings.vrFreeMoveMode == VRSettings.FreeMove.HMD) {
+            return ClientDataHolderVR.getInstance().vrPlayer.vrdata_world_pre.hmd.getDirection();
+        } else {
+            // not exactly sure why we use the main hand for riding, when we use the offhand for regular walking
+            return ClientDataHolderVR.getInstance().vrPlayer.vrdata_world_pre.getController(0).getDirection();
+        }
+    }
+
+    private static int getControllerWithFoodStick(LocalPlayer player) {
+        if (player.getMainHandItem().getItem() instanceof FoodOnAStickItem ||
+            player.getMainHandItem().is(ViveItemTags.VIVECRAFT_FOOD_STICKS)) {
+            return 0;
+        } else if (player.getOffhandItem().getItem() instanceof FoodOnAStickItem ||
+            player.getOffhandItem().is(ViveItemTags.VIVECRAFT_FOOD_STICKS)){
+            return 1;
+        } else {
+            // doesn't hold a food stick
+            return -1;
+        }
     }
 
     @Override
