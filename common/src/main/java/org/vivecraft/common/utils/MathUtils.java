@@ -28,6 +28,7 @@ public class MathUtils {
     public static final Vector3fc BLUE = FORWARD;
     public static final Vector3fc ORANGE = new Vector3f(1.0F, 0.75F, 0.0F);
     public static final Vector3fc DARK_GRAY = new Vector3f(0.25F);
+    public static final Vector3fc LIGHT_GRAY = new Vector3f(0.75F);
 
     public static final Matrix4fc IDENTITY = new Matrix4f();
 

@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -22,6 +23,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.Pair;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.vivecraft.api.data.FBTMode;
@@ -41,6 +43,7 @@ import org.vivecraft.data.ViveBlockTags;
 import org.vivecraft.data.ViveItemTags;
 import org.vivecraft.mod_compat_vr.epicfight.EpicFightHelper;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,21 +53,26 @@ public class SwingTracker implements DebugRenderTracker {
     private static final VRBodyPart[] BODYPARTS = new VRBodyPart[]{VRBodyPart.MAIN_HAND, VRBodyPart.OFF_HAND, VRBodyPart.RIGHT_FOOT, VRBodyPart.LEFT_FOOT};
     private static final float SPEED_THRESH = 3.0F;
 
-    private final Vec3[] lastWeaponEndAir = new Vec3[]{Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, Vec3.ZERO};
+    public int disableSwing = 3;
+
+    private final Quaternionf[] lastHandRot = new Quaternionf[4];
+    private final Vec3[] lastHandPos = new Vec3[4];
+    private final List<Vec3>[] miningPoints = new List[4];
+
     private final boolean[] lastWeaponSolid = new boolean[4];
 
     private final List<Entity>[] lastHitEntities = new List[]{Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList()};
 
-    public final Vec3[] miningPoint = new Vec3[4];
-    public final Vec3[] attackingPoint = new Vec3[4];
-    public final Vec3[] weaponTip = new Vec3[4];
-    public final Vector3fHistory[] tipHistory = new Vector3fHistory[]{new Vector3fHistory(), new Vector3fHistory(), new Vector3fHistory(), new Vector3fHistory()};
-    public boolean[] canAct = new boolean[4];
-    public int disableSwing = 3;
+    private final Vec3[] miningPoint = new Vec3[4];
+    private final Vec3[] attackingPoint = new Vec3[4];
+    private final Vec3[] weaponTip = new Vec3[4];
+    private final Vector3fHistory[] tipHistory = new Vector3fHistory[]{new Vector3fHistory(), new Vector3fHistory(), new Vector3fHistory(), new Vector3fHistory()};
+    private final boolean[] canAct = new boolean[4];
 
     // debug render stuff
     private final AABB[] lastAttackAABB = new AABB[4];
     private final Vec3[] lastBlockHit = new Vec3[4];
+    private final int[] lastMiningPointHit = new int[4];
     private final List<Pair<Vec3, Vector3fc>>[] previousMiningPoints = new List[]{new LinkedList<>(), new LinkedList<>(), new LinkedList<>(), new LinkedList<>()};
 
     private final Minecraft mc;
@@ -142,6 +150,16 @@ public class SwingTracker implements DebugRenderTracker {
     }
 
     @Override
+    public void inactiveProcess(LocalPlayer player) {
+        for (int i = 0; i < 4; i++) {
+            this.lastHandPos[i] = null;
+            this.attackingPoint[i] = null;
+            this.weaponTip[i] = null;
+            this.miningPoints[i] = null;
+        }
+    }
+
+    @Override
     public void activeProcess(LocalPlayer player) {
         float speedTreshhold = SPEED_THRESH;
 
@@ -212,6 +230,9 @@ public class SwingTracker implements DebugRenderTracker {
                 }
 
                 weaponLength *= this.dh.vrPlayer.vrdata_world_pre.worldScale;
+
+                // remember previous pos
+                Vec3 prevMiningPoint = this.miningPoint[i];
 
                 Vector3f weaponEnd = handDirection.mul(weaponLength, new Vector3f());
                 this.miningPoint[i] = handPos.add(weaponEnd.x, weaponEnd.y, weaponEnd.z);
@@ -301,52 +322,113 @@ public class SwingTracker implements DebugRenderTracker {
                     this.lastHitEntities[i] = Collections.emptyList();
                 }
 
+                // can't hit anything else if we hit an entity
+                this.canAct[i] &= !inAnEntity;
+
                 // no hitting while climbey climbing
                 if (isHand && this.dh.climbTracker.isClimbeyClimb() && (!isTool ||
                     (c == 0 && VivecraftVRMod.INSTANCE.keyClimbeyGrab.isDown(ControllerType.RIGHT)) ||
                     (c == 1 && VivecraftVRMod.INSTANCE.keyClimbeyGrab.isDown(ControllerType.LEFT))
                 ))
                 {
+                    // reset these since those are not valid for the next tick then
+                    this.lastHandPos[i] = null;
+                    this.lastHandRot[i] = null;
                     continue;
                 }
 
                 // trace from the last known air position to the current position, check if we hit any block in our path
                 // and damage the block it collides with...
+                BlockHitResult blockHit = null;
+                BlockState blockstate = null;
+                this.lastMiningPointHit[i] = 0;
 
-                Vec3 startPos = this.lastWeaponEndAir[i] != Vec3.ZERO ? this.lastWeaponEndAir[i] : this.miningPoint[i];
-                Vec3 endPos = this.miningPoint[i];
+                Quaternionf weaponRotation = new Quaternionf().setFromNormalized(
+                    this.dh.vrPlayer.vrdata_world_pre.getHand(c).getMatrix());
 
-                if (startPos.subtract(endPos).lengthSqr() < 1.0E-7) {
-                    // mc short circuits to a miss if start and end are too close together
-                    endPos = endPos.add(0.001);
+                // don't need to check, if we can't hit anything anyway
+                if (this.canAct[i]) {
+                    this.miningPoints[i] = new ArrayList<>();
+
+                    // only interpolate if the last point was valid
+                    if (this.lastHandPos[i] != null && prevMiningPoint != null) {
+                        float dot = Math.abs(weaponRotation.dot(this.lastHandRot[i]));
+                        float angle = 2.0F * (float) Math.acos(dot);
+
+                        // have at max 22.5° sample steps, adds up to 8 points
+                        float subdivisions = Mth.floor(angle / Mth.PI * 8F);
+
+                        Quaternionf temp = new Quaternionf();
+                        Vector3f lerpHandDir = new Vector3f();
+
+                        // add previous position
+                        this.miningPoints[i].add(prevMiningPoint);
+
+                        for (int s = 1; s < subdivisions; s++) {
+                            float lerp = s / subdivisions;
+                            this.lastHandRot[i].slerp(weaponRotation, lerp, temp);
+                            Vec3 lerpHand = MathUtils.vecDLerp(this.lastHandPos[i], handPos, lerp);
+                            temp.transform(0, 0, -weaponLength, lerpHandDir);
+                            this.miningPoints[i].add(lerpHand.add(lerpHandDir.x, lerpHandDir.y, lerpHandDir.z));
+                        }
+                    } else {
+                        // use the current point as the start
+                        this.miningPoints[i].add(this.miningPoint[i]);
+                    }
+
+                    // add current position
+                    this.miningPoints[i].add(this.miningPoint[i]);
+
+                    for (int p = 1; p < this.miningPoints[i].size(); p++) {
+                        Vec3 startPos = this.miningPoints[i].get(p - 1);
+                        Vec3 endPos = this.miningPoints[i].get(p);
+
+                        if (startPos.subtract(endPos).lengthSqr() < 1.0E-7) {
+                            // mc short circuits to a miss if start and end are too close together
+                            endPos = endPos.add(0.001);
+                        }
+
+                        blockHit = this.mc.level.clip(
+                            new ClipContext(startPos, endPos, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE,
+                                player));
+                        blockstate = this.mc.level.getBlockState(blockHit.getBlockPos());
+
+                        // check if block is breakable with a sword
+                        // override is needed, because the `getDestroyProgress` check only checks the main hand item
+                        ClientNetworking.BODY_PART_CLIENT_OVERRIDE = BODYPARTS[i];
+                        // if this tool is right for the block
+                        boolean mineableByItem = this.dh.vrSettings.swordBlockCollision &&
+                            (itemstack.isCorrectToolForDrops(blockstate) ||
+                                blockstate.getDestroyProgress(player, player.level(), blockHit.getBlockPos()) == 1F
+                            );
+                        ClientNetworking.BODY_PART_CLIENT_OVERRIDE = null;
+
+                        // don't break climbable blocks
+                        // if this block shouldn't be breakable with roomscale mining
+                        boolean protectedBlock = this.dh.vrSettings.realisticClimbEnabled &&
+                            (blockstate.getBlock() instanceof LadderBlock ||
+                                blockstate.getBlock() instanceof VineBlock ||
+                                blockstate.is(ViveBlockTags.VIVECRAFT_CLIMBABLE)
+                            );
+
+                        // cancel if we can't hit anything further
+                        this.lastMiningPointHit[i] = p;
+                        if ((isSword && !mineableByItem) || protectedBlock) {
+                            // need to reset these, or further code will falsely use these as a valid hit
+                            blockHit = null;
+                            blockstate = null;
+                        } else if (blockHit.getType() == HitResult.Type.BLOCK) {
+                            // found the first hit
+                            break;
+                        }
+                    }
                 }
 
-                BlockHitResult blockHit = this.mc.level.clip(
-                    new ClipContext(startPos, endPos, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
-                BlockState blockstate = this.mc.level.getBlockState(blockHit.getBlockPos());
+                // store for next tick
+                this.lastHandPos[i] = handPos;
+                this.lastHandRot[i] = weaponRotation;
 
-                // check if block is breakable with a sword
-                // override is needed, because the `getDestroyProgress` check only checks the main hand item
-                ClientNetworking.BODY_PART_CLIENT_OVERRIDE = BODYPARTS[i];
-                // if this tool is right for the block
-                boolean mineableByItem = this.dh.vrSettings.swordBlockCollision &&
-                    (itemstack.isCorrectToolForDrops(blockstate) ||
-                        blockstate.getDestroyProgress(player, player.level(), blockHit.getBlockPos()) == 1F
-                    );
-                ClientNetworking.BODY_PART_CLIENT_OVERRIDE = null;
-
-                // don't break climbable blocks
-                // if this block shouldn't be breakable with roomscale mining
-                boolean protectedBlock = this.dh.vrSettings.realisticClimbEnabled &&
-                    (blockstate.getBlock() instanceof LadderBlock ||
-                        blockstate.getBlock() instanceof VineBlock ||
-                        blockstate.is(ViveBlockTags.VIVECRAFT_CLIMBABLE)
-                    );
-
-                // block check
-                // don't hit blocks with swords or same time as hitting entity
-                this.canAct[i] = this.canAct[i] && (!isSword || mineableByItem) && !inAnEntity && !protectedBlock;
-
+                // if the blockHit is inside, it didn't hit the block from the outside
                 if (blockHit != null && blockHit.getType() == HitResult.Type.BLOCK && !blockHit.isInside() &&
                     this.canAct[i])
                 {
@@ -445,17 +527,8 @@ public class SwingTracker implements DebugRenderTracker {
                     }
 
                     this.dh.vr.triggerHapticPulse(c, 250 * totalHits);
-                    // we hit something and were inside a block
-                    this.lastWeaponEndAir[i] = Vec3.ZERO;
                 } else {
                     // reset
-                    if (blockHit == null || blockHit.getType() != HitResult.Type.BLOCK) {
-                        // didn't hit anything
-                        this.lastWeaponEndAir[i] = this.miningPoint[i];
-                    } else {
-                        // hit something / is fully inside a block
-                        this.lastWeaponEndAir[i] = Vec3.ZERO;
-                    }
                     this.lastWeaponSolid[i] = false;
                 }
             }
@@ -588,13 +661,26 @@ public class SwingTracker implements DebugRenderTracker {
             Vector3fc failColor =
                 this.tipHistory[i].averageSpeed(0.33D) > SPEED_THRESH * (this.mc.player.isCreative() ? 1.5F : 1F) ?
                     MathUtils.ORANGE : MathUtils.RED;
-            if (this.miningPoint[i] != null) {
+            if (this.miningPoints[i] != null || this.miningPoint[i] != null) {
                 if (this.previousMiningPoints[i].isEmpty() ||
                     !this.previousMiningPoints[i].getLast().getLeft().equals(this.miningPoint[i]))
                 {
-                    this.previousMiningPoints[i].addLast(
-                        Pair.of(this.miningPoint[i], this.canAct[i] ? MathUtils.GREEN : failColor));
-                    if (this.previousMiningPoints[i].size() > 5) {
+                    // only updated when actable
+                    if (this.miningPoints[i] != null && this.canAct[i]) {
+                        // skip first, since that is the last tick point
+                        for (int p = 1; p < this.miningPoints[i].size(); p++) {
+                            Vector3fc color = p <= this.lastMiningPointHit[i] ? MathUtils.GREEN : MathUtils.LIGHT_GRAY;
+                            if (p < this.miningPoints[i].size() - 1) {
+                                color = color.mul(0.5F, new Vector3f());
+                            }
+                            this.previousMiningPoints[i].addLast(
+                                Pair.of(this.miningPoints[i].get(p), color));
+                        }
+                    } else {
+                        this.previousMiningPoints[i].addLast(
+                            Pair.of(this.miningPoint[i], this.canAct[i] ? MathUtils.GREEN : failColor));
+                    }
+                    while (this.previousMiningPoints[i].size() > 20) {
                         this.previousMiningPoints[i].removeFirst();
                     }
                 }
@@ -607,7 +693,7 @@ public class SwingTracker implements DebugRenderTracker {
                         DebugRenderHelper.renderCube(MathUtils.subtractToVector3f(p.getLeft(), cam), 0.0125F,
                             p.getRight());
                         if (prev != null) {
-                            DebugRenderHelper.renderLine(prev.getRight(),
+                            DebugRenderHelper.renderLine(p.getRight(),
                                 MathUtils.subtractToVector3f(prev.getLeft(), cam),
                                 MathUtils.subtractToVector3f(p.getLeft(), cam));
                         }
