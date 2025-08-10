@@ -57,7 +57,7 @@ public class InventoryMixin {
         }
         // client side
         else if (this.player.isLocalPlayer() && VRState.VR_RUNNING && ClientNetworking.SERVER_ALLOWS_DUAL_WIELDING) {
-            bodyPart = ClientNetworking.LAST_SENT_BODY_PART;
+            bodyPart = ClientNetworking.getActiveBodyPart();
         }
 
         if (bodyPart != null) {

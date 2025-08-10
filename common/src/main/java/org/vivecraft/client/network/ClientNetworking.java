@@ -67,7 +67,8 @@ public class ClientNetworking {
     public static float OVERRIDDEN_YAW;
     public static float OVERRIDDEN_PITCH;
     public static boolean OVERRIDE_ACTIVE;
-    public static VRBodyPart LAST_SENT_BODY_PART = VRBodyPart.MAIN_HAND;
+    private static VRBodyPart LAST_SENT_BODY_PART = VRBodyPart.MAIN_HAND;
+    public static VRBodyPart BODY_PART_CLIENT_OVERRIDE = null;
     public static boolean IS_LAST_BODY_PART_AIM = false;
 
     public static boolean NEEDS_RESET = true;
@@ -89,6 +90,7 @@ public class ClientNetworking {
         SERVER_ALLOWS_ATTACKING_WHILE_BLOCKING = false;
         USED_NETWORK_VERSION = CommonNetworkHelper.NETWORK_VERSION_LEGACY;
         LAST_SENT_BODY_PART = VRBodyPart.MAIN_HAND;
+        BODY_PART_CLIENT_OVERRIDE = null;
         IS_LAST_BODY_PART_AIM = false;
 
         // clear VR player data
@@ -275,6 +277,13 @@ public class ClientNetworking {
         }
         LAST_SENT_BODY_PART = bodyPart;
         IS_LAST_BODY_PART_AIM = useForAim;
+    }
+
+    /**
+     * @return the active VRBodyPart, accounting for a client only override
+     */
+    public static VRBodyPart getActiveBodyPart() {
+        return BODY_PART_CLIENT_OVERRIDE != null ? BODY_PART_CLIENT_OVERRIDE : LAST_SENT_BODY_PART;
     }
 
     public static void overridePose(LocalPlayer player) {

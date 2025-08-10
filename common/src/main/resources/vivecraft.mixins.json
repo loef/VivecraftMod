@@ -119,6 +119,7 @@
     "world.entity.projectile.ThrowableItemProjectileMixin",
     "world.entity.projectile.ThrownTridentMixin",
     "world.item.CrossbowItemMixin",
-    "world.item.ItemMixin"
+    "world.item.ItemMixin",
+    "world.level.block.FenceGateBlockServerMixin"
   ]
 }

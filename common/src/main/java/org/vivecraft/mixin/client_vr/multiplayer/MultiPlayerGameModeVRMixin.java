@@ -74,7 +74,7 @@ public class MultiPlayerGameModeVRMixin {
                 yRot = ClientNetworking.OVERRIDDEN_YAW;
                 xRot = ClientNetworking.OVERRIDDEN_PITCH;
             } else {
-                VRBodyPart bp = ClientNetworking.IS_LAST_BODY_PART_AIM ? ClientNetworking.LAST_SENT_BODY_PART :
+                VRBodyPart bp = ClientNetworking.IS_LAST_BODY_PART_AIM ? ClientNetworking.getActiveBodyPart() :
                     ClientDataHolderVR.getInstance().vrSettings.aimDevice == VRSettings.AimDevice.HMD ?
                         VRBodyPart.HEAD : VRBodyPart.MAIN_HAND;
                 Vector3f dir = ClientDataHolderVR.getInstance().vrPlayer.getVRDataWorld().getBodyPart(bp)
@@ -91,15 +91,14 @@ public class MultiPlayerGameModeVRMixin {
         if (VRState.VR_RUNNING && ClientNetworking.SERVER_ALLOWS_DUAL_WIELDING) {
             // check if main or offhand items match the started item, we want to limit abuse of this,
             // but still make both items work
-            VRBodyPart lastBodyPart = ClientNetworking.LAST_SENT_BODY_PART;
 
-            ClientNetworking.LAST_SENT_BODY_PART = VRBodyPart.MAIN_HAND;
+            ClientNetworking.BODY_PART_CLIENT_OVERRIDE = VRBodyPart.MAIN_HAND;
             boolean sameItem = original.call(pos);
 
-            ClientNetworking.LAST_SENT_BODY_PART = VRBodyPart.OFF_HAND;
+            ClientNetworking.BODY_PART_CLIENT_OVERRIDE = VRBodyPart.OFF_HAND;
             sameItem |= original.call(pos);
 
-            ClientNetworking.LAST_SENT_BODY_PART = lastBodyPart;
+            ClientNetworking.BODY_PART_CLIENT_OVERRIDE = null;
             return sameItem;
         } else {
             return original.call(pos);

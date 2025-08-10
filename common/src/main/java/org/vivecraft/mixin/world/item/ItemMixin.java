@@ -23,7 +23,7 @@ public class ItemMixin {
             return ServerVRPlayers.getVivePlayer(serverPlayer).getAimPos(false);
         } else if (player.isLocalPlayer() && VRState.VR_RUNNING && !ClientNetworking.OVERRIDE_ACTIVE) {
             return ClientDataHolderVR.getInstance().vrPlayer.getVRDataWorld().getBodyPart(
-                    ClientNetworking.IS_LAST_BODY_PART_AIM ? ClientNetworking.LAST_SENT_BODY_PART : VRBodyPart.MAIN_HAND)
+                    ClientNetworking.IS_LAST_BODY_PART_AIM ? ClientNetworking.getActiveBodyPart() : VRBodyPart.MAIN_HAND)
                 .getPosition();
         }
         return original.call(player);
@@ -36,7 +36,7 @@ public class ItemMixin {
         } else if (player.isLocalPlayer() && VRState.VR_RUNNING) {
             if (!ClientNetworking.OVERRIDE_ACTIVE) {
                 return new Vec3(ClientDataHolderVR.getInstance().vrPlayer.getVRDataWorld().getBodyPart(
-                    ClientNetworking.IS_LAST_BODY_PART_AIM ? ClientNetworking.LAST_SENT_BODY_PART :
+                    ClientNetworking.IS_LAST_BODY_PART_AIM ? ClientNetworking.getActiveBodyPart() :
                         VRBodyPart.MAIN_HAND).getDirection());
             } else {
                 return original.call(player, ClientNetworking.OVERRIDDEN_PITCH, ClientNetworking.OVERRIDDEN_YAW);

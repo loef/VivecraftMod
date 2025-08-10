@@ -640,7 +640,7 @@ public class VRPlayer {
                 out = new Vec3(data.getController(c).getDirection());
             }
         } else if (itemStack.getItem() == Items.BUCKET && this.dh.blockModule.bukkit[c] &&
-            ClientNetworking.LAST_SENT_BODY_PART.ordinal() == c && ClientNetworking.IS_LAST_BODY_PART_AIM)
+            ClientNetworking.getActiveBodyPart().ordinal() == c && ClientNetworking.IS_LAST_BODY_PART_AIM)
         {
             out = entity.getEyePosition(1.0F)
                 .subtract(this.dh.vrPlayer.vrdata_world_pre.getController(c).getPosition())

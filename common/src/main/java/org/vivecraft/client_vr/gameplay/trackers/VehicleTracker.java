@@ -103,10 +103,12 @@ public class VehicleTracker implements Tracker {
 
     private static int getControllerWithFoodStick(LocalPlayer player) {
         if (player.getMainHandItem().getItem() instanceof FoodOnAStickItem ||
-            player.getMainHandItem().is(ViveItemTags.VIVECRAFT_FOOD_STICKS)) {
+            player.getMainHandItem().is(ViveItemTags.VIVECRAFT_FOOD_STICKS))
+        {
             return 0;
         } else if (player.getOffhandItem().getItem() instanceof FoodOnAStickItem ||
-            player.getOffhandItem().is(ViveItemTags.VIVECRAFT_FOOD_STICKS)){
+            player.getOffhandItem().is(ViveItemTags.VIVECRAFT_FOOD_STICKS))
+        {
             return 1;
         } else {
             // doesn't hold a food stick
