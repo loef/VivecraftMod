@@ -1602,7 +1602,7 @@ public class VRSettings {
             @Override
             void onOptionChange() {
                 if (VRState.VR_INITIALIZED) {
-                    ClientDataHolderVR.getInstance().vrRenderer.reinitFrameBuffers("Gui Mips Changed");
+                    ClientDataHolderVR.getInstance().vrRenderer.resizeFrameBuffers("Gui Mips Changed");
                 }
             }
         },
@@ -1611,7 +1611,7 @@ public class VRSettings {
             @Override
             void onOptionChange() {
                 if (VRState.VR_INITIALIZED && ClientDataHolderVR.getInstance().vrSettings.guiMipmaps) {
-                    ClientDataHolderVR.getInstance().vrRenderer.reinitFrameBuffers("Anisotropic filtering Changed");
+                    ClientDataHolderVR.getInstance().vrRenderer.resizeFrameBuffers("Anisotropic filtering Changed");
                 }
             }
         },

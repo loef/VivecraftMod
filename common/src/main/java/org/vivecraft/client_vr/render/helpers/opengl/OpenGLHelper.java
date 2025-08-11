@@ -27,10 +27,16 @@ public class OpenGLHelper {
     }
 
     /**
-     * enabled anisotropic filtering for the current bound texture
+     * enabled anisotropic filtering for the given RenderTarget
+     *
+     * @param renderTarget RenderTarget to enable Anisotropic Filtering for
      */
-    public static void enableAnisotropicFiltering() {
-        RenderSystem.texParameter(GL30C.GL_TEXTURE_2D, ANISOTROPY_PARAMETER, ANISOTROPY_LEVEL);
+    public static void enableAnisotropicFiltering(RenderTarget renderTarget) {
+        if (supportsAnisotropicFiltering()) {
+            renderTarget.bindRead();
+            RenderSystem.texParameter(GL30C.GL_TEXTURE_2D, ANISOTROPY_PARAMETER, ANISOTROPY_LEVEL);
+            renderTarget.unbindRead();
+        }
     }
 
     public static boolean supportsAnisotropicFiltering() {
