@@ -488,7 +488,7 @@ public abstract class GameRendererVRMixin
     @ModifyArg(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;prepareCullFrustum(Lnet/minecraft/world/phys/Vec3;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;)V"), index = 1)
     private Matrix4f vivecraft$applyModelView(Matrix4f matrix) {
         if (!RenderPassType.isVanilla()) {
-            RenderHelper.applyVRModelView(ClientDataHolderVR.getInstance().currentPass, matrix);
+            RenderHelper.applyVRModelView(vivecraft$DATA_HOLDER.currentPass, matrix);
         }
         return matrix;
     }
@@ -617,7 +617,7 @@ public abstract class GameRendererVRMixin
         this.vivecraft$inwater = false;
 
         if (!this.minecraft.player.isSpectator() && !MethodHolder.isInMenuRoom() && this.minecraft.player.isAlive()) {
-            Vec3 cameraPos = this.mainCamera.getPosition();
+            Vec3 cameraPos = vivecraft$DATA_HOLDER.vrPlayer.getVRDataWorld().getEye(vivecraft$DATA_HOLDER.currentPass).getPosition();
             Triple<Float, BlockState, BlockPos> triple = VREffectsHelper.getNearOpaqueBlock(cameraPos,
                 vivecraft$MIN_CLIP_DISTANCE);
 
