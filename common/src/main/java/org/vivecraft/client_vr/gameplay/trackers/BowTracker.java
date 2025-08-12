@@ -19,6 +19,7 @@ import org.vivecraft.client.utils.ScaleHelper;
 import org.vivecraft.client_vr.ClientDataHolderVR;
 import org.vivecraft.client_vr.VRData;
 import org.vivecraft.client_vr.extensions.PlayerExtension;
+import org.vivecraft.client_vr.gameplay.screenhandlers.KeyboardHandler;
 import org.vivecraft.client_vr.render.helpers.DebugRenderHelper;
 import org.vivecraft.client_vr.settings.VRSettings;
 import org.vivecraft.common.utils.MathUtils;
@@ -101,6 +102,10 @@ public class BowTracker implements ItemInUseTracker, DebugRenderTracker {
         if (player == null) {
             return false;
         } else if (this.mc.gameMode == null) {
+            return false;
+        } else if (this.mc.screen != null) {
+            return false;
+        } else if (KeyboardHandler.SHOWING) {
             return false;
         } else if (!player.isAlive()) {
             return false;
@@ -193,14 +198,11 @@ public class BowTracker implements ItemInUseTracker, DebugRenderTracker {
 
             if (!this.isDrawing()) {
                 // set client side so that it renders correctly
-                ((PlayerExtension) player).vivecraft$setItemInUseClient(bow, hand);
                 ((PlayerExtension) player).vivecraft$setItemInUseRemainingClient(stage0);
                 // Minecraft.getInstance().physicalGuiManager.preClickAction();
             }
         } else if (!this.isDrawing() && (float) Util.getMillis() - this.tsNotch > 500.0F) {
             this.canDraw = false;
-            // remove client side so that it renders correctly
-            ((PlayerExtension) player).vivecraft$setItemInUseClient(ItemStack.EMPTY, hand);
         }
 
         // start counting when we started drawing
@@ -228,8 +230,6 @@ public class BowTracker implements ItemInUseTracker, DebugRenderTracker {
             }
 
             // set client side so that it renders correctly
-            ((PlayerExtension) player).vivecraft$setItemInUseClient(bow, hand);
-
             double drawPercent = this.getDrawPercent();
 
             if (drawPercent >= 1.0D) {

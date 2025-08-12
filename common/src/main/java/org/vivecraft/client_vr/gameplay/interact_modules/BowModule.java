@@ -75,21 +75,19 @@ public class BowModule implements HeldInteractModule {
 
     @Override
     public void onRelease(@Nullable LocalPlayer player, InteractionHand hand) {
-        // don't trigger when the bow isn't active anymore
-        if (this.dh.bowTracker.isActive(player)) {
-            // fire!
-            int arrowHand = hand == InteractionHand.MAIN_HAND ? 0 : 1;
-            int bowHand = 1 - arrowHand;
-            this.dh.vr.triggerHapticPulse(arrowHand, 500);
-            this.dh.vr.triggerHapticPulse(bowHand, 3000);
-            ClientNetworking.sendServerPacket(new DrawPayloadC2S(this.dh.bowTracker.getDrawPercent()));
-            ClientNetworking.sendActiveBodyPart(arrowHand == 0 ? VRBodyPart.MAIN_HAND : VRBodyPart.OFF_HAND, true);
+        // we cannot abort the item using from the client, so we need to shoot
+        // fire!
+        int arrowHand = hand == InteractionHand.MAIN_HAND ? 0 : 1;
+        int bowHand = 1 - arrowHand;
+        this.dh.vr.triggerHapticPulse(arrowHand, 500);
+        this.dh.vr.triggerHapticPulse(bowHand, 3000);
+        ClientNetworking.sendServerPacket(new DrawPayloadC2S(this.dh.bowTracker.getDrawPercent()));
+        ClientNetworking.sendActiveBodyPart(arrowHand == 0 ? VRBodyPart.MAIN_HAND : VRBodyPart.OFF_HAND, true);
 
-            Minecraft.getInstance().gameMode.releaseUsingItem(player);
+        Minecraft.getInstance().gameMode.releaseUsingItem(player);
 
-            // reset to 0, in case user switches modes.
-            ClientNetworking.sendServerPacket(new DrawPayloadC2S(0.0F));
-            ClientNetworking.resetActiveBodyPart();
-        }
+        // reset to 0, in case user switches modes.
+        ClientNetworking.sendServerPacket(new DrawPayloadC2S(0.0F));
+        ClientNetworking.resetActiveBodyPart();
     }
 }

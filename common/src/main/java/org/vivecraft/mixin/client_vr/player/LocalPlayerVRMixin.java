@@ -14,7 +14,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -531,14 +530,6 @@ public abstract class LocalPlayerVRMixin extends LocalPlayer_PlayerVRMixin imple
             this.level()
                 .playSound(null, soundPos.x, soundPos.y, soundPos.z, soundevent, this.getSoundSource(), volume, pitch);
         }
-    }
-
-    @Override
-    @Unique
-    public void vivecraft$setItemInUseClient(ItemStack itemStack, InteractionHand interactionHand) {
-        this.useItem = itemStack;
-        this.usingItemHand = interactionHand;
-        this.startedUsingItem = itemStack != ItemStack.EMPTY;
     }
 
     @Override
