@@ -19,8 +19,6 @@ public abstract class LocalPlayer_LivingEntityVRMixin extends LocalPlayer_Entity
     public float zza;
     @Shadow
     protected int useItemRemaining;
-    @Shadow
-    protected ItemStack useItem;
 
     @Shadow
     public abstract boolean isFallFlying();

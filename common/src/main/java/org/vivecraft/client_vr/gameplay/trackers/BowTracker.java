@@ -168,8 +168,6 @@ public class BowTracker implements ItemInUseTracker, DebugRenderTracker {
         float notchDistThreshold = 0.15F * vrData.worldScale;
         boolean main = isHoldingBow(player, InteractionHand.MAIN_HAND);
 
-        InteractionHand hand = main ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-
         ItemStack ammo = ItemStack.EMPTY;
         ItemStack bow = ItemStack.EMPTY;
 

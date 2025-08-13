@@ -66,12 +66,6 @@ public abstract class LocalPlayerVRMixin extends LocalPlayer_PlayerVRMixin imple
     protected Minecraft minecraft;
 
     @Shadow
-    private boolean startedUsingItem;
-
-    @Shadow
-    private InteractionHand usingItemHand;
-
-    @Shadow
     protected abstract void updateAutoJump(float movementX, float movementZ);
 
     @Shadow

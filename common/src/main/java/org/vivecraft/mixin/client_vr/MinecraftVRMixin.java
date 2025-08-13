@@ -15,7 +15,6 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.*;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.gui.screens.LevelLoadingScreen;
 import net.minecraft.client.gui.screens.ReceivingLevelScreen;
@@ -92,10 +91,6 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
 
     @Unique
     private CameraType vivecraft$lastCameraType;
-
-    @Final
-    @Shadow
-    public Gui gui;
 
     @Shadow
     @Final
