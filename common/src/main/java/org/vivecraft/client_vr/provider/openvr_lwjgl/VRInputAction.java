@@ -65,17 +65,15 @@ public class VRInputAction {
     }
 
     public boolean isButtonChanged() {
-        boolean changed;
         if (this.type.equals("boolean")) {
-            changed = this.digitalData().isChanged;
+            return this.digitalData().isChanged;
         } else {
             Vector3fc axis = this.getAxis3D(false);
             Vector3fc delta = this.getAxis3D(true);
-            changed = Math.abs(axis.x() - delta.x()) > 0.5F != Math.abs(axis.x()) > 0.5F ||
+            return Math.abs(axis.x() - delta.x()) > 0.5F != Math.abs(axis.x()) > 0.5F ||
                 Math.abs(axis.y() - delta.y()) > 0.5F != Math.abs(axis.y()) > 0.5F ||
                 Math.abs(axis.z() - delta.z()) > 0.5F != Math.abs(axis.z()) > 0.5F;
         }
-        return changed || (this.isEnabled() && (this.isButtonPressed() != this.keyBinding.isDown()));
     }
 
     public float getAxis1D(boolean delta) {
@@ -168,6 +166,9 @@ public class VRInputAction {
         }
     }
 
+    /**
+     * @return the last origin the vr runtime sent, if the VRInputAction is not currently in an active set this is likely 0
+     */
     public long getLastOrigin() {
         return switch (this.type) {
             case "boolean" -> this.digitalData().activeOrigin;

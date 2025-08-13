@@ -748,7 +748,7 @@ public abstract class MCVR {
     }
 
     /**
-     * processes vr specific keys
+     * processes vr specific keys, processed on tick
      */
     public void processBindings() {
         // if (this.inputActions.isEmpty()) return;

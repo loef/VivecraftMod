@@ -78,6 +78,9 @@ public class MCOpenVR extends MCVR {
     private final Map<VRInputActionSet, Long> actionSetHandles = new EnumMap<>(VRInputActionSet.class);
     private VRActiveActionSet.Buffer activeActionSetsBuffer;
 
+    private final Map<VRInputActionSet, Set<VRInputAction>> unpressedSetKeys = new EnumMap<>(VRInputActionSet.class);
+    private List<VRInputActionSet> activeActionSets = new ArrayList<>();
+
     private Map<Long, String> controllerComponentNames;
     private Map<String, Matrix4f[]> controllerComponentTransforms;
 
@@ -212,6 +215,10 @@ public class MCOpenVR extends MCVR {
         for (int i = 0; i < k_unMaxTrackedDeviceCount; i++) {
             this.poseMatrices[i] = new Matrix4f();
             this.deviceVelocity[i] = new Vector3f();
+        }
+
+        for (VRInputActionSet set : VRInputActionSet.values()) {
+            this.unpressedSetKeys.put(set, new HashSet<>());
         }
 
         // allocate memory
@@ -799,6 +806,13 @@ public class MCOpenVR extends MCVR {
                 .set(this.getActionSetHandle(activeSets.get(i)), k_ulInvalidInputValueHandle, 0, 0);
         }
 
+        // clear any sets that got deactivated
+        this.activeActionSets.removeAll(activeSets);
+        for (VRInputActionSet set : this.activeActionSets) {
+            this.unpressedSetKeys.get(set).clear();
+        }
+        this.activeActionSets = activeSets;
+
         return !activeSets.isEmpty();
     }
 
@@ -1223,8 +1237,8 @@ public class MCOpenVR extends MCVR {
             // try to prevent double left clicks
             (!ClientDataHolderVR.getInstance().vrSettings.ingameBindingsInGui ||
                 !(action.actionSet == VRInputActionSet.INGAME &&
-                    action.keyBinding.key.getType() == InputConstants.Type.MOUSE &&
-                    action.keyBinding.key.getValue() == GLFW.GLFW_MOUSE_BUTTON_LEFT && this.mc.screen != null
+                    action.keyBinding.key == InputConstants.Type.MOUSE.getOrCreate(GLFW.GLFW_MOUSE_BUTTON_LEFT) &&
+                    this.mc.screen != null
                 )
             ))
         {
@@ -1232,16 +1246,53 @@ public class MCOpenVR extends MCVR {
                 if (action.isButtonPressed() && action.isEnabled()) {
                     // We do this, so shit like closing a GUI by clicking a button won't
                     // also click in the world immediately after.
-                    if (!this.ignorePressesNextFrame) {
-                        action.pressBinding();
+                    if (!this.ignorePressesNextFrame || canActionBeRepressed(action)) {
+                        pressAction(action);
                     }
                 } else {
-                    action.unpressBinding();
+                    unpressAction(action);
                 }
+            } else if (action.isButtonPressed() && action.isEnabled() && !action.keyBinding.isDown() &&
+                canActionBeRepressed(action))
+            {
+                // allow repressing ingame buttons that were held before
+                pressAction(action);
             }
         } else if (checkIfNotMovement(action)) {
-            action.unpressBinding();
+            unpressAction(action);
         }
+    }
+
+    /**
+     * @param action VRInputAction to check
+     * @return if the given VRInputAction was pressed before actionset changes and can be repressed
+     */
+    private boolean canActionBeRepressed(VRInputAction action) {
+        // allow repressing ingame buttons that were held before the set change
+        return action.actionSet == VRInputActionSet.INGAME &&
+            this.unpressedSetKeys.get(action.actionSet).contains(action);
+    }
+
+    /**
+     * presses the given VRInputActions binding and removes it from the unpressed keys
+     *
+     * @param action VRInputAction to press
+     */
+    private void pressAction(VRInputAction action) {
+        action.pressBinding();
+        this.unpressedSetKeys.get(action.actionSet).remove(action);
+    }
+
+    /**
+     * unpresses the given VRInputActions binding and adds it to the unpressed keys, if its actionSet is not active right now
+     *
+     * @param action VRInputAction to press
+     */
+    private void unpressAction(VRInputAction action) {
+        if (!this.activeActionSets.contains(action.actionSet) && action.isButtonChanged()) {
+            this.unpressedSetKeys.get(action.actionSet).add(action);
+        }
+        action.unpressBinding();
     }
 
     /**

@@ -375,6 +375,12 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
         return call;
     }
 
+    @WrapWithCondition(method = "continueAttack", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;missTime:I", opcode = Opcodes.PUTFIELD))
+    private boolean vivecraft$noDelayReset(Minecraft instance, int value) {
+        // don't reset the miss timer, while we are not repressing keys
+        return !VRState.VR_RUNNING || !ClientDataHolderVR.getInstance().vr.ignorePressesNextFrame;
+    }
+
     @ModifyExpressionValue(method = "startUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;isDestroying()Z"))
     private boolean vivecraft$skipDestroyCheck(boolean isDestroying) {
         // in standing the player can use items even when a block is being destroyed
