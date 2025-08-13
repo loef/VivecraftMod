@@ -29,8 +29,9 @@ public class IsUsingItemVRMixin {
     }
 
     @ModifyReturnValue(method = "get", at = @At(value = "RETURN", ordinal = 1))
-    private boolean vivecraft$roomscaleBowNotch(boolean usingItem,
-        @Local(argsOnly = true) ItemStack itemStack, @Local(argsOnly = true) LivingEntity livingEntity)
+    private boolean vivecraft$roomscaleBowNotch(
+        boolean usingItem, @Local(argsOnly = true) ItemStack itemStack,
+        @Local(argsOnly = true) LivingEntity livingEntity)
     {
         return usingItem ||
             (VRState.VR_RUNNING && livingEntity == Minecraft.getInstance().player && BowTracker.isBow(itemStack) &&

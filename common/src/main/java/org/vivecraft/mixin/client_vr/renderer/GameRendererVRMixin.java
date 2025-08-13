@@ -617,7 +617,8 @@ public abstract class GameRendererVRMixin
         this.vivecraft$inwater = false;
 
         if (!this.minecraft.player.isSpectator() && !MethodHolder.isInMenuRoom() && this.minecraft.player.isAlive()) {
-            Vec3 cameraPos = vivecraft$DATA_HOLDER.vrPlayer.getVRDataWorld().getEye(vivecraft$DATA_HOLDER.currentPass).getPosition();
+            Vec3 cameraPos = vivecraft$DATA_HOLDER.vrPlayer.getVRDataWorld().getEye(vivecraft$DATA_HOLDER.currentPass)
+                .getPosition();
             Triple<Float, BlockState, BlockPos> triple = VREffectsHelper.getNearOpaqueBlock(cameraPos,
                 vivecraft$MIN_CLIP_DISTANCE);
 
