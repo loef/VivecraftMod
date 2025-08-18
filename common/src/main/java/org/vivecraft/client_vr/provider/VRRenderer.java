@@ -854,9 +854,6 @@ public abstract class VRRenderer {
                     VRSettings.LOGGER.info("Vivecraft: {}", this.fsaaFirstPassResultFBO);
                     VRSettings.LOGGER.info("Vivecraft: {}", this.fsaaLastPassResultFBO);
                     RenderHelper.checkGLError("FSAA FBO creation");
-
-                    VRShaders.setupFSAA();
-                    RenderHelper.checkGLError("FBO init fsaa shader");
                 } catch (Exception exception) {
                     // FSAA failed to initialize so don't use it
                     dataholder.vrSettings.useFsaa = false;
@@ -870,10 +867,6 @@ public abstract class VRRenderer {
 
             try {
                 minecraft.mainRenderTarget = this.framebufferVrRender;
-                VRShaders.setupDepthMask();
-                RenderHelper.checkGLError("init depth shader");
-                VRShaders.setupFOVReduction();
-                RenderHelper.checkGLError("init FOV shader");
                 minecraft.gameRenderer.checkEntityPostEffect(minecraft.getCameraEntity());
             } catch (Exception exception) {
                 VRSettings.LOGGER.error("Vivecraft: Shader creation failed:", exception);

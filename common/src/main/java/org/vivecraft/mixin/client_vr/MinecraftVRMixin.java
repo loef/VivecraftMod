@@ -259,9 +259,6 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
     @ModifyArg(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;render(Lnet/minecraft/client/DeltaTracker;Z)V"))
     private boolean vivecraft$setupRenderGUI(boolean renderLevel) {
         if (VRState.VR_RUNNING) {
-            // set gui pass before setup, to always be in that pass and not a random one from last frame
-            RenderPassManager.setGUIRenderPass();
-
             try {
                 Profiler.get().push("setupRenderConfiguration");
                 RenderHelper.checkGLError("pre render setup");
@@ -282,6 +279,9 @@ public abstract class MinecraftVRMixin implements MinecraftExtension {
             } finally {
                 Profiler.get().pop();
             }
+
+            // set gui pass before setup, to always be in that pass and not a random one from last frame
+            RenderPassManager.setGUIRenderPass();
 
             RenderSystem.depthMask(true);
             RenderSystem.colorMask(true, true, true, true);

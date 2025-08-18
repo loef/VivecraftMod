@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.TriState;
+import org.vivecraft.client_vr.render.helpers.RenderHelper;
 
 import java.util.function.Function;
 
@@ -91,7 +92,16 @@ public class VRShaders {
 
     private VRShaders() {}
 
-    public static void setupDepthMask() {
+    public static void reload() {
+        setupDepthMask();
+        RenderHelper.checkGLError("init depth shader");
+        setupFOVReduction();
+        RenderHelper.checkGLError("init FOV shader");
+        setupFSAA();
+        RenderHelper.checkGLError("FBO init fsaa shader");
+    }
+
+    private static void setupDepthMask() {
         CompiledShaderProgram program = Minecraft.getInstance().getShaderManager().getProgram(MIXED_REALITY_SHADER);
         MIXED_REALITY_HMD_VIEW_POSITION_UNIFORM = program.safeGetUniform("hmdViewPosition");
         MIXED_REALITY_HMD_PLANE_NORMAL_UNIFORM = program.safeGetUniform("hmdPlaneNormal");
@@ -102,13 +112,13 @@ public class VRShaders {
         MIXED_REALITY_ALPHA_MODE_UNIFORM = program.safeGetUniform("alphaMode");
     }
 
-    public static void setupFSAA() {
+    private static void setupFSAA() {
         CompiledShaderProgram program = Minecraft.getInstance().getShaderManager().getProgram(LANCZOS_SHADER);
         LANCZOS_TEXEL_WIDTH_OFFSET_UNIFORM = program.safeGetUniform("texelWidthOffset");
         LANCZOS_TEXEL_HEIGHT_OFFSET_UNIFORM = program.safeGetUniform("texelHeightOffset");
     }
 
-    public static void setupFOVReduction() {
+    private static void setupFOVReduction() {
         CompiledShaderProgram program = Minecraft.getInstance().getShaderManager().getProgram(POST_PROCESSING_SHADER);
         POST_PROCESSING_FOV_REDUCTION_RADIUS_UNIFORM = program.safeGetUniform("circle_radius");
         POST_PROCESSING_FOV_REDUCTION_OFFSET_UNIFORM = program.safeGetUniform("circle_offset");
